@@ -1,0 +1,11 @@
+
+- [ ]  Start up VM
+- [ ] Build Xv6 on VM
+- [ ] Find the address of _start, the entry point of the kernel
+- [ ] Run the kernel inside QEMU GDB
+- [ ] Set a breakpoint at _start in GDB
+- [ ] Look at Register and stack contents ( info reg for registers, x/24x $esp for stack pointer)
+
+- [ ] Add a Syscall to xv6 
+- [ ] ( Start by reading syscall.c  (The kernel side of the syscall table), user.h (the user-level header for sys calls) and uSys.S ( user-level system call definitions)
+- [ ] Write a user-level application, called wolfietest.c that gets the Wolfie image from the kernel and prints it to the console

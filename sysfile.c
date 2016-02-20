@@ -60,7 +60,7 @@ char* wolfie_img = "        .....'',;;::cccllllllllllllcccc:::;;,,,''...'',,'.. 
 "        .oKKkc,.                         .';cok0XNNNX0Oxoc,."\
 "          .;d0XX0kdlc:;,,,',,,;;:clodkO0KK0Okdl:,'.."\
 "              .,coxO0KXXXXXXXKK0OOxdoc:,.."\
-"                        ...\n"\
+"                        ...\n";
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.

@@ -1,7 +1,6 @@
 #include "types.h"
 #include "user.h"
 #include "stat.h"
-#include "defs.h"
 
 int 
 main(int argc, char *argv[]) {
@@ -11,7 +10,7 @@ main(int argc, char *argv[]) {
 
 	wolfie (buf, size);
 
-	cprintf("%s\n", buffer);
+	printf(1,"%s\n", buffer);
 
 	return 0;
 }

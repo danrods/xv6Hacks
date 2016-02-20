@@ -1,12 +1,15 @@
 #include "user.h"
+#include "types.h"
+#include "stat.h"
 
 int 
 main(int argc, char *argv[]) {
-	void buf[4096];
+	char buf[4096];
 	uint size = 4096;
 
-	wolfie (&buf, size);
+	wolfie ((void *)&buf, size);
 
-	printf("%s\n", (char *)buf);
+	printf("%s\n", buf);
 
+	return 0;
 }

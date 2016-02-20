@@ -11,8 +11,8 @@ main(int argc, char *argv[]) {
 	uint size = MAX_SIZE;
 	void* buf = (void*) &buffer;
 
-	printf(1, "Calling Wolfie");
-	
+	printf(1, "Calling Wolfie\n");
+
 	wolfie (buf, size);
 
 	printf(1,"%s\n", buffer);

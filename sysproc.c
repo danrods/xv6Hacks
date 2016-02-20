@@ -7,6 +7,7 @@
 #include "mmu.h"
 #include "proc.h"
 
+/*
 char* wolfie_img = "        .....'',;;::cccllllllllllllcccc:::;;,,,''...'',,'.. "\
 "                            ..';cldkO00KXNNNNXXXKK000OOkkkkkxxxxxddoooddddddxxxxkkkkOO0XXKx:."\
 "                      .':ok0KXXXNXK0kxolc:;;,,,,,,,,,,,;;,,,''''''',,''..              .'lOXKd' "\
@@ -55,7 +56,9 @@ char* wolfie_img = "        .....'',;;::cccllllllllllllcccc:::;;,,,''...'',,'.. 
 "              .,coxO0KXXXXXXXKK0OOxdoc:,.."\
 "                        ...\n";
 
+*/
 
+char* wolfie_img ="Hello World!";
 
 int
 sys_fork(void)

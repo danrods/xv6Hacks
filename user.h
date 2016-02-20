@@ -23,7 +23,7 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int wolfie(void* buf, uint size);
+int wolfie(void* buf, uint);
 
 // ulib.c
 int stat(char*, struct stat*);

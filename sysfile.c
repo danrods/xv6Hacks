@@ -494,9 +494,9 @@ int
 sys_wolfie(void){
 
   char* buf;
-  uint size;
+  int size;
 
-  if(argint(1, &size) < 0 || argptr(0, &buf, (int)size) < 0)
+  if(argint(1, &size) < 0 || argptr(0, &buf, size) < 0)
     return -1;
 
    if(!buf || size <= 0 || size < (strlen(wolfie_img) + 1)){

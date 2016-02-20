@@ -5,12 +5,13 @@
 
 int 
 main(int argc, char *argv[]) {
-	char buf[4096];
+	char buffer[4096];
 	uint size = 4096;
+	void* buf = (void*) &buffer;
 
-	wolfie ((void *)&buf, size);
+	wolfie (buf, size);
 
-	printf("%s\n", buf);
+	cprintf("%s\n", buffer);
 
 	return 0;
 }

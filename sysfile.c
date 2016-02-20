@@ -13,9 +13,8 @@
 #include "fs.h"
 #include "file.h"
 #include "fcntl.h"
-#include "user.h"
 
-static char * wolfie_img = "        .....'',;;::cccllllllllllllcccc:::;;,,,''...'',,'.. "\
+char* wolfie_img = "        .....'',;;::cccllllllllllllcccc:::;;,,,''...'',,'.. "\
 "                            ..';cldkO00KXNNNNXXXKK000OOkkkkkxxxxxddoooddddddxxxxkkkkOO0XXKx:."\
 "                      .':ok0KXXXNXK0kxolc:;;,,,,,,,,,,,;;,,,''''''',,''..              .'lOXKd' "\
 "                 .,lx00Oxl:,'............''''''...................    ...,;;'.             .oKXd."\
@@ -497,7 +496,7 @@ sys_wolfie(void){
   char* buf;
   uint size;
 
-  if(argint(1, &size) < 0 || argptr(0, &buf, size) < 0)
+  if(argint(1, &size) < 0 || argptr(0, &buf, (int)size) < 0)
     return -1;
 
    if(!buf || size <= 0 || size < (strlen(wolfie_img) + 1)){

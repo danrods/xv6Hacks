@@ -496,6 +496,8 @@ sys_wolfie(void){
   char* buf;
   int size;
 
+  cprintf("Starting Sys Wolfie!\n");
+  
   if(argint(1, &size) < 0 || argptr(0, &buf, size) < 0)
     return -1;
 

@@ -40,7 +40,7 @@ char* wolfie_img = "                     .........................              
 "  .......,,?$$$$$$ZOOOZZZZZZZOOOZ$$7$Z$$7II????7=,,........ \n"\
 " .......,7$$$$$$$$$$OOOOZZZZZZZ$$77:.~$77II?++?$?+,,.......  \n"\
 " ......,OMDZ$$$$$$$ZO8OOOZZZZZ$$$7777$IIIIII+7?$I?+,,......  \n"\
-" ......,,8DNN$$$$$ZZDO8OOZZZZI::7?.$$+?I7III?$I77???=,.......\n"\
+" ......,,8DNN$$$$$ZZDO8OOZZZZI::7?.$$+?I7III?$I77+++=,.......\n"\
 " .....,,+DNDDNO$$$ZDDD88OOZOI,.:$Z7$$=~.7$,I7IZ77??I?,,......\n"\
 " .....,,ODNDDDDM$$8DD88OOO8ZO$$$ZI$I:77II7$=I88Z$IIIZ,,......\n"\
 " .....,+DDDD8DD8N::DDD8O8DOOO$$Z$I7..7III????88OZ7N8Z,,......\n"\

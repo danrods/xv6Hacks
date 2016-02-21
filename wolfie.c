@@ -17,5 +17,5 @@ main(int argc, char *argv[]) {
 
 	printf(1,"%s\n", buffer);
 
-	return 0;
+	exit();
 }

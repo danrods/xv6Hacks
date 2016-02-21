@@ -152,14 +152,19 @@ sys_wolfie(void){
 
   cprintf("Starting Sys Wolfie!\n");
   
-  if(argint(1, &size) < 0 || argptr(0, &buf, size) < 0)
+  if(argint(1, &size) < 0 || argptr(0, &buf, size) < 0){
+    cprintf("Error getting arguments\n");
     return -1;
+  }
+    
 
    if(!buf || size <= 0 || size < (strlen(wolfie_img) + 1)){
-      panic("Buffer size is too small for Wolfie!\n");
+      cprintf("Buffer size is too small for Wolfie!\n");
       return -1;
    } 
 
+   cprintf("Calling strncpy\n");
    strncpy(buf, wolfie_img, size);
+   cprintf("Called strncpy\n");
    return (int) strlen(buf);
 }

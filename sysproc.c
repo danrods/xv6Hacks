@@ -58,7 +58,7 @@ char* wolfie_img = "        .....'',;;::cccllllllllllllcccc:::;;,,,''...'',,'.. 
 
 */
 
-char* wolfie_img ="Hello World!";
+
 
 int
 sys_fork(void)
@@ -144,27 +144,3 @@ sys_uptime(void)
 }
 
 
-int
-sys_wolfie(void){
-
-  char* buf;
-  int size;
-
-  cprintf("Starting Sys Wolfie!\n");
-  
-  if(argint(1, &size) < 0 || argptr(0, &buf, size) < 0){
-    cprintf("Error getting arguments\n");
-    return -1;
-  }
-    
-
-   if(!buf || size <= 0 || size < (strlen(wolfie_img) + 1)){
-      cprintf("Buffer size is too small for Wolfie!\n");
-      return -1;
-   } 
-
-   cprintf("Calling strncpy\n");
-   strncpy(buf, wolfie_img, size);
-   cprintf("Called strncpy\n");
-   return (int) strlen(buf);
-}

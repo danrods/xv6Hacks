@@ -15,53 +15,80 @@
 #include "fcntl.h"
 
 
-char* wolfie_img = "        .....'',;;::cccllllllllllllcccc:::;;,,,''...'',,'.. "\
-"                            ..';cldkO00KXNNNNXXXKK000OOkkkkkxxxxxddoooddddddxxxxkkkkOO0XXKx:."\
-"                      .':ok0KXXXNXK0kxolc:;;,,,,,,,,,,,;;,,,''''''',,''..              .'lOXKd' "\
-"                 .,lx00Oxl:,'............''''''...................    ...,;;'.             .oKXd."\
-"              .ckKKkc'...'',:::;,'.........'',;;::::;,'..........'',;;;,'.. .';;'.           'kNKc."\
-"           .:kXXk:.    ..       ..................          .............,:c:'...;:'.         .dNNx."\
-"          :0NKd,          .....''',,,,''..               ',...........',,,'',,::,...,,.        .dNNx."\
-"         .xXd.         .:;'..         ..,'             .;,.               ...,,'';;'. ...       .oNNo"\
-"         .0K.         .;.              ;'              ';                      .'...'.           .oXX:"\
-"        .oNO.         .                 ,.              .     ..',::ccc:;,..     ..                lXX:"\
-"       .dNX:               ......       ;.                'cxOKK0OXWWWWWWWNX0kc.                    :KXd."\
-"     .l0N0;             ;d0KKKKKXK0ko:...              .l0X0xc,...lXWWWWWWWWKO0Kx'                   ,ONKo."\
-"   .lKNKl...'......'. .dXWN0kkk0NWWWWWN0o.            :KN0;.  .,cokXWWNNNNWNKkxONK: .,:c:.      .';;;;:lk0XXx;"\
-"  :KN0l';ll:'.         .,:lodxxkO00KXNWWWX000k.       oXNx;:okKX0kdl:::;'',;coxkkd, ...'. ...'''.......',:lxKO:."\
-" oNNk,;c,'',.                      ...;xNNOc,.         ,d0X0xc,.     .dOd,           ..;dOKXK00000Ox:.   ..''dKO,"\
-"'KW0,:,.,:..,oxkkkdl;'.                'KK'              ..           .dXX0o:'....,:oOXNN0d;.'. ..,lOKd.   .. ;KXl."\
-";XNd,;  ;. l00kxoooxKXKx:..ld:         ;KK'                             .:dkO000000Okxl;.   c0;      :KK;   .  ;XXc"\
-"'XXdc.  :. ..    '' 'kNNNKKKk,      .,dKNO.                                   ....       .'c0NO'      :X0.  ,.  xN0."\
-".kNOc'  ,.      .00. ..''...      .l0X0d;.             'dOkxo;...                    .;okKXK0KNXx;.   .0X:  ,.  lNX'"\
-" ,KKdl  .c,    .dNK,            .;xXWKc.                .;:coOXO,,'.......       .,lx0XXOo;...oNWNXKk:.'KX;  '   dNX."\
-"  :XXkc'....  .dNWXl        .';l0NXNKl.          ,lxkkkxo' .cK0.          ..;lx0XNX0xc.     ,0Nx'.','.kXo  .,  ,KNx."\
-"   cXXd,,;:, .oXWNNKo'    .'..  .'.'dKk;        .cooollox;.xXXl     ..,cdOKXXX00NXc.      'oKWK'     ;k:  .l. ,0Nk."\
-"    cXNx.  . ,KWX0NNNXOl'.           .o0Ooldk;            .:c;.':lxOKKK0xo:,.. ;XX:   .,lOXWWXd.      . .':,.lKXd."\
-"     lXNo    cXWWWXooNWNXKko;'..       .lk0x;       ...,:ldk0KXNNOo:,..       ,OWNOxO0KXXNWNO,        ....'l0Xk,"\
-"     .dNK.   oNWWNo.cXK;;oOXNNXK0kxdolllllooooddxk00KKKK0kdoc:c0No        .'ckXWWWNXkc,;kNKl.          .,kXXk,"\
-"      'KXc  .dNWWX;.xNk.  .kNO::lodxkOXWN0OkxdlcxNKl,..        oN0'..,:ox0XNWWNNWXo.  ,ONO'           .o0Xk;"\
-"      .ONo    oNWWN0xXWK, .oNKc       .ONx.      ;X0.          .:XNKKNNWWWWNKkl;kNk. .cKXo.           .ON0;"\
-"      .xNd   cNWWWWWWWWKOkKNXxl:,'...;0Xo'.....'lXK;...',:lxk0KNWWWWNNKOd:..   lXKclON0:            .xNk."\
-"      .dXd   ;XWWWWWWWWWWWWWWWWWWNNNNNWWNNNNNNNNNWWNNNNNNWWWWWNXKNNk;..        .dNWWXd.             cXO."\
-"      .xXo   .ONWNWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWNNK0ko:'..OXo          'l0NXx,              :KK,"\
-"      .OXc    :XNk0NWXKNWWWWWWWWWWWWWWWWWWWWWNNNX00NNx:'..       lXKc.     'lONN0l.              .oXK:"\
-"      .KX;    .dNKoON0;lXNkcld0NXo::cd0NNO:;,,'.. .0Xc            lXXo..'l0NNKd,.              .c0Nk,"\
-"      :XK.     .xNX0NKc.cXXl  ;KXl    .dN0.       .0No            .xNXOKNXOo,.               .l0Xk;."\
-"     .dXk.      .lKWN0d::OWK;  lXXc    .OX:       .ONx.     . .,cdk0XNXOd;.   .'''....;c:'..;xKXx,"\
-"     .0No         .:dOKNNNWNKOxkXWXo:,,;ONk;,,,,,;c0NXOxxkO0XXNXKOdc,.  ..;::,...;lol;..:xKXOl."\
-"     ,XX:             ..';cldxkOO0KKKXXXXXXXXXXKKKKK00Okxdol:;'..   .';::,..':llc,..'lkKXkc."\
-"     :NX'    .     ''            ..................             .,;:;,',;ccc;'..'lkKX0d;."\
-"     lNK.   .;      ,lc,.         ................        ..,,;;;;;;:::,....,lkKX0d:."\
-"    .oN0.    .'.      .;ccc;,'....              ....'',;;;;;;;;;;'..   .;oOXX0d:."\
-"    .dN0.      .;;,..       ....                ..''''''''....     .:dOKKko;."\
-"     lNK'         ..,;::;;,'.........................           .;d0X0kc'."\
-"     .xXO'                                                 .;oOK0x:."\
-"      .cKKo.                                    .,:oxkkkxk0K0xc'."\
-"        .oKKkc,.                         .';cok0XNNNX0Oxoc,."\
-"          .;d0XX0kdlc:;,,,',,,;;:clodkO0KK0Okdl:,'.."\
-"              .,coxO0KXXXXXXXKK0OOxdoc:,.."\
-"                        ...\n";
+char* wolfie_img = 
+"                     .........................              \n"\            
+"                     ...........................            \n"\            
+"                   ..........,.,,,,,,,..............        \n"\            
+"                   .......~8ZO+,,,:I$$?:,,,...........      \n"\        
+"                   .......DD8ZZZ7$$$$$~+$=,,,..........     \n"\        
+"                  ......,,8DDDDD8$888D88Z7$,,,,.........    \n"\            
+"                  ......,,8DDDNNDDDDDDDDDD88OI,,........    \n"\            
+"               ........,,,=DNNNNMMONMNDDDD88888OZ?......    \n"\            
+"              ........,,,:?NI??IN8$$MMMMNM8OOOZZ?,......    \n"\            
+"             ........,,:O7ZDDDII8D$$NMMMN.OZO8I,,.......    \n"\            
+"             .......,?$ZOOO$$8DNM$NDDDD8O?7.$,,,,.......    \n"\           
+"             ......,ZZ$ZOZOOZZOODNDDDDD88O?=$8,,,,......    \n"\            
+"            .......NOZZZONN88D88?DDDDND??Z8ZDZ$:,,......    \n"\            
+"            .......8MNND88DN88D?+7NZ$DNNDD=I8?:~,,......    \n"\            
+"            .......,,8DDDDDDDD$D?IZI+=?DND~:8=~=,,......    \n"\            
+"            .......,,,,,8N8DD7?NMIII?+~~,,,,.I7?I.......    \n"\            
+"          ........,,,,,:::NNO7?MMN7II+??I~..~Z7I=.......    \n"\            
+"         .........,,,ZOOO8DMZ$I7MN8DDNMM?~=:++OO,.......    \n"\            
+"      ..........,,:ZZZZZZOOO88I?MM.ZDOMN,Z$~:,,,,.......    \n"\            
+"    ...........,,$$Z$ZZZZZZOO8$??+.,.,:.=Z$7$:,,,.......    \n"\            
+"    ........,,,$$ZZZ$ZZZZZZZOO8$I?+=====:77II77,,,......    \n"\            
+"   .......,,,$Z$$$ZO8ZZZZZZZZOOOO$77I=~:,III??II,,.......   \n"\            
+"  .......,,?$$$$$$ZOOOZZZZZZZOOOZ$$7$Z$$7II????7=,,........ \n"\            
+" .......,7$$$$$$$$$$OOOOZZZZZZZ$$77:.~$77II?++?$?+,,.......  \n"\           
+" ......,OMDZ$$$$$$$ZO8OOOZZZZZ$$$7777$IIIIII+7?$I?+,,......  \n"\           
+" ......,,8DNN$$$$$ZZDO8OOZZZZI::7?.$$+?I7III?$I77???=,.......\n"\           
+" .....,,+DNDDNO$$$ZDDD88OOZOI,.:$Z7$$=~.7$,I7IZ77??I?,,......\n"\           
+" .....,,ODNDDDDM$$8DD88OOO8ZO$$$ZI$I:77II7$=I88Z$IIIZ,,......\n"\           
+" .....,+DDDD8DD8N::DDD8O8DOOO$$Z$I7..7III????88OZ7N8Z,,......\n"\           
+" .....,ZDO88OD8O:::?DD888OOOO$$Z$7?7.I7II??I::88ND88OI,,.....\n"\           
+" .....,$D888888=::::D8DDO8OOO$ZZ$I??.IIII?7~:::8DDD8OZ~,.....\n"\           
+" .....,=8DD8Z87,,,,,8DD888OOZ$ZZ$II=.II7?I+,,,,,8D88OZ?,.....\n"\           
+" .....,,8NDD87,,,,,,ID888OOOZ$ZZZI7...?7I?=,,,,,OOZ8Z7,......\n"\          
+" .....,,ND8DDO,,,,,,,88888OOZZZOZ77..=I?II~,,,,,:ZZOO7,,.....\n"\           
+" ......,8D8DOOI,,,,,,88888OOZZOOZ7?I??I7?I,,,,,,,O8$O7,......\n"\           
+" ......,IDD8DD8:,,,,,88OOOOOZZOOZ$I??I?III,,,,,,,ZDD$I,......\n"\           
+" ......,,D8888DD?,,,,OOOOOOOZZOOZ$7???I?I?,,,,,,,+ND7?,......\n"\           
+" .......,O8ODDODZ,,,,:OOOOZZZZOOZ$7IIII???,,,,,,,,DZ?=.......\n"\           
+"  ......,,OO8OOO$I,,,:O$7O8O8888OOZ$O77Z7I$,,,,,II?I~........\n"\           
+"  ........,?O88OZ?,,,=O7IZZ$$Z7O7ZO7ZIIII7I~,,,$7:~:.........\n"\           
+"    ............,,,,,~8IOZZ$Z$7$7Z7I7Z$?7II?,,,,...........  \n"\           
+"    ..............,,,,8IOOZ$Z7$777777II$7?I?,,,............  \n"\           
+"    ...............,,,ZIOOZ$Z7$777II77II77II~,,..........    \n"\           
+"      .............,,,77OOZZ$$$7777I$I77III??,,.........     \n"\           
+"            .......,,:IOOOZZZ$$7777IZ$7IIIII?,,......        \n"\           
+"             ......,,=?OOOZZZ$77777O$$$77III?,......         \n"\           
+"             ......,Z878OOZZZ$$$77I8Z$$$777II,,.....         \n"\           
+"             ......,878OOOOZZ$$$$7IDOZ$$7777,,......         \n"\           
+"             ......,,+O8OOOOZZ$$77O8OZ$$7777,,......         \n"\           
+"             .....,,,7OO8OOOZZ$$Z7D88Z$$$77?,,......         \n"\           
+"            ......,,+88O88OOZZ$$$ND88OOZ$777,.......         \n"\           
+"            ......,,+8O8Z8OO$OZ7$D8888OZ$$7,,......          \n"\           
+"            ......,+?OO88OOOZZO7IDN8OZ$$77,,.......          \n"\           
+"            ......,,8OZO8$87O$IINMMMN88$7~,,,.....           \n"\           
+"            ......,,DO8NN8ZOZ:::ZNNDOODI~,,,......           \n"\           
+"            ......,:8OZOZ8$==:::,DO88O?$Z,,,......           \n"\           
+"            .....,,~DNO88Z++I,,,::NDNDD88,,,,.........       \n"\           
+"            ......,,OOOZ$+ZN?:,,,~DD8OI??,,,,,........       \n"\           
+"            .....,,88O8OZ$O=,,,,,ZDD8O$??,,,,,,.........     \n"\           
+"            .....,,8888ZZOI:,,,,,ODD88OZZ,.I.I,.........     \n"\           
+"          .......,,OD=ZZ$7I,,,,,,8D8OOZ$$$7+I... ........    \n"\           
+"          ......,,,8~=OZ$I7:,,,,,8D88OZZ$$:..,. .,.......    \n"\           
+"          ......,,OZOI..7II~,,,,,DD88OOZZZ,,...  ........    \n"\           
+"          ......,~O=,.$.7=7$,,,,.,NN8888OI...............    \n"\           
+"          ......==,,.,.$:..$,,,...,,,,ON8~,.....8~.......    \n"\           
+"         ......,?+~,.,.....I,,........,,,,,,,,.,........     \n"\           
+"         .......I+~:,,..  .~,...........................     \n"\           
+"          ......I?+~:,,...............................       \n"\           
+"          .......M?+~:,,:8,.........................         \n"\           
+"          .......,,.,,,,,..........  .............           \n"\           
+"          .......................                            \n"\           
+"            ....................                             \n"\           
+"             .................  \n";
 
 
 

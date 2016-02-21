@@ -2,7 +2,8 @@
 #include "user.h"
 #include "stat.h"
 
-#define MAX_SIZE 2048
+#define MAX_SIZE 3900
+
 
 int 
 main(int argc, char *argv[]) {

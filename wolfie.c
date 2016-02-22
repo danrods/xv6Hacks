@@ -2,15 +2,16 @@
 #include "user.h"
 #include "stat.h"
 
-#define MAX_SIZE 3900
+#define MAX_SIZE 4096
 
 
 int 
 main(int argc, char *argv[]) {
 
-	char buffer[MAX_SIZE];
+	//char buffer[MAX_SIZE];
 	uint size = MAX_SIZE;
-	void* buf = (void*) &buffer;
+	char* buffer = calloc(1, MAX_SIZE);
+	void* buf = (void*) buffer;
 
 	printf(1, "Calling Wolfie\n");
 

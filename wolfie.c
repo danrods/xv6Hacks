@@ -10,7 +10,7 @@ main(int argc, char *argv[]) {
 
 	//char buffer[MAX_SIZE];
 	uint size = MAX_SIZE;
-	char* buffer = calloc(1, MAX_SIZE);
+	char* buffer = malloc(size);
 	void* buf = (void*) buffer;
 
 	printf(1, "Calling Wolfie\n");

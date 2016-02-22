@@ -528,14 +528,12 @@ sys_wolfie(void){
     cprintf("Error getting arguments\n");
     return -1;
   }
-    
-
-   if(!buf || size <= 0 || size < (strlen(wolfie_img) + 1)){
-      cprintf("Buffer size is too small for Wolfie!\n");
-      return -1;
-   } 
-
-   strncpy(buf, wolfie_img, size);
-   return (int) strlen(buf);
+  
+  //Is the buffer null, is the size > 0, and is the size of wolfie bigger than size
+  if(!buf || size <= 0 || size < (strlen(wolfie_img) + 1)){
+    cprintf("Buffer size is too small for Wolfie!\n");
+    return -1;
+  } 
+  return strlen(strncpy(buf, wolfie_img, size));//Returns the size of the string in buf
 }
 

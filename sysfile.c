@@ -90,9 +90,6 @@ char* wolfie_img = "                     .........................              
 "             .................  \n";
 
 
-
-// char* wolfie_img ="Hello World!";
-
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
 static int
@@ -526,8 +523,6 @@ sys_wolfie(void){
 
   char* buf;
   int size;
-
-  cprintf("Starting Sys Wolfie!\n");
   
   if(argint(1, &size) < 0 || argptr(0, &buf, size) < 0){
     cprintf("Error getting arguments\n");
@@ -540,9 +535,7 @@ sys_wolfie(void){
       return -1;
    } 
 
-   cprintf("Calling strncpy\n");
    strncpy(buf, wolfie_img, size);
-   cprintf("Called strncpy\n");
    return (int) strlen(buf);
 }
 

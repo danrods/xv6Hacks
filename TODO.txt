@@ -1,11 +1,54 @@
+Convert xv6 fork to Copy-On-Write Fork 
+- [ ] Write a Trap Handler for page faults
+- [ ] Augment physical memory management code
+- [ ] Manipulate Page tables
 
-- [ ]  Start up VM
-- [ ] Build Xv6 on VM
-- [ ] Find the address of _start, the entry point of the kernel
-- [ ] Run the kernel inside QEMU GDB
-- [ ] Set a breakpoint at _start in GDB
-- [ ] Look at Register and stack contents ( info reg for registers, x/24x $esp for stack pointer)
+- [ ] Write Many Test cases
 
-- [ ] Add a Syscall to xv6 
-- [ ] ( Start by reading syscall.c  (The kernel side of the syscall table), user.h (the user-level header for sys calls) and uSys.S ( user-level system call definitions)
-- [ ] Write a user-level application, called wolfietest.c that gets the Wolfie image from the kernel and prints it to the console
+Currently xv6  does not allow physical page frames to be shared.
+- [ ] Exercise 1 : Add a reference count to each physical page descriptor by adding to the page descriptor struct
+- [ ] ( Read kalloc.c to find out about how physical pages are allocated. Each physical men is represented as a struct run, organized into a free list)
+- [ ] Set count to 1 when a page is allocated
+- [ ] Write helper functions to increment and decrement  the count and assert the count is one when a page is freed
+- [ ] Check that page is not in use by more than one process when freeing ( will help find bugs later)
+
+Catching Page Faults
+- [ ] (Read trap.c )
+- [ ] Exercise 2 : Register Handler for T_PGFAULT
+
+Copy-On-Write
+- [ ] Keep Old Version of fork implementation for debugging and comparison purposes
+- [ ] (Read and understand the default fork implementation  in proc.c)
+- [ ] (Understand copyuvm() in vm.c  completely before changing anything)
+- [ ] Familiarize yourself with x86's protected-mode memory management architecture. Namely Segmentation and Page Translation
+- [ ] Read Chapters 5 and 6 of the Intel 80386 reference manual
+- [ ] Check Global Descriptor Table (GDT) in bootasm.S
+- [ ] Lookover QEMU monitor commands
+- [ ] Verify the physical and virtual addresses contain the same data using xp in QEMU and x in GDB
+
+Define a Page Table flag
+- [ ] Create page table flag for copy on write, make it 0x800 and call it PTE_COW in mmu.h
+	(Flag will not be used by the CPU, it is only there for our code to identify COW pages.
+- [ ] Implement a variant of copyuvm called cowuvm 
+- [ ] cowuvm function should convert each writeable page table entry in the parent and child to read-only and PTE_COW
+- [ ] Shoot down the TLB entries for any virtual address you change using the invlpg() function
+- [ ] Increment reference count for each page that is shared copy-on-write
+
+COW Support
+- [ ] Implement COW support in newly created Page Table
+- [ ] Check if fault is a write fault for a user address (Look at tf->err and newly-added FEC_WR flags in mmu.h)
+- [ ] Check if fault is for an address whose page table includes the PTE_COW flag
+- [ ] If does not include PTE_COW then kill the program as usual
+- [ ] If contains PTE_COW check the reference count on the page
+- [ ] If page has more than one reference copy the page and replace it with a writeable copy in the local process. Be sure to invalidate the TLB and decrement reference count
+- [ ] If page has only one reference, remove the PTE_COW flag and restore write permission to the page. No need to copy but do invalidate the TLB
+- [ ] Run the fork test utility upon completion
+
+Write Test Cases
+- [ ] Write 3 additional unit tests for fork. 
+
+Extra Credit
+- [ ] Clever or tricky ways to detect edge cases in fork
+
+
+

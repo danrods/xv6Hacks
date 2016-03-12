@@ -47,7 +47,7 @@ trap(struct trapframe *tf)
   }
 
   switch(tf->trapno){
-  case T_IRQ0 + IRQ_TIMER:
+  case T_IRQ0 + IRQ_TIMER: // Timer Interrupt
     if(cpu->id == 0){
       acquire(&tickslock);
       ticks++;
@@ -56,23 +56,23 @@ trap(struct trapframe *tf)
     }
     lapiceoi();
     break;
-  case T_IRQ0 + IRQ_IDE:
+  case T_IRQ0 + IRQ_IDE: // DISK interrupt
     ideintr();
     lapiceoi();
     break;
   case T_IRQ0 + IRQ_IDE+1:
     // Bochs generates spurious IDE1 interrupts.
     break;
-  case T_IRQ0 + IRQ_KBD:
+  case T_IRQ0 + IRQ_KBD: // Keyboard Interrupt (Ctrl + C)
     kbdintr();
     lapiceoi();
     break;
-  case T_IRQ0 + IRQ_COM1:
+  case T_IRQ0 + IRQ_COM1: //Serial Port Interrupt
     uartintr();
     lapiceoi();
     break;
   case T_IRQ0 + 7:
-  case T_IRQ0 + IRQ_SPURIOUS:
+  case T_IRQ0 + IRQ_SPURIOUS: //hardware interrupt that is unwanted.
     cprintf("cpu%d: spurious interrupt at %x:%x\n",
             cpu->id, tf->cs, tf->eip);
     lapiceoi();

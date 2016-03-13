@@ -9,6 +9,8 @@
 #include "mmu.h"
 #include "spinlock.h"
 
+#define MAXPAGES (PHYSTOP / PGSIZE)
+
 void freerange(void *vstart, void *vend);
 extern char end[]; // first address after kernel loaded from ELF file
 
@@ -21,6 +23,11 @@ struct {
   struct spinlock lock;
   int use_lock;
   struct run *freelist;
+
+  // DEP: For COW fork, we can't store the run in the 
+  //      physical page, because we need space for the ref
+  //      count.  Move to the kmem struct.
+  struct run runs[MAXPAGES];
 } kmem;
 
 // Initialization happens in two phases.
@@ -70,15 +77,16 @@ kfree(char *v)
 
   if(kmem.use_lock)
     acquire(&kmem.lock);
-  r = (struct run*)v;
-  r->next = kmem.freelist;
-  if(r->ref_count){
-    decRefCount(r);
-  }
-  else{
-    panic("ref_count < 1 when freeing")
-  }
+
+  // if(r->ref_count){
+  //   decRefCount(r);
+  // }
+  // else{
+  //   panic("ref_count < 1 when freeing")
+  // }
   
+  r = &kmem.runs[(V2P(v) / PGSIZE)];
+  r->next = kmem.freelist;
   kmem.freelist = r;
   if(kmem.use_lock)
     release(&kmem.lock);
@@ -91,17 +99,20 @@ char*
 kalloc(void)
 {
   struct run *r;
+  char *rv;
 
   if(kmem.use_lock)
     acquire(&kmem.lock);
   r = kmem.freelist;
   if(r)
     kmem.freelist = r->next;
-    incRefCount(r);
   if(kmem.use_lock)
     release(&kmem.lock);
-  return (char*)r;
+  rv = P2V((r - kmem.runs) * PGSIZE);
+  return rv;
 }
+
+
 
 void
 incRefCount(struct run* r){

@@ -8,9 +8,6 @@
 #include "proc.h"
 
 
-
-
-
 int
 sys_fork(void)
 {
@@ -93,5 +90,4 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
-
 

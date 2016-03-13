@@ -517,7 +517,6 @@ sys_pipe(void)
   return 0;
 }
 
-
 int
 sys_wolfie(void){
 
@@ -536,4 +535,3 @@ sys_wolfie(void){
   } 
   return strlen(strncpy(buf, wolfie_img, size));//Returns the size of the string in buf
 }
-

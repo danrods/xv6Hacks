@@ -118,5 +118,19 @@ trap(struct trapframe *tf)
 }
 
 void pgflthandler(void){
-  panic("ERROR ----> page fault!");
+
+  pte_t * pte;
+
+  uint fault_addr = rcr2();
+  cprintf("Found fault_addr: %d\n", fault_addr);
+
+  if((pte = walkpgdir(proc->pgdir, (void *) fault_addr, 0)) == 0){
+      panic("Error fetching PTE from CR2 Register!\n");
+  }
+
+  if(*pte & PTE_U){
+    panic("ERROR ----> page fault!");
+  }
+  
+  
 }

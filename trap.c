@@ -78,6 +78,11 @@ trap(struct trapframe *tf)
     lapiceoi();
     break;
    
+  case T_PGFLT: //Page fault interrupt
+    pgflthandler();
+    lapiceoi();
+    break;
+
   //PAGEBREAK: 13
   default:
     if(proc == 0 || (tf->cs&3) == 0){
@@ -108,4 +113,9 @@ trap(struct trapframe *tf)
   // Check if the process has been killed since we yielded
   if(proc && proc->killed && (tf->cs&3) == DPL_USER)
     exit();
+}
+
+void
+pgflthandler() {
+  panic("ERROR ----> page fault!");
 }

@@ -337,8 +337,14 @@ bad:
 }
 
 
+#ifndef original
+
 pde_t*
-cowuvm
+cowuvm(pde_t* pgdir, uint sz){
+  
+}
+
+#endif
 
 //PAGEBREAK!
 // Map user virtual address to kernel address.

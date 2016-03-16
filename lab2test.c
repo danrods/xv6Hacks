@@ -8,7 +8,7 @@ main (int agrc, char *argv[]) {
 	printf(1, "Trying Lab 2 Test\n");
 
 	char* GOODADD = (char*) malloc(10);
-	*GOODADD = "Hello";
+	strcpy(GOODADD,"Hello");
 	printf(1, "%s\n", GOODADD);
 
 	char* BADADD = (char*) 0xFFFFF0F0;

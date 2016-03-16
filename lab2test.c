@@ -11,7 +11,7 @@ main (int agrc, char *argv[]) {
 	strcpy(GOODADD,"Hello");
 	printf(1, "%s\n", GOODADD);
 
-	char* BADADD = (char*) 0xFFFFF0F0;
+	char* BADADD = (char*) 0x0;
 	printf(1,"%s\n", BADADD);
 
 	exit();

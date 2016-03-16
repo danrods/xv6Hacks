@@ -8,7 +8,11 @@ struct rtcdate;
 struct spinlock;
 struct stat;
 struct superblock;
-struct run;
+
+struct run {
+  int ref_count;
+  struct run *next;
+};
 
 
 // bio.c

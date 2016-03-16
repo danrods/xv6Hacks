@@ -14,10 +14,6 @@
 void freerange(void *vstart, void *vend);
 extern char end[]; // first address after kernel loaded from ELF file
 
-struct run {
-  int ref_count;
-  struct run *next;
-};
 
 struct {
   struct spinlock lock;

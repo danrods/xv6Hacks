@@ -14,7 +14,6 @@ struct run {
   struct run *next;
 };
 
-#include "mmu.h"
 
 // bio.c
 void            binit(void);
@@ -188,7 +187,7 @@ void            switchuvm(struct proc*);
 void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
-pte_t* 			walkpagedir(pde_t *pgdir, const void *va, int alloc);
+void* 			walkpagedir(pde_t *pgdir, const void *va, int alloc);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))

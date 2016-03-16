@@ -64,9 +64,9 @@ walkpgdir(pde_t *pgdir, const void *va, int alloc)
   return &pgtab[PTX(va)];
 }
 
-pte_t* 
+void* 
 walkpagedir(pde_t *pgdir, const void *va, int alloc){
-  return walkpgdir(pgdir, va, alloc);
+  return (void*) walkpgdir(pgdir, va, alloc);
 }
 // Create PTEs for virtual addresses starting at va that refer to
 // physical addresses starting at pa. va and size might not

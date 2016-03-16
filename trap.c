@@ -115,7 +115,6 @@ trap(struct trapframe *tf)
     exit();
 }
 
-void
-pgflthandler() {
+void pgflthandler(void){
   panic("ERROR ----> page fault!");
 }

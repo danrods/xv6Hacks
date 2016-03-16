@@ -12,9 +12,6 @@
 #define MAXPAGES (PHYSTOP / PGSIZE)
 
 void freerange(void *vstart, void *vend);
-void      incRefCount(struct run* r);
-void      decRefCount(struct run* r);
-
 extern char end[]; // first address after kernel loaded from ELF file
 
 struct run {
@@ -32,6 +29,10 @@ struct {
   //      count.  Move to the kmem struct.
   struct run runs[MAXPAGES];
 } kmem;
+
+
+void      incRefCount(struct run* r);
+void      decRefCount(struct run* r);
 
 // Initialization happens in two phases.
 // 1. main() calls kinit1() while still using entrypgdir to place just

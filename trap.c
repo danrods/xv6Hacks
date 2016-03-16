@@ -130,7 +130,7 @@ void pgflthandler(void){
   }
 
   uint flags = PTE_FLAGS(*pte);
-  printf(1, "Found flags 0x%08x\n", flags);
+  cprintf("Found flags 0x%08x\n", flags);
 
   if(*pte & PTE_U){
     panic("ERROR ----> User page fault!\n");

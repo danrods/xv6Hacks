@@ -345,7 +345,7 @@ bad:
 
 pde_t*
 cowuvm(pde_t* pgdir, uint sz){
-
+/*
   pde_t *d;
   pte_t *pte;
   uint pa, i;
@@ -368,6 +368,8 @@ cowuvm(pde_t* pgdir, uint sz){
   }
 
   return d;
+  */
+  return copyuvm(pgdir, sz);
 }
 
 #endif

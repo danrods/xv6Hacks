@@ -73,8 +73,9 @@ char*           kalloc(void);
 void            kfree(char*);
 void            kinit1(void*, void*);
 void            kinit2(void*, void*);
-void      incRefCount(struct run* r);
-void      decRefCount(struct run* r);
+void      incRefCount(void* va);
+void      decRefCount(void* va);
+int 	  getRefCount(void* va);
 
 // kbd.c
 void            kbdintr(void);

@@ -81,9 +81,14 @@ trap(struct trapframe *tf)
     break;
    
   case T_PGFLT: //Page fault interrupt
-    pgflthandler();
-    lapiceoi();
-    proc->killed = 1;
+
+    if(tf->err & FEC_WR){
+      pgflthandler();
+      lapiceoi();
+      //proc->killed = 1;
+    }
+
+    
     break;
 
   //PAGEBREAK: 13
@@ -132,9 +137,10 @@ void pgflthandler(void){
   uint flags = PTE_FLAGS(*pte);
   cprintf("Found flags 0x%p\n", flags);
 
-  if(*pte & PTE_U){
-    panic("ERROR ----> User page fault!\n");
+  if(! (*pte & PTE_U)){
+    panic("ERROR ----> Kernel space page fault!\n");
   }
+
   if(*pte & PTE_COW){
     panic("ERROR ----> COWpage fault!\n");
   }

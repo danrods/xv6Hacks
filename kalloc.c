@@ -14,6 +14,10 @@
 void freerange(void *vstart, void *vend);
 extern char end[]; // first address after kernel loaded from ELF file
 
+struct run {
+  int ref_count;
+  struct run *next;
+};
 
 struct {
   struct spinlock lock;
@@ -111,13 +115,18 @@ kalloc(void)
 }
 
 
-
-void
-incRefCount(struct run* r){
-  r->ref_count++;
+int getRefCount(void* va){
+   return &kmem.runs[(V2P(va) / PGSIZE)].ref_count;
 }
 
 void
-decRefCount(struct run* r){
-  r->ref_count--;
+incRefCount(void* va){
+  cprintf("Incrementing the Ref Count for %p\n", va);
+  return &kmem.runs[(V2P(va) / PGSIZE)].ref_count++;
+}
+
+void
+decRefCount(void* va){
+  cprintf("Decrementing the Ref Count for %p\n", va);
+  return &kmem.runs[(V2P(va) / PGSIZE)].ref_count--;
 }

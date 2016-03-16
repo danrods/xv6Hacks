@@ -336,6 +336,10 @@ bad:
   return 0;
 }
 
+
+pde_t*
+cowuvm
+
 //PAGEBREAK!
 // Map user virtual address to kernel address.
 char*

@@ -83,6 +83,7 @@ trap(struct trapframe *tf)
   case T_PGFLT: //Page fault interrupt
     pgflthandler();
     lapiceoi();
+    proc->killed = 1;
     break;
 
   //PAGEBREAK: 13
@@ -128,8 +129,17 @@ void pgflthandler(void){
       panic("Error fetching PTE from CR2 Register!\n");
   }
 
+  uint flags = PTE_FLAGS(*pte);
+  cprintf("Found flags 0x%08x", flags);
+
   if(*pte & PTE_U){
-    panic("ERROR ----> page fault!");
+    panic("ERROR ----> User page fault!");
+  }
+  if(*pte & PTE_COW){
+    panic("ERROR ----> COWpage fault!");
+  }
+  if(*pte & PTE_W){
+    panic("ERROR ----> Writeable Page Fault!");
   }
   else{
     cprintf("Nah, you good!\n");

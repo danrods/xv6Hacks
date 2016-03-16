@@ -31,9 +31,6 @@ struct {
 } kmem;
 
 
-void      incRefCount(struct run* r);
-void      decRefCount(struct run* r);
-
 // Initialization happens in two phases.
 // 1. main() calls kinit1() while still using entrypgdir to place just
 // the pages mapped by entrypgdir on free list.

@@ -8,6 +8,8 @@ struct rtcdate;
 struct spinlock;
 struct stat;
 struct superblock;
+struct run;
+
 
 // bio.c
 void            binit(void);
@@ -67,7 +69,8 @@ char*           kalloc(void);
 void            kfree(char*);
 void            kinit1(void*, void*);
 void            kinit2(void*, void*);
-
+void      incRefCount(struct run* r);
+void      decRefCount(struct run* r);
 
 // kbd.c
 void            kbdintr(void);

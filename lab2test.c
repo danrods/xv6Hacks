@@ -1,3 +1,4 @@
+#include "types.h"
 #include "user.h"
 
 char* BADADD = (char*) 0xFFFFFFFF;

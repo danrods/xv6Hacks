@@ -7,7 +7,7 @@ int
 main (int agrc, char *argv[]) {
 	printf(1, "Trying Lab 2 Test\n");
 
-	char* GOODADD = malloc(10);
+	char* GOODADD = (char*) malloc(10);
 
 	printf(1, "%s\n", GOODADD);
 

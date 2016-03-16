@@ -341,7 +341,7 @@ bad:
 
 pde_t*
 cowuvm(pde_t* pgdir, uint sz){
-  return NULL;
+  return 0;
 }
 
 #endif

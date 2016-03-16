@@ -12,6 +12,9 @@
 #define MAXPAGES (PHYSTOP / PGSIZE)
 
 void freerange(void *vstart, void *vend);
+void      incRefCount(struct run* r);
+void      decRefCount(struct run* r);
+
 extern char end[]; // first address after kernel loaded from ELF file
 
 struct run {

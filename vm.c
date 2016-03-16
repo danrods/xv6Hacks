@@ -357,8 +357,8 @@ cowuvm(pde_t* pgdir, uint sz){
     pa = PTE_ADDR(*pte);
     *pte |= PTE_COW; // Add the Copy-On-Write flag
     *pte &= ~PTE_W; // Remove the Writeable flag
-    page = (struct run *) p2v(pa);
-    cprintf("Read Struct run with ref count : %d\n", *page->ref_count);
+    page = (struct run*) &p2v(pa);
+    cprintf("Read Struct run with ref count : %d\n", page->ref_count);
     incRefCount(page);
     invlpg(pte);
   }

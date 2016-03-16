@@ -27,6 +27,7 @@ OBJS = \
 	uart.o\
 	vectors.o\
 	vm.o\
+	lab2test.o\
 
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf
@@ -173,6 +174,7 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_wolfietest\
+	_lab2test\
 
 
 fs.img: mkfs README $(UPROGS)

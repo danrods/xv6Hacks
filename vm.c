@@ -341,7 +341,30 @@ bad:
 
 pde_t*
 cowuvm(pde_t* pgdir, uint sz){
-  return copyuvm(pgdir, sz);
+
+  pde_t *d;
+  pte_t *pte;
+  uint pa, i, flags;
+  char *mem;
+  struct run * page;
+
+  if((d = setupkvm()) == 0)
+    return 0;
+  for(i = 0; i < sz; i += PGSIZE){
+    if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
+      panic("copyuvm: pte should exist");
+    if(!(*pte & PTE_P))
+      panic("copyuvm: page not present");
+    pa = PTE_ADDR(*pte);
+    *pte |= PTE_COW; // Add the Copy-On-Write flag
+    *pte &= ~PTE_W; // Remove the Writeable flag
+    page = (struct run *) p2v(pa);
+    cprintf("Read Struct run with ref count : %d", page->ref_count);
+    incRefCount(page);
+    invlpg(pte);
+  }
+
+  return d;
 }
 
 #endif

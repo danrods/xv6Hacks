@@ -183,6 +183,7 @@ fork(void)
 {
   int i, pid;
   struct proc *np;
+  struct run* run;
 
   // Allocate process.
   if((np = allocproc()) == 0)
@@ -190,7 +191,7 @@ fork(void)
 
   // Copy process state from p.
   if((np->pgdir = cowuvm(proc->pgdir, proc->sz)) == 0){
-    kfree(np->kstack);
+          (np->kstack);
     np->kstack = 0;
     np->state = UNUSED;
     return -1;

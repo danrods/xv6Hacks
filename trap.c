@@ -130,16 +130,16 @@ void pgflthandler(void){
   }
 
   uint flags = PTE_FLAGS(*pte);
-  cprintf("Found flags 0x%08x", flags);
+  printf(1, "Found flags 0x%08x\n", flags);
 
   if(*pte & PTE_U){
-    panic("ERROR ----> User page fault!");
+    panic("ERROR ----> User page fault!\n");
   }
   if(*pte & PTE_COW){
-    panic("ERROR ----> COWpage fault!");
+    panic("ERROR ----> COWpage fault!\n");
   }
   if(*pte & PTE_W){
-    panic("ERROR ----> Writeable Page Fault!");
+    panic("ERROR ----> Writeable Page Fault!\n");
   }
   else{
     cprintf("Nah, you good!\n");

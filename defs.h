@@ -14,6 +14,7 @@ struct run {
   struct run *next;
 };
 
+#include "mmu.h"
 
 // bio.c
 void            binit(void);

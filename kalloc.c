@@ -107,7 +107,7 @@ kalloc(void)
   r = kmem.freelist;
   if(r)
     kmem.freelist = r->next;
-    incRefCount(r);
+    r->ref_count++;
     //cprintf("Kalloc --> {R:%p\tRuns:%p}\n", r, kmem.runs);
   if(kmem.use_lock)
     release(&kmem.lock);

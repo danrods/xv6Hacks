@@ -359,13 +359,20 @@ cowuvm(pde_t* pgdir, uint sz){
     if(!(*pte & PTE_P))
       panic("copyuvm: page not present");
     pa = PTE_ADDR(*pte);
-    *pte |= PTE_COW; // Add the Copy-On-Write flag
-    *pte &= ~PTE_W; // Remove the Writeable flag
+    flags = PTE_FLAGS(*pte);
+    flags |= PTE_COW;
+    flags &= ~(PTE_W | PTE_P);
+    //*pte |= PTE_COW; // Add the Copy-On-Write flag
+    //*pte &= ~PTE_W; // Remove the Writeable flag
+
+    if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0){
+      panic("Error mapping");
+    }
     ref_count = getRefCount(p2v(pa));
     cprintf("Read Struct run with ref count : %d\n", ref_count);
     incRefCount(p2v(pa));
     invlpg(pte);
-    
+
   }
 
   return d;

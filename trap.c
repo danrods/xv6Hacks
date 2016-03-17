@@ -145,6 +145,7 @@ void pgflthandler(void){
 
   uint fault_addr = rcr2();
   cprintf("Found fault_addr: %p\n", fault_addr);
+  void* page = PGROUNDDOWN(fault_addr);
 
   if((pte = (pte_t *)walkpagedir(proc->pgdir, (void *) fault_addr, 0)) == 0){
       panic("Error fetching PTE from CR2 Register!\n");
@@ -161,7 +162,7 @@ void pgflthandler(void){
 
   if(*pte & PTE_COW){
     cprintf("ERROR ----> COW page fault!\n");
-    //int ref_count = getRefCount((void*) fault_addr);
+    int ref_count = getRefCount(page);
     if (ref_count > 1) {
       int pa = PTE_ADDR(*pte);
       char *mem = kalloc();
@@ -170,7 +171,7 @@ void pgflthandler(void){
       //mappages(proc->pgdir, PGSIZE, v2p(mem), pa, PTE_W|PTE_U);
       flags &= ~PTE_COW;
       *pte = v2p(mem) | flags | PTE_W;
-      decRefCount((void*) fault_addr);
+      decRefCount(page);
     } 
     else if (ref_count == 1) {
       cprintf("Only One Reference\n");

@@ -140,7 +140,7 @@ trap(struct trapframe *tf)
 #ifndef original
 
 void pgflthandler(void){
-
+  cprintf("-----------------Starting Page Fault Handler---------------------");
   pte_t * pte;
 
   uint fault_addr = rcr2();
@@ -161,7 +161,7 @@ void pgflthandler(void){
 
   if(*pte & PTE_COW){
     cprintf("ERROR ----> COW page fault!\n");
-    int ref_count = getRefCount((void*) fault_addr);
+    //int ref_count = getRefCount((void*) fault_addr);
     if (ref_count > 1) {
       int pa = PTE_ADDR(*pte);
       char *mem = kalloc();
@@ -173,6 +173,7 @@ void pgflthandler(void){
       decRefCount((void*) fault_addr);
     } 
     else if (ref_count == 1) {
+      cprintf("Only One Reference\n");
       *pte &= ~PTE_COW;
       *pte |= PTE_W;
     }
@@ -180,9 +181,11 @@ void pgflthandler(void){
   }
   else {
     //PANIC
+    panic("User page not Copy on Write");
     proc->killed = 1;
   }
   
+  cprintf("-----------------Ending Page Fault Handler---------------------");
   
 }
 

@@ -97,6 +97,7 @@ trap(struct trapframe *tf)
       //pgflthandler();
       //lapiceoi();
       //proc->killed = 1;
+      cprintf("Hm");
     }
 
     //return;

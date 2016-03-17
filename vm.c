@@ -369,9 +369,10 @@ cowuvm(pde_t* pgdir, uint sz){
     if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0){
       panic("Error mapping");
     }
-//    ref_count = getRefCount(p2v(pa));
-  //  cprintf("Read Struct run with ref count : %d\n", ref_count);
- //   incRefCount(p2v(pa));
+    void* page = (void*) PGROUNDDOWN(p2v(pa));
+    ref_count = getRefCount(page);
+    cprintf("Read Struct run with ref count : %d\n", ref_count);
+    incRefCount(page);
     invlpg(pte);
 
   }

@@ -57,7 +57,7 @@ freerange(void *vstart, void *vend)
   char *p;
   p = (char*)PGROUNDUP((uint)vstart);
   for(; p + PGSIZE <= (char*)vend; p += PGSIZE)
-    kfree(p);
+    kfree_sys(p);
 }
 
 //PAGEBREAK: 21
@@ -68,27 +68,42 @@ freerange(void *vstart, void *vend)
 void
 kfree(char *v)
 {
-  struct run *r;
+  _kfree(v, 0); 
+}
+
+void kfree_sys(char* v){
+   _kfree(v, 1);
+}
+
+static void
+_kfree(char* v, int isStartup){
+
+
+    struct run *r;
 
   if((uint)v % PGSIZE || v < end || v2p(v) >= PHYSTOP)
     panic("kfree");
 
-  // Fill with junk to catch dangling refs.
-  memset(v, 1, PGSIZE);
+    // Fill with junk to catch dangling refs.
+    memset(v, 1, PGSIZE);
 
   if(kmem.use_lock)
     acquire(&kmem.lock);
 
-  // if(r->ref_count){
-  //   decRefCount(r);
-  // }
-  // else{
-  //   panic("ref_count < 1 when freeing")
-  // }
+    r = &kmem.runs[(V2P(v) / PGSIZE)];
+    r->next = kmem.freelist;
+    kmem.freelist = r;
+
+    if(isStartup == 0){ //If we're not starting up
+       if(r->ref_count){
+         decRefCount(r);
+       }
+       else{
+         panic("ref_count < 1 when freeing")
+       }
+    }
+   
   
-  r = &kmem.runs[(V2P(v) / PGSIZE)];
-  r->next = kmem.freelist;
-  kmem.freelist = r;
   if(kmem.use_lock)
     release(&kmem.lock);
 }

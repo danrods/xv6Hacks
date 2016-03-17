@@ -4,6 +4,10 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
+#include "defs.h"
+#include "mmu.h"
+
+
 
 #define N  1000
 
@@ -48,9 +52,29 @@ forktest(void)
   printf(1, "fork test OK\n");
 }
 
+void 
+cowrefcounttest() 
+{
+  pte_t* pte = (char*) 0x2789;
+  int pa = PTE_ADDR(*pte);
+  int ref_count = getRefCount(void *pa);
+  cowuvm(*pte, 2);
+  int ref_count_new = getRefCount(pa);
+  if (ref_count_new > ref_count)
+  {
+    printf(1, "SUCCESS: reference count incremented after COW");
+  }
+  else 
+  {
+    printf(1, "FAILED: reference count not incremented after COW");
+  }
+}
+
+
 int
 main(void)
 {
   forktest();
+  cowrefcounttest();
   exit();
 }

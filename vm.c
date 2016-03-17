@@ -361,10 +361,18 @@ cowuvm(pde_t* pgdir, uint sz){
     pa = PTE_ADDR(*pte);
     *pte |= PTE_COW; // Add the Copy-On-Write flag
     *pte &= ~PTE_W; // Remove the Writeable flag
-    ref_count = getRefCount(p2v(pa));
-    cprintf("Read Struct run with ref count : %d\n", ref_count);
-    incRefCount(p2v(pa));
-    invlpg(pte);
+
+    if(mappages(d, (void*)i, PGSIZE, pa, flags) > 0){
+        ref_count = getRefCount(p2v(pa));
+        cprintf("Read Struct run with ref count : %d\n", ref_count);
+        incRefCount(p2v(pa));
+        invlpg(pte);
+    }
+    else{
+        freevm(d);
+        d = 0;
+    }
+
   }
 
   return d;

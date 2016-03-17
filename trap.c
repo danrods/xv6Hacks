@@ -95,7 +95,7 @@ trap(struct trapframe *tf)
      */
     if(tf->err & FEC_U || tf->err & FEC_WR){
       //pgflthandler();
-      lapiceoi();
+      //lapiceoi();
       //proc->killed = 1;
     }
 

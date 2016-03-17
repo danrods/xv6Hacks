@@ -86,7 +86,7 @@ _kfree(char* v, int isStartup){
          decRefCount(r);
        }
        else{
-         panic("ref_count < 1 when freeing")
+         panic("ref_count < 1 when freeing");
        }
     }
    

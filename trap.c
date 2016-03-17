@@ -81,7 +81,7 @@ trap(struct trapframe *tf)
     break;
 
   #ifndef original
-  case T_PGFLT: //Page fault interrupt
+  /*case T_PGFLT: //Page fault interrupt
 
     if(proc ==0 || (tf->cs&3) == 0){
         cprintf("Kernel level error\n");
@@ -89,18 +89,6 @@ trap(struct trapframe *tf)
     if(tf->err & FEC_U){
        cprintf("We're in user space! --> EIP : %x\n", tf->eip);
 
-       /*uint fault_addr = rcr2();
-        cprintf("Found fault_addr in user mode: %p\n", fault_addr);
-
-        pte_t * pte;
-        if((pte = (pte_t *)walkpagedir(proc->pgdir, (void *) fault_addr, 0)) == 0){
-            panic("Error fetching PTE from CR2 Register!\n");
-        }
-
-        uint flags = PTE_FLAGS(*pte);
-
-        cprintf("Found flags 0x%p\n", flags);
-*/      proc->killed = 1;
        return;
        lapiceoi();
     }
@@ -112,7 +100,7 @@ trap(struct trapframe *tf)
 
     return;
     break;
-
+*/
   #endif
 
   //PAGEBREAK: 13

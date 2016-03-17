@@ -66,6 +66,7 @@ void            ioapicinit(void);
 // kalloc.c
 char*           kalloc(void);
 void            kfree(char*);
+void 			kfree_sys(char*);
 void            kinit1(void*, void*);
 void            kinit2(void*, void*);
 void      incRefCount(void* va);

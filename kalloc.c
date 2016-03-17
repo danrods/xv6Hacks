@@ -61,19 +61,6 @@ freerange(void *vstart, void *vend)
 }
 
 //PAGEBREAK: 21
-// Free the page of physical memory pointed at by v,
-// which normally should have been returned by a
-// call to kalloc().  (The exception is when
-// initializing the allocator; see kinit above.)
-void
-kfree(char *v)
-{
-  _kfree(v, 0); 
-}
-
-void kfree_sys(char* v){
-   _kfree(v, 1);
-}
 
 static void
 _kfree(char* v, int isStartup){
@@ -106,6 +93,20 @@ _kfree(char* v, int isStartup){
   
   if(kmem.use_lock)
     release(&kmem.lock);
+}
+
+// Free the page of physical memory pointed at by v,
+// which normally should have been returned by a
+// call to kalloc().  (The exception is when
+// initializing the allocator; see kinit above.)
+void
+kfree(char *v)
+{
+  _kfree(v, 0); 
+}
+
+void kfree_sys(char* v){
+   _kfree(v, 1);
 }
 
 // Allocate one 4096-byte page of physical memory.

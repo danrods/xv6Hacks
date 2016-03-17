@@ -107,8 +107,8 @@ kalloc(void)
   r = kmem.freelist;
   if(r)
     kmem.freelist = r->next;
-    incRefCount(r);
-    cprintf("Kalloc --> {R:%p\tRuns:%p}\n", r, kmem.runs);
+    //incRefCount(r);
+    //cprintf("Kalloc --> {R:%p\tRuns:%p}\n", r, kmem.runs);
   if(kmem.use_lock)
     release(&kmem.lock);
   rv = P2V((r - kmem.runs) * PGSIZE);

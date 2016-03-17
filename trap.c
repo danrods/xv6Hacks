@@ -86,12 +86,12 @@ trap(struct trapframe *tf)
     if(proc ==0 || (tf->cs&3) == 0){
         cprintf("Kernel level error\n");
     }
-    // if(){
-    //    cprintf("We're in user space! --> EIP : %x\n", tf->eip);
+     if(tf->err & FEC_U ){
+        cprintf("We're in user space! --> EIP : %x\n", tf->eip);
 
        
-    //    lapiceoi();
-    // }
+        lapiceoi();
+     }
     if(tf->err & FEC_U || tf->err & FEC_WR){
       pgflthandler();
       lapiceoi();

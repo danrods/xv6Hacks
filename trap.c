@@ -140,12 +140,13 @@ trap(struct trapframe *tf)
 #ifndef original
 
 void pgflthandler(void){
-  cprintf("-----------------Starting Page Fault Handler---------------------");
+  cprintf("-----------------Starting Page Fault Handler---------------------\n");
   pte_t * pte;
 
   uint fault_addr = rcr2();
-  cprintf("Found fault_addr: %p\n", fault_addr);
+  cprintf("Found fault_addr: 0x%p\n", fault_addr);
   void* page = (void*) PGROUNDDOWN(fault_addr);
+  cprintf("On Page Boundary : 0x%p\n", page);
 
   if((pte = (pte_t *)walkpagedir(proc->pgdir, (void *) fault_addr, 0)) == 0){
       panic("Error fetching PTE from CR2 Register!\n");
@@ -186,7 +187,7 @@ void pgflthandler(void){
     proc->killed = 1;
   }
   
-  cprintf("-----------------Ending Page Fault Handler---------------------");
+  cprintf("-----------------Ending Page Fault Handler---------------------\n");
   
 }
 

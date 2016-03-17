@@ -162,9 +162,10 @@ void pgflthandler(void){
 
 
   if(*pte & PTE_COW){
-    cprintf("ERROR ----> COW page fault!\n");
+    cprintf("ERROR ----> COW page fault for process %d!\n", proc->pid);
     int ref_count = getRefCount(page);
     if (ref_count > 1) {
+      cprintf("%d References\n", ref_count);
       int pa = PTE_ADDR(*pte);
       char *mem = kalloc();
       memset(mem, 0, PGSIZE);

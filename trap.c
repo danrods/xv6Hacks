@@ -98,9 +98,8 @@ trap(struct trapframe *tf)
       if(pgflthandler()){
           cprintf("Not a User address, lets not confirm\n");
       }
-      else
-        lapiceoi();
-      }
+      else lapiceoi();
+      
       
       //proc->killed = 1;
     }

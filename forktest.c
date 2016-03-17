@@ -57,7 +57,7 @@ cowrefcounttest()
 {
   pte_t* pte = (char*) 0x2789;
   int pa = PTE_ADDR(*pte);
-  int ref_count = getRefCount((void*)pa);
+  int ref_count = getRefCount(void *pa);
   cowuvm(*pte, 2);
   int ref_count_new = getRefCount(pa);
   if (ref_count_new > ref_count)

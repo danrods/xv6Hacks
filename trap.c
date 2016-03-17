@@ -92,6 +92,7 @@ trap(struct trapframe *tf)
        uint fault_addr = rcr2();
         cprintf("Found fault_addr in user mode: %p\n", fault_addr);
 
+        pte_t * pte;
         if((pte = (pte_t *)walkpagedir(proc->pgdir, (void *) fault_addr, 0)) == 0){
             panic("Error fetching PTE from CR2 Register!\n");
         }

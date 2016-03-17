@@ -89,7 +89,7 @@ trap(struct trapframe *tf)
     if(tf->err & FEC_U){
        cprintf("We're in user space! --> EIP : %x\n", tf->eip);
 
-       uint fault_addr = rcr2();
+       /*uint fault_addr = rcr2();
         cprintf("Found fault_addr in user mode: %p\n", fault_addr);
 
         pte_t * pte;
@@ -100,7 +100,7 @@ trap(struct trapframe *tf)
         uint flags = PTE_FLAGS(*pte);
 
         cprintf("Found flags 0x%p\n", flags);
-
+*/
        lapiceoi();
     }
     if(tf->err & FEC_WR){
@@ -116,7 +116,7 @@ trap(struct trapframe *tf)
 
   //PAGEBREAK: 13
   default:
-    if(proc == 0 || (tf->cs&3) == 0){
+    if(proc == 0 || (tf->cs&3) == 0){ //CS stores privilege level : 0 for Kernel, 3 for User
       // In kernel, it must be our mistake.
       cprintf("unexpected trap %d from cpu %d eip %x (cr2=0x%x)\n",
               tf->trapno, cpu->id, tf->eip, rcr2());

@@ -99,6 +99,8 @@ trap(struct trapframe *tf)
 
         uint flags = PTE_FLAGS(*pte);
 
+        cprintf("Found flags 0x%p\n", flags);
+
        lapiceoi();
     }
     if(tf->err & FEC_WR){

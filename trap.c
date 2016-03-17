@@ -146,9 +146,10 @@ void pgflthandler(void){
   uint fault_addr = rcr2();
   cprintf("Found fault_addr: 0x%p\n", fault_addr);
   void* page = (void*) PGROUNDDOWN(fault_addr);
+
   cprintf("On Page Boundary : 0x%p\n", page);
 
-  if((pte = (pte_t *)walkpagedir(proc->pgdir, (void *) fault_addr, 0)) == 0){
+  if((pte = (pte_t *)walkpagedir(proc->pgdir, page, 0)) == 0){
       panic("Error fetching PTE from CR2 Register!\n");
   }
 
@@ -156,7 +157,7 @@ void pgflthandler(void){
   cprintf("Found flags 0x%p\n", flags);
 
   if(! (*pte & PTE_U)){
-    panic("ERROR ----> Kernel space page fault!\n");
+    cprintf("ERROR ----> Kernel space page fault!\n");
     return;
   }
 

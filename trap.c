@@ -84,7 +84,7 @@ trap(struct trapframe *tf)
   case T_PGFLT: //Page fault interrupt
 
     if(tf->err & FEC_U){
-       cprintf("We're in user space!\n");
+       cprintf("We're in user space! --> EIP : %x\n", tf->eip);
     }
     if(tf->err & FEC_WR){
       pgflthandler();

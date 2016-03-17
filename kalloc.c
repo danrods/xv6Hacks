@@ -81,6 +81,7 @@ _kfree(char* v, int isStartup){
     r->next = kmem.freelist;
     kmem.freelist = r;
 
+#ifndef original
     if(isStartup == 0){ //If we're not starting up
        if(r->ref_count){
          r->ref_count--;
@@ -90,7 +91,7 @@ _kfree(char* v, int isStartup){
        }
     }
    
-  
+#endif 
   if(kmem.use_lock)
     release(&kmem.lock);
 }
@@ -123,8 +124,10 @@ kalloc(void)
   r = kmem.freelist;
   if(r)
     kmem.freelist = r->next;
+  #ifndef original
     r->ref_count++;
     //cprintf("Kalloc --> {R:%p\tRuns:%p}\n", r, kmem.runs);
+  #endif
   if(kmem.use_lock)
     release(&kmem.lock);
   rv = P2V((r - kmem.runs) * PGSIZE);

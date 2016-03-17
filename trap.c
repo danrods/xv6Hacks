@@ -156,8 +156,8 @@ void pgflthandler(void){
   cprintf("Found flags 0x%p\n", flags);
 
   if(! (*pte & PTE_U)){
-    return;
     panic("ERROR ----> Kernel space page fault!\n");
+    return;
   }
 
 

@@ -94,9 +94,9 @@ trap(struct trapframe *tf)
      }
      */
     if(tf->err & FEC_U || tf->err & FEC_WR){
-      cprintf("We're in user space! --> EIP : %x\n", tf->eip);
+      //cprintf("We're in user space! --> EIP : %x\n", tf->eip);
       if(pgflthandler()){
-          cprintf("Not a User address, lets not confirm\n");
+          //cprintf("Not a User address, lets not confirm\n");
       }
       else lapiceoi();
       

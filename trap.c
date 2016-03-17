@@ -88,6 +88,7 @@ trap(struct trapframe *tf)
     }
     if(tf->err & FEC_U){
        cprintf("We're in user space! --> EIP : %x\n", tf->eip);
+       lapiceoi();
     }
     if(tf->err & FEC_WR){
       pgflthandler();
@@ -98,7 +99,7 @@ trap(struct trapframe *tf)
     
     break;
 
-    #endif
+  #endif
 
   //PAGEBREAK: 13
   default:

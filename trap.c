@@ -79,7 +79,8 @@ trap(struct trapframe *tf)
             cpu->id, tf->cs, tf->eip);
     lapiceoi();
     break;
-   
+
+  #ifndef original
   case T_PGFLT: //Page fault interrupt
 
     if(tf->err & FEC_WR){
@@ -90,6 +91,8 @@ trap(struct trapframe *tf)
 
     
     break;
+
+    #endif
 
   //PAGEBREAK: 13
   default:
@@ -122,6 +125,8 @@ trap(struct trapframe *tf)
   if(proc && proc->killed && (tf->cs&3) == DPL_USER)
     exit();
 }
+
+#ifndef original
 
 void pgflthandler(void){
 
@@ -163,3 +168,6 @@ void pgflthandler(void){
   
   
 }
+
+
+#endif

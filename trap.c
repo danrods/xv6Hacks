@@ -144,14 +144,14 @@ trap(struct trapframe *tf)
 #ifndef original
 
 int pgflthandler(void){
-  cprintf("-----------------Starting Page Fault Handler---------------------\n");
+  //cprintf("-----------------Starting Page Fault Handler---------------------\n");
   pte_t * pte;
 
   uint fault_addr = rcr2();
-  cprintf("Found fault_addr: 0x%p\n", fault_addr);
+  //cprintf("Found fault_addr: 0x%p\n", fault_addr);
   void* page = (void*) PGROUNDDOWN(fault_addr);
 
-  cprintf("On Page Boundary : 0x%p\n", page);
+  //cprintf("On Page Boundary : 0x%p\n", page);
 
   if((pte = (pte_t *)walkpagedir(proc->pgdir, page, 0)) == 0){
       panic("Error fetching PTE from CR2 Register!\n");
@@ -159,7 +159,7 @@ int pgflthandler(void){
 
   uint pa = PTE_ADDR(*pte);
   uint flags = PTE_FLAGS(*pte);
-  cprintf("Found flags 0x%p\n", flags);
+  //cprintf("Found flags 0x%p\n", flags);
 
   if(! (*pte & PTE_U)){
     cprintf("ERROR ----> Kernel space page fault!\n");
@@ -168,7 +168,7 @@ int pgflthandler(void){
 
 
   if(*pte & PTE_COW){
-    cprintf("ERROR ----> COW page fault for process %d!\n", proc->pid);
+    //cprintf("ERROR ----> COW page fault for process %d!\n", proc->pid);
 
     int ref_count = getRefCount(p2v(pa));
     if (ref_count > 1) {
@@ -184,7 +184,7 @@ int pgflthandler(void){
       decRefCount(p2v(pa));
     } 
     else if (ref_count == 1) {
-      cprintf("Only One Reference\n");
+      //cprintf("Only One Reference\n");
       *pte &= ~PTE_P;
       flags &= ~(PTE_COW | PTE_P);
       flags |= PTE_W;
@@ -199,7 +199,7 @@ int pgflthandler(void){
     proc->killed = 1;
   }
   
-  cprintf("-----------------Ending Page Fault Handler---------------------\n");
+  //cprintf("-----------------Ending Page Fault Handler---------------------\n");
   
   return 0;
 }

@@ -118,18 +118,20 @@ kalloc(void)
 
 int getRefCount(void* va){
    int refCount = kmem.runs[(V2P(va) / PGSIZE)].ref_count;
-   cprintf("Returning ref count : %d for %p\n", refCount, va);
+   //cprintf("Returning ref count : %d for %p\n", refCount, va);
    return refCount;
 }
 
 void
 incRefCount(void* va){
-  cprintf("Incrementing the Ref Count for %p\n", va);
+  int count = getRefCount(va);
+  cprintf("Incrementing the Ref Count for %p from %d\n", va, count);
   kmem.runs[(V2P(va) / PGSIZE)].ref_count++;
 }
 
 void
 decRefCount(void* va){
-  cprintf("Decrementing the Ref Count for %p\n", va);
+  int count = getRefCount(va);
+  cprintf("Decrementing the Ref Count for %p from %d\n", va, count);
   kmem.runs[(V2P(va) / PGSIZE)].ref_count--;
 }

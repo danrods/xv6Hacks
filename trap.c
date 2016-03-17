@@ -170,9 +170,9 @@ void pgflthandler(void){
       char *mem = kalloc();
       memset(mem, 0, PGSIZE);
       memmove(mem, (char*)p2v(pa), PGSIZE);
-      //mappages(proc->pgdir, PGSIZE, v2p(mem), pa, PTE_W|PTE_U);
-      flags &= ~PTE_COW;
-      *pte = v2p(mem) | flags | PTE_W;
+      mappages(proc->pgdir, PGSIZE, v2p(mem), pa, PTE_W|flags);
+      //flags &= ~PTE_COW;
+      //*pte = v2p(mem) | flags | PTE_W;
       decRefCount(page);
     } 
     else if (ref_count == 1) {

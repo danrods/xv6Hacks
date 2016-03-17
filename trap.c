@@ -81,7 +81,7 @@ trap(struct trapframe *tf)
     break;
 
   #ifndef original
-  /*case T_PGFLT: //Page fault interrupt
+  case T_PGFLT: //Page fault interrupt
 
     if(proc ==0 || (tf->cs&3) == 0){
         cprintf("Kernel level error\n");
@@ -100,7 +100,7 @@ trap(struct trapframe *tf)
 
     return;
     break;
-*/
+
   #endif
 
   //PAGEBREAK: 13

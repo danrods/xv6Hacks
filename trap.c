@@ -138,17 +138,27 @@ void pgflthandler(void){
   cprintf("Found flags 0x%p\n", flags);
 
   if(! (*pte & PTE_U)){
-    panic("ERROR ----> Kernel space page fault!\n");
+    return;
+    //panic("ERROR ----> Kernel space page fault!\n");
   }
 
   if(*pte & PTE_COW){
-    panic("ERROR ----> COWpage fault!\n");
+    //panic("ERROR ----> COWpage fault!\n");
+    int ref_count = getRefCount(fault_addr);
+    if (ref_count > 1) {
+      uint pa = PTE_ADDR(pte);
+      
+      defRefCount(ref_count);
+    } 
+    else if (ref_count == 1) {
+      *pte &= ~PTE_COW;
+      *pte |= PTE_W;
+    }
+    invlpg(pte);
   }
-  if(*pte & PTE_W){
-    panic("ERROR ----> Writeable Page Fault!\n");
-  }
-  else{
-    cprintf("Nah, you good!\n");
+  else {
+    //PANIC
+    proc->killed = 1;
   }
   
   

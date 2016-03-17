@@ -147,12 +147,18 @@ void pgflthandler(void){
     //panic("ERROR ----> Kernel space page fault!\n");
   }
 
+
   if(*pte & PTE_COW){
     //panic("ERROR ----> COWpage fault!\n");
     int ref_count = getRefCount((void*) fault_addr);
     if (ref_count > 1) {
-      //uint pa = PTE_ADDR(pte);
-      *pte |= PTE_W;
+      int pa = PTE_ADDR(*pte);
+      char *mem = kalloc();
+      memset(mem, 0, PGSIZE);
+      memove(mem, (char*)p2v(pa), PGSIZE);
+      mappages(proc->pgdir, PGSIZE, v2p(mem), pa, PTE_W|PTE_U);
+      flags &= ~PTE_COW;
+      *pte = v2p(mem) | flags | PTE_W;
       decRefCount((void*) fault_addr);
     } 
     else if (ref_count == 1) {

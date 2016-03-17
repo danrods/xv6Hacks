@@ -151,9 +151,9 @@ void pgflthandler(void){
     //panic("ERROR ----> COWpage fault!\n");
     int ref_count = getRefCount((void*) fault_addr);
     if (ref_count > 1) {
-      uint pa = PTE_ADDR(pte);
+      //uint pa = PTE_ADDR(pte);
       *pte |= PTE_W;
-      decRefCount(ref_count);
+      decRefCount((void*) fault_addr);
     } 
     else if (ref_count == 1) {
       *pte &= ~PTE_COW;

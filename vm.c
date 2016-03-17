@@ -359,7 +359,7 @@ cowuvm(pde_t* pgdir, uint sz){
     if(!(*pte & PTE_P))
       panic("copyuvm: page not present");
     pa = PTE_ADDR(*pte);
-    flags = PTE_FLAGS(*pte)
+    flags = PTE_FLAGS(*pte);
     flags |= PTE_COW; // Add the Copy-On-Write flag
     flags &= ~PTE_W; // Remove the Writeable flag
 

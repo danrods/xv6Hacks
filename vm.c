@@ -348,7 +348,8 @@ cowuvm(pde_t* pgdir, uint sz){
 
   pde_t *d;
   pte_t *pte;
-  uint pa, i, flags, ref_count;
+  uint pa, i, flags;
+  //, ref_count;
   
 
   if((d = setupkvm()) == 0)

@@ -83,6 +83,9 @@ trap(struct trapframe *tf)
   #ifndef original
   case T_PGFLT: //Page fault interrupt
 
+    if(tf->err & FEC_U){
+       cprintf("We're in user space!\n");
+    }
     if(tf->err & FEC_WR){
       pgflthandler();
       lapiceoi();
@@ -144,12 +147,12 @@ void pgflthandler(void){
 
   if(! (*pte & PTE_U)){
     return;
-    //panic("ERROR ----> Kernel space page fault!\n");
+    panic("ERROR ----> Kernel space page fault!\n");
   }
 
 
   if(*pte & PTE_COW){
-    //panic("ERROR ----> COWpage fault!\n");
+    panic("ERROR ----> COWpage fault!\n");
     int ref_count = getRefCount((void*) fault_addr);
     if (ref_count > 1) {
       int pa = PTE_ADDR(*pte);

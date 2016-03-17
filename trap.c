@@ -181,9 +181,8 @@ void pgflthandler(void){
     } 
     else if (ref_count == 1) {
       cprintf("Only One Reference\n");
-      flags &= ~PTE_COW;
+      flags &= ~(PTE_COW | PTE_P);
       flags |= PTE_W;
-      flags &= ~PTE_P;
       mappages(proc->pgdir, page, PGSIZE, pa, flags);
     }
 

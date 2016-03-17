@@ -153,6 +153,7 @@ void pgflthandler(void){
       panic("Error fetching PTE from CR2 Register!\n");
   }
 
+  uint pa = PTE_ADDR(*pte);
   uint flags = PTE_FLAGS(*pte);
   cprintf("Found flags 0x%p\n", flags);
 
@@ -164,10 +165,11 @@ void pgflthandler(void){
 
   if(*pte & PTE_COW){
     cprintf("ERROR ----> COW page fault for process %d!\n", proc->pid);
-    int ref_count = getRefCount(page);
+    
+    int ref_count = getRefCount(p2v(pa));
     if (ref_count > 1) {
       cprintf("%d References\n", ref_count);
-      int pa = PTE_ADDR(*pte);
+      
       char *mem = kalloc();
       memset(mem, 0, PGSIZE);
       memmove(mem, (char*)p2v(pa), PGSIZE);
@@ -175,7 +177,7 @@ void pgflthandler(void){
       mappages(proc->pgdir, (void *)fault_addr, PGSIZE, v2p(mem), PTE_W|flags);
       //flags &= ~PTE_COW;
       //*pte = v2p(mem) | flags | PTE_W;
-      decRefCount(page);
+      decRefCount(p2v(pa));
     } 
     else if (ref_count == 1) {
       cprintf("Only One Reference\n");

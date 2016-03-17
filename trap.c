@@ -14,7 +14,7 @@ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
 
-void pgflthandler(void);
+int pgflthandler(void);
 
 void
 tvinit(void)
@@ -95,8 +95,13 @@ trap(struct trapframe *tf)
      */
     if(tf->err & FEC_U || tf->err & FEC_WR){
       cprintf("We're in user space! --> EIP : %x\n", tf->eip);
-      pgflthandler();
-      lapiceoi();
+      if(pgflthandler()){
+          cprintf("Not a User address, lets not confirm\n");
+      }
+      else
+        lapiceoi();
+      }
+      
       //proc->killed = 1;
     }
 
@@ -139,7 +144,7 @@ trap(struct trapframe *tf)
 
 #ifndef original
 
-void pgflthandler(void){
+int pgflthandler(void){
   cprintf("-----------------Starting Page Fault Handler---------------------\n");
   pte_t * pte;
 
@@ -159,7 +164,7 @@ void pgflthandler(void){
 
   if(! (*pte & PTE_U)){
     cprintf("ERROR ----> Kernel space page fault!\n");
-    //return;
+    return -1;
   }
 
 
@@ -197,6 +202,7 @@ void pgflthandler(void){
   
   cprintf("-----------------Ending Page Fault Handler---------------------\n");
   
+  return 0;
 }
 
 

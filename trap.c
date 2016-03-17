@@ -88,6 +88,16 @@ trap(struct trapframe *tf)
     }
     if(tf->err & FEC_U){
        cprintf("We're in user space! --> EIP : %x\n", tf->eip);
+
+       uint fault_addr = rcr2();
+        cprintf("Found fault_addr in user mode: %p\n", fault_addr);
+
+        if((pte = (pte_t *)walkpagedir(proc->pgdir, (void *) fault_addr, 0)) == 0){
+            panic("Error fetching PTE from CR2 Register!\n");
+        }
+
+        uint flags = PTE_FLAGS(*pte);
+
        lapiceoi();
     }
     if(tf->err & FEC_WR){

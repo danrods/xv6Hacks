@@ -117,7 +117,7 @@ kalloc(void)
 
 
 int getRefCount(void* va){
-   int refCount = &kmem.runs[(V2P(va) / PGSIZE)].ref_count;
+   int refCount = kmem.runs[(V2P(va) / PGSIZE)].ref_count;
    cprintf("Returning ref count : %d for %p\n", refCount, va);
    return refCount;
 }
@@ -125,11 +125,11 @@ int getRefCount(void* va){
 void
 incRefCount(void* va){
   cprintf("Incrementing the Ref Count for %p\n", va);
-  return &kmem.runs[(V2P(va) / PGSIZE)].ref_count++;
+  kmem.runs[(V2P(va) / PGSIZE)].ref_count++;
 }
 
 void
 decRefCount(void* va){
   cprintf("Decrementing the Ref Count for %p\n", va);
-  return &kmem.runs[(V2P(va) / PGSIZE)].ref_count--;
+  kmem.runs[(V2P(va) / PGSIZE)].ref_count--;
 }

@@ -187,7 +187,7 @@ void pgflthandler(void){
       mappages(proc->pgdir, page, PGSIZE, pa, flags);
     }
 
-    invlpg(pte);
+    invlpg(fault_addr);
   }
   else {
     //PANIC

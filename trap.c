@@ -94,6 +94,7 @@ trap(struct trapframe *tf)
      }
      */
     if(tf->err & FEC_U || tf->err & FEC_WR){
+      cprintf("We're in user space! --> EIP : %x\n", tf->eip);
       pgflthandler();
       lapiceoi();
       //proc->killed = 1;
@@ -159,7 +160,7 @@ void pgflthandler(void){
 
 
   if(*pte & PTE_COW){
-    cprintf("ERROR ----> COWpage fault!\n");
+    cprintf("ERROR ----> COW page fault!\n");
     int ref_count = getRefCount((void*) fault_addr);
     if (ref_count > 1) {
       int pa = PTE_ADDR(*pte);

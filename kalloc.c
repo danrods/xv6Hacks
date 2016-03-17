@@ -107,7 +107,7 @@ kalloc(void)
   r = kmem.freelist;
   if(r)
     kmem.freelist = r->next;
-    //incRefCount(r);
+    incRefCount(r);
     //cprintf("Kalloc --> {R:%p\tRuns:%p}\n", r, kmem.runs);
   if(kmem.use_lock)
     release(&kmem.lock);
@@ -117,21 +117,31 @@ kalloc(void)
 
 
 int getRefCount(void* va){
+  if(kmem.use_lock)
+    acquire(&kmem.lock);
+   
    int refCount = kmem.runs[(V2P(va) / PGSIZE)].ref_count;
+   
+  if(kmem.use_lock)
+    release(&kmem.lock);
    //cprintf("Returning ref count : %d for %p\n", refCount, va);
    return refCount;
 }
 
 void
 incRefCount(void* va){
-  int count = getRefCount(va);
-  cprintf("Incrementing the Ref Count for %p from %d\n", va, count);
+  if(kmem.use_lock)
+    acquire(&kmem.lock);
   kmem.runs[(V2P(va) / PGSIZE)].ref_count++;
+  if(kmem.use_lock)
+    release(&kmem.lock);
 }
 
 void
 decRefCount(void* va){
-  int count = getRefCount(va);
-  cprintf("Decrementing the Ref Count for %p from %d\n", va, count);
+  if(kmem.use_lock)
+    acquire(&kmem.lock);
   kmem.runs[(V2P(va) / PGSIZE)].ref_count--;
+  if(kmem.use_lock)
+    release(&kmem.lock);
 }

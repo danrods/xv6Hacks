@@ -370,7 +370,7 @@ cowuvm(pde_t* pgdir, uint sz){
     }
     void* page = (void*) PGROUNDDOWN(P2V_WO(pa));
     ref_count = getRefCount(page);
-    cprintf("Read Struct run with ref count : %d\n", ref_count);
+    //cprintf("Read Struct run with ref count : %d\n", ref_count);
     incRefCount(page);
     invlpg(pte);
 

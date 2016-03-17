@@ -181,9 +181,12 @@ void pgflthandler(void){
     } 
     else if (ref_count == 1) {
       cprintf("Only One Reference\n");
-      *pte &= ~PTE_COW;
-      *pte |= PTE_W;
+      flags &= ~PTE_COW;
+      flags |= PTE_W;
+      flags &= ~PTE_P;
+      mappages(proc->pgdir, page, PGSIZE, pa, flags);
     }
+
     invlpg(pte);
   }
   else {

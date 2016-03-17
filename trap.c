@@ -109,7 +109,7 @@ trap(struct trapframe *tf)
       //proc->killed = 1;
     }
 
-    
+    return;
     break;
 
   #endif

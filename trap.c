@@ -155,8 +155,8 @@ void pgflthandler(void){
       int pa = PTE_ADDR(*pte);
       char *mem = kalloc();
       memset(mem, 0, PGSIZE);
-      memove(mem, (char*)p2v(pa), PGSIZE);
-      mappages(proc->pgdir, PGSIZE, v2p(mem), pa, PTE_W|PTE_U);
+      memmove(mem, (char*)p2v(pa), PGSIZE);
+      //mappages(proc->pgdir, PGSIZE, v2p(mem), pa, PTE_W|PTE_U);
       flags &= ~PTE_COW;
       *pte = v2p(mem) | flags | PTE_W;
       decRefCount((void*) fault_addr);

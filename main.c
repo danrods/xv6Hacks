@@ -17,6 +17,7 @@ extern char end[]; // first address after kernel loaded from ELF file
 int
 main(void)
 {
+  printf(1, "Start\n");
   kinit1(end, P2V(4*1024*1024)); // phys page allocator [ELF start - (2^31)] Clear everything before Kernel 
   kvmalloc();      // kernel page table
   mpinit();        // collect info about this machine
@@ -25,6 +26,7 @@ main(void)
   cprintf("\ncpu%d: starting xv6\n\n", cpu->id);
   picinit();       // interrupt controller
   ioapicinit();    // another interrupt controller
+  printf(1, "Middle\n");
   consoleinit();   // I/O devices & their interrupts
   uartinit();      // serial port
   pinit();         // process table
@@ -36,8 +38,10 @@ main(void)
     timerinit();   // uniprocessor timer
   startothers();   // start other processors
   kinit2(P2V(4*1024*1024), P2V(PHYSTOP)); // must come after startothers() [2^31 - 2^32~] Clear the Kernel stuff ~ 2GB total
+  printf(1, "Before User Init\n");
   userinit();      // first user process
   // Finish setting up this processor in mpmain.
+  printf(1, "Before MPMAIN\n");
   mpmain();
 }
 

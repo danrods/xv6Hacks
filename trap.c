@@ -145,7 +145,7 @@ void pgflthandler(void){
 
   uint fault_addr = rcr2();
   cprintf("Found fault_addr: %p\n", fault_addr);
-  void* page = PGROUNDDOWN(fault_addr);
+  void* page = (void*) PGROUNDDOWN(fault_addr);
 
   if((pte = (pte_t *)walkpagedir(proc->pgdir, (void *) fault_addr, 0)) == 0){
       panic("Error fetching PTE from CR2 Register!\n");

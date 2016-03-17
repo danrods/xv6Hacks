@@ -126,7 +126,7 @@ growproc(int n)
 
 
 
-#ifndef original
+#ifdef original
 
 
 // Create a new process copying p as the parent.

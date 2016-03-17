@@ -5,8 +5,8 @@
 #include "stat.h"
 #include "user.h"
 #include "defs.h"
-#include "vm.c"
-#include "mmu.c"
+#include "mmu.h"
+
 
 
 #define N  1000

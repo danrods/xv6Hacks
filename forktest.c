@@ -4,6 +4,10 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
+#include "defs.h"
+#include "vm.c"
+#include "mmu.c"
+
 
 #define N  1000
 

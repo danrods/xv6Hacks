@@ -4,8 +4,11 @@
 #include "param.h"
 #include "proc.h"
 
-
+/*
 void cowpatest(void);
+void cowrefcountinctest(void);
+void cowrefcountdifftest(void);
+void cowchildmemfreedtest(void);
 
 int
 main(void)
@@ -14,7 +17,9 @@ main(void)
   exit();
   return 0;
 }
-/*
+
+//pysical address is expected to be different 
+//after COW
 void 
 cowpatest() 
 {
@@ -55,6 +60,100 @@ cowpatest()
     cprintf("Error forking");
   }
 
+
+  exit();
+}
+
+//the ref_count should be incremented after fork
+void 
+cowrefcountinctest()
+{
+  char* va = "Hey there!";
+  void* page = (void*) PGROUNDDOWN (va);
+
+  int ref_count = getRefCount(page);
+  cprintf("Page ref count before fork: %d\n", ref_count);
+
+  fork();
+
+  ref_count = getRefCount(page);
+  cprintf("Page ref count after fork: %d\n", ref_count);
+
+  exit();
+}
+
+//the parent and child pages' ref_counts should
+//be different
+void
+cowrefcountdifftest() {
+  int pid;
+  char* va = "Good Evening!";
+  void* page = (void*) PGROUNDDOWN(va);
+
+  pid = fork();
+
+  if (pid < 0) {
+    cprintf("Error forking!");
+  }
+  else if (pid == 0) {
+    int ref_count_child = getRefCount(page);
+    cprintf("Child page ref count before: %d\n", ref_count_child);
+
+    *va = "Good Day!";
+
+    ref_count_child = getRefCount(page);
+    cprintf("Child page ref count after: %d\n", ref_count_child);
+  }
+  else
+  {
+    int ref_count_parent = getRefCount(page);
+    cprintf("Parent page ref count before: %d\n", ref_count_parent);
+
+    wait();
+
+    ref_count_parent = getRefCount(page);
+    cprintf("Parent page ref count after: %d\n", ref_count_parent);
+  }
+
+  exit();
+}
+
+//when the child process is killed by the parent,
+//its memory should be freed
+void
+cowchildmemfreedtest() {
+  int pid;
+  struct kmem *mem;
+  struct run *r;
+  char* va = "Hey OS!";
+  void* page = (void*) PGROUNDDOWN(va);
+
+  pid = fork();
+
+  if (pid < 0) {
+    cprintf("Error forking!");
+  }
+  else if (pid == 0)
+  {
+    va = "Hey Programmer!";
+  }
+  else
+  {
+    wait();
+    if (proc->killed == 1)
+    {
+      if (r->next == mem.freelist)
+      {
+        cprintf("Child page space freed.");
+      }
+      else {
+        cprintf("Child page space NOT freed!");
+      }
+    }
+    else {
+      cprintf("Child process not killed!");
+    }
+  }
 
   exit();
 }

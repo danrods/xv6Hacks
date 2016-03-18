@@ -172,7 +172,7 @@ int pgflthandler(void){
 
     int ref_count = getRefCount(p2v(pa));
     if (ref_count > 1) {
-      cprintf("%d References\n", ref_count);
+      //cprintf("%d References\n", ref_count);
       
       char *mem = kalloc();
       memset(mem, 0, PGSIZE);

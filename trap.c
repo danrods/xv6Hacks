@@ -89,8 +89,10 @@ trap(struct trapframe *tf)
           //cprintf("Not a User address, lets not confirm\n");
       }
       else lapiceoi();
-      
 
+    }
+    else{
+      cprintf("Read Page Fault? --> 0x%x\n", tf->err);
     }
 
     return;
@@ -117,8 +119,11 @@ trap(struct trapframe *tf)
   // Force process exit if it has been killed and is in user space.
   // (If it is still executing in the kernel, let it keep running 
   // until it gets to the regular system call return.)
-  if(proc && proc->killed && (tf->cs&3) == DPL_USER)
-    exit();
+  if(proc && proc->killed && (tf->cs&3) == DPL_USER){
+      cprintf("DIE Process %d",proc->pid);
+      exit();
+  }
+    
 
   // Force process to give up CPU on clock tick.
   // If interrupts were on while locks held, would need to check nlock.
@@ -126,8 +131,11 @@ trap(struct trapframe *tf)
     yield();
 
   // Check if the process has been killed since we yielded
-  if(proc && proc->killed && (tf->cs&3) == DPL_USER)
-    exit();
+  if(proc && proc->killed && (tf->cs&3) == DPL_USER){
+      cprintf("DIE Process %d",proc->pid);
+      exit();
+  }
+    
 }
 
 #ifndef original

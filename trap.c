@@ -149,9 +149,9 @@ int pgflthandler(void){
 
   uint fault_addr = rcr2();
   //cprintf("Found fault_addr: 0x%p\n", fault_addr);
-  void* page = (void*) PGROUNDDOWN(fault_addr);
-  void* page2 = (void*) uva2ka(proc->pgdir, (char*)fault_addr);
-  cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page, page2);
+  void* page1 = (void*) PGROUNDDOWN(fault_addr);
+  void* page = (void*) uva2ka(proc->pgdir, (char*)fault_addr);
+  cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page, page1);
   //void* page = (void*) PGROUNDDOWN(fault_addr);
 
   //cprintf("On Page Boundary : 0x%p\n", page);
@@ -175,23 +175,26 @@ int pgflthandler(void){
 
     int ref_count = getRefCount(p2v(pa));
     if (ref_count > 1) {
-      //cprintf("%d References\n", ref_count);
+      cprintf("%d References\n", ref_count);
       
       char *mem = kalloc();
       memset(mem, 0, PGSIZE);
       memmove(mem, (char*)p2v(pa), PGSIZE);
       *pte &= ~PTE_P;
-      mappages(proc->pgdir, page, PGSIZE, v2p(mem), PTE_W|flags);
-      //flags &= ~PTE_COW;
-      //*pte = v2p(mem) | flags | PTE_W;
+      if(mappages(proc->pgdir, page, PGSIZE, v2p(mem), PTE_W|flags)){
+        panic("Error mapping pages");
+      }
+
       decRefCount(p2v(pa));
     } 
     else if (ref_count == 1) {
-      //cprintf("Only One Reference\n");
+      cprintf("Only One Reference\n");
       *pte &= ~PTE_P;
       flags &= ~(PTE_COW | PTE_P);
       flags |= PTE_W;
-      mappages(proc->pgdir, page, PGSIZE, pa, flags);
+      if(mappages(proc->pgdir, page, PGSIZE, pa, flags)){
+          panic("Error mapping pages");
+      }
     }
 
     invlpg((void*)fault_addr);

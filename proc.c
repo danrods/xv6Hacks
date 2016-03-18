@@ -297,6 +297,8 @@ wait(void)
       havekids = 1;
       if(p->state == ZOMBIE){
         // Found one.
+        cprintf("Found Zombie : {PID:%d, Name:%s, INode:0x%p, Killed:%d, Parent:0x%p, Size:%d}\n",
+                                proc->pid, proc->name, proc->cwd, proc->killed, proc->parent, proc->sz);
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;

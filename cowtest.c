@@ -21,39 +21,36 @@ cowpatest()
   //Before writing
   if (pid == 0)
   {
-    pte_t *pte = walkpgdir(proc->pgdir, va, 0);
+    pte_t *pte = walkpagedir(proc->pgdir, va, 0);
     uint add = PTE_ADDR(*pte);
-    printf("Child page pysical address before: %d\n", add);
+    printf("Child page pysical address before: %x\n", add);
+
+    //After writing
+    va = "Hi";
+
+    pte_t *pte = walkpagedir(proc->pgdir, va, 0);
+    uint add = PTE_ADDR(*pte);
+    printf("Child page pysical address after: %x\n", add);
   }
   else if (pid > 0)
   {
-    pte_t *pte = walkpgdir(proc->pgdir, va, 0);
+    pte_t *pte = walkpagedir(proc->pgdir, va, 0);
     uint add = PTE_ADDR(*pte);
-    printf("Parent page pysical address before: %d\n", add);
+    printf("Parent page pysical address before: %x\n", add);
+
+    int id = wait(pid);
+
+    pte_t *pte = walkpagedir(proc->pgdir, va, 0);
+    uint add = PTE_ADDR(*pte);
+    printf("Parent page pysical address after: %x\n", add);
+    
   }
   else 
   {
     printf(1, "Error forking");
   }
 
-  //After writing
-  va = "Hi";
 
-  if (pid == 0)
-  {
-    pte_t *pte = walkpgdir(proc->pgdir, va, 0);
-    uint add = PTE_ADDR(*pte);
-    printf("Child page pysical address after: %d\n", add);
-  }
-  else if (pid > 0)
-  {
-    pte_t *pte = walkpgdir(proc->pgdir, va, 0);
-    uint add = PTE_ADDR(*pte);
-    printf("Parent page pysical address after: %d\n", add);
-  }
-  else 
-  {
-    printf(1, "Error forking");
-  }
+  exit();
 }
 

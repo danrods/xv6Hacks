@@ -83,16 +83,6 @@ trap(struct trapframe *tf)
   #ifndef original
   case T_PGFLT: //Page fault interrupt
 
-    if(proc ==0 || (tf->cs&3) == 0){
-        cprintf("Kernel level error\n");
-    }
-    /* if(tf->err & FEC_U ){
-        cprintf("We're in user space! --> EIP : %x\n", tf->eip);
-
-       
-        lapiceoi();
-     }
-     */
     if(tf->err & FEC_U || tf->err & FEC_WR){
       //cprintf("We're in user space! --> EIP : %x\n", tf->eip);
       if(pgflthandler()){
@@ -100,11 +90,10 @@ trap(struct trapframe *tf)
       }
       else lapiceoi();
       
-      
-      //proc->killed = 1;
+
     }
 
-    //return;
+    return;
     break;
 
   #endif

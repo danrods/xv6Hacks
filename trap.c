@@ -156,7 +156,7 @@ int pgflthandler(void){
   cprintf("Page Fault for proc : {PID:%d, Name:%s, INode:0x%p, Killed:%d, Parent:%d, Size:%d, Pgdir:0x%x, vpage:0x%x}\n",
                                 proc->pid, proc->name, proc->cwd, proc->killed, proc->parent->pid, proc->sz, proc->pgdir, vpage);
 
-  if((pte = (pte_t *)walkpagedir(proc->pgdir, page, 0)) == 0){
+  if((pte = (pte_t *)walkpagedir(proc->pgdir, vpage, 0)) == 0){
       panic("Error fetching PTE from CR2 Register!\n");
   }
 
@@ -170,7 +170,7 @@ int pgflthandler(void){
 
 
   if(*pte & PTE_COW){
-    //cprintf("ERROR ----> COW page fault for process %d!\n", proc->pid);
+    cprintf("ERROR ----> COW page fault for process %d!\n", proc->pid);
     int ref_count = getRefCount(vpage);
     //int ref_count = getRefCount(p2v(pa));
     if (ref_count > 1) {
@@ -180,7 +180,7 @@ int pgflthandler(void){
       memset(mem, 0, PGSIZE);
       memmove(mem, (char*)p2v(pa), PGSIZE);
       *pte &= ~PTE_P;
-      if(mappages(proc->pgdir, page, PGSIZE, v2p(mem), PTE_W|flags)){
+      if(mappages(proc->pgdir, vpage, PGSIZE, v2p(mem), PTE_W|flags)){
         panic("Error mapping pages");
       }
 
@@ -191,7 +191,7 @@ int pgflthandler(void){
       *pte &= ~PTE_P;
       flags &= ~(PTE_COW | PTE_P);
       flags |= PTE_W;
-      if(mappages(proc->pgdir, page, PGSIZE, pa, flags)){
+      if(mappages(proc->pgdir, vpage, PGSIZE, pa, flags)){
           panic("Error mapping pages");
       }
     }

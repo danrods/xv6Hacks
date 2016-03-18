@@ -96,7 +96,6 @@ trap(struct trapframe *tf)
       lapiceoi();
     }
 
-    return;
     break;
 
   #endif

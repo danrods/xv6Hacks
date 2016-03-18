@@ -230,6 +230,8 @@ fork(void)
 void
 exit(void)
 {
+  cprintf("Exiting the process : {PID:%d, Name:%s, INode:%p, Killed:%d, Parent:0x%p, Size:%d ",
+                                proc->pid, proc->name, proc->cwd, proc->killed, proc->parent, proc->sz);
   struct proc *p;
   int fd;
 

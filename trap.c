@@ -83,7 +83,7 @@ trap(struct trapframe *tf)
   #ifndef original
   case T_PGFLT: //Page fault interrupt
 
-    if(tf->err & FEC_U && tf->err & FEC_WR){
+    if(tf->err & FEC_WR){
       //cprintf("We're in user space! --> EIP : %x\n", tf->eip);
       if(pgflthandler()){
           //cprintf("Not a User address, lets not confirm\n");

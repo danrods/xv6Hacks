@@ -185,9 +185,12 @@ fork(void)
   int i, pid;
   struct proc *np;
 
+  cprintf("FORK --> Started!\n");
+
   // Allocate process.
   if((np = allocproc()) == 0)
     return -1;
+  cprintf("FORK --> Allocated!\n");
 
   // Copy process state from p.
   if((np->pgdir = cowuvm(proc->pgdir, proc->sz)) == 0){
@@ -196,6 +199,8 @@ fork(void)
     np->state = UNUSED;
     return -1;
   }
+
+  cprintf("FORK --> COWUVM!\n");
 
   np->sz = proc->sz;
   np->parent = proc;
@@ -209,6 +214,8 @@ fork(void)
       np->ofile[i] = filedup(proc->ofile[i]);
   np->cwd = idup(proc->cwd);
 
+  cprintf("FORK --> File Copy!\n");
+
   safestrcpy(np->name, proc->name, sizeof(proc->name));
  
   pid = np->pid;
@@ -218,6 +225,7 @@ fork(void)
   np->state = RUNNABLE;
   release(&ptable.lock);
   
+  cprintf("FORK --> Done!\n");
   return pid;
 }
 
@@ -230,7 +238,7 @@ fork(void)
 void
 exit(void)
 {
-  cprintf("Exiting the process : {PID:%d, Name:%s, INode:%p, Killed:%d, Parent:0x%p, Size:%d ",
+  cprintf("Exiting the process : {PID:%d, Name:%s, INode:0x%p, Killed:%d, Parent:0x%p, Size:%d}\n",
                                 proc->pid, proc->name, proc->cwd, proc->killed, proc->parent, proc->sz);
   struct proc *p;
   int fd;

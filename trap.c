@@ -149,9 +149,9 @@ int pgflthandler(void){
 
   uint fault_addr = rcr2();
   //cprintf("Found fault_addr: 0x%p\n", fault_addr);
-  void* page1 = (void*) PGROUNDDOWN(fault_addr);
-  void* page2 = (void*) uva2ka(proc->pgdir, fault_addr);
-  cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page1, page2);
+  void* page = (void*) PGROUNDDOWN(fault_addr);
+  void* page2 = (void*) uva2ka(proc->pgdir, (char*)fault_addr);
+  cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page, page2);
   //void* page = (void*) PGROUNDDOWN(fault_addr);
 
   //cprintf("On Page Boundary : 0x%p\n", page);

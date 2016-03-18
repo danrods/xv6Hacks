@@ -269,13 +269,12 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       if(pa == 0)
         panic("kfree");
       char *v = p2v(pa);
-      void* vpage = uva2ka(pgdir, v);
-      cprintf("Deallocuvm: P2V--> %p ; uva2kva-->%p\n", v, vpage);
-      int refCount = getRefCount(vpage);
+      int refCount = getRefCount(v);
       if(refCount > 1){
-          decRefCount(vpage);
+          decRefCount(v);
       }
-      else if( refCount == 0){
+      else if(refCount == 1){
+          decRefCount(v);
           kfree(v);
           *pte = 0;
       }

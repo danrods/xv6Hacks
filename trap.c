@@ -92,7 +92,7 @@ trap(struct trapframe *tf)
 
     }
     else{
-      cprintf("Read Page Fault? --> 0x%x from address 0x%x, eip %x\n", tf->err, uva2ka(proc->pgdir, (char*) rcr2(), tf->eip);
+      cprintf("Read Page Fault? --> 0x%x from address 0x%x, eip %x\n", tf->err, uva2ka(proc->pgdir, (char*) rcr2()), tf->eip);
       lapiceoi();
     }
 

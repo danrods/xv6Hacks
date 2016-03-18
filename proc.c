@@ -70,6 +70,7 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  cprintf("Created new Process with pid : %d\n", p->pid);
   return p;
 }
 

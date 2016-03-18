@@ -361,10 +361,10 @@ cowuvm(pde_t* pgdir, uint sz){
       panic("copyuvm: page not present");
     pa = PTE_ADDR(*pte);
     flags = PTE_FLAGS(*pte);
-    flags |= PTE_COW;
-    flags &= ~(PTE_W | PTE_P);
-    //*pte |= PTE_COW; // Add the Copy-On-Write flag
-    //*pte &= ~PTE_W; // Remove the Writeable flag
+    flags |= PTE_COW; // Add the Copy-On-Write flag
+    flags &= ~(PTE_W | PTE_P); // Remove the Writeable and Present flags
+    //*pte |= PTE_COW; 
+    //*pte &= ~PTE_W; 
 
     if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0){
       panic("Error mapping");

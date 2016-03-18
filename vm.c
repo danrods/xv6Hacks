@@ -365,7 +365,7 @@ cowuvm(pde_t* pgdir, uint sz){
     void* page1 = (void*) PGROUNDDOWN(P2V_WO(pa));
     void* page2 = (void*) uva2ka(pgdir, (char*)p2v(pa));
     cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page1, page2);
-    incRefCount(page);
+    incRefCount(page1);
     invlpg(pte);
 
     if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0){

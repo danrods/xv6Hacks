@@ -362,15 +362,14 @@ cowuvm(pde_t* pgdir, uint sz){
     flags |= PTE_COW; // Add the Copy-On-Write flag
     flags &= ~(PTE_W | PTE_P); // Remove the Writeable and Present flags
 
+    void* page = (void*) PGROUNDDOWN(P2V_WO(pa));
+    incRefCount(page);
+    invlpg(pte);
+
     if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0){
       freevm(d);
       d=0;
     }
-    else{
-      void* page = (void*) PGROUNDDOWN(P2V_WO(pa));
-      incRefCount(page);
-      invlpg(pte);
-    } 
 
   }
 

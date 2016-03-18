@@ -81,6 +81,7 @@ _kfree(char* v, int isStartup){
 #ifndef original
     if(isStartup == 0){ //If we're not starting up
        if(r->ref_count){
+        cprintf("Decrementing Ref count for memory address %p\n", r->ref_count);
          r->ref_count--;
        }
        else{
@@ -88,6 +89,7 @@ _kfree(char* v, int isStartup){
        }
     }
     if(r-> ref_count == 0){
+      cprintf("Freeing memory address %p\n", v);
       r->next = kmem.freelist;
       kmem.freelist = r;
     }   

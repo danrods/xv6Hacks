@@ -92,7 +92,7 @@ trap(struct trapframe *tf)
 
     }
     else{
-      cprintf("Read Page Fault? --> 0x%x from address 0x%x\n", tf->err, rcr2());
+      cprintf("Read Page Fault? --> 0x%x from address 0x%x, eip %x\n", tf->err, rcr2(), tf->eip);
       lapiceoi();
     }
 
@@ -153,6 +153,9 @@ int pgflthandler(void){
   //void* page = (void*) PGROUNDDOWN(fault_addr);
 
   //cprintf("On Page Boundary : 0x%p\n", page);
+
+  cprintf("Page Fault for proc : {PID:%d, Name:%s, INode:0x%p, Killed:%d, Parent:%d, Size:%d, Pgdir:0x%x}\n",
+                                proc->pid, proc->name, proc->cwd, proc->killed, proc->parent->pid, proc->sz, proc->pgdir);
 
   if((pte = (pte_t *)walkpagedir(proc->pgdir, page, 0)) == 0){
       panic("Error fetching PTE from CR2 Register!\n");

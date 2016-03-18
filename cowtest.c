@@ -1,12 +1,13 @@
 #include "types.h"
 #include "defs.h"
 #include "mmu.h"
-#include "proc.h"
 #include "param.h"
+#include "proc.h"
+
 
 void cowpatest(void);
 
-int
+void
 main(void)
 {
   cowpatest();

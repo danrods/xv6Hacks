@@ -2,6 +2,9 @@
 #include "defs.h"
 #include "mmu.h"
 #include "proc.h"
+#include "param.h"
+
+void cowpatest(void);
 
 int
 main(void)
@@ -23,26 +26,26 @@ cowpatest()
   {
     pte_t *pte = walkpagedir(proc->pgdir, va, 0);
     uint add = PTE_ADDR(*pte);
-    printf("Child page pysical address before: %x\n", add);
+    printf(1, "Child page pysical address before: %x\n", add);
 
     //After writing
     va = "Hi";
 
     pte_t *pte = walkpagedir(proc->pgdir, va, 0);
-    uint add = PTE_ADDR(*pte);
-    printf("Child page pysical address after: %x\n", add);
+    add = PTE_ADDR(*pte);
+    printf(1, "Child page pysical address after: %x\n", add);
   }
   else if (pid > 0)
   {
     pte_t *pte = walkpagedir(proc->pgdir, va, 0);
     uint add = PTE_ADDR(*pte);
-    printf("Parent page pysical address before: %x\n", add);
+    printf(1, "Parent page pysical address before: %x\n", add);
 
-    int id = wait(pid);
+    int id = wait();
 
     pte_t *pte = walkpagedir(proc->pgdir, va, 0);
-    uint add = PTE_ADDR(*pte);
-    printf("Parent page pysical address after: %x\n", add);
+    add = PTE_ADDR(*pte);
+    printf(1, "Parent page pysical address after: %x\n", add);
     
   }
   else 

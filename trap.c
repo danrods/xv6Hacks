@@ -98,7 +98,7 @@ trap(struct trapframe *tf)
       if(pgflthandler()){
           //cprintf("Not a User address, lets not confirm\n");
       }
-      else lapiceoi();
+      lapiceoi();
       
       
       //proc->killed = 1;
@@ -151,7 +151,7 @@ int pgflthandler(void){
   //cprintf("Found fault_addr: 0x%p\n", fault_addr);
   void* page1 = (void*) PGROUNDDOWN(fault_addr);
   void* page = (void*) uva2ka(proc->pgdir, (char*)fault_addr);
-  cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page, page1);
+  cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page1, page);
   //void* page = (void*) PGROUNDDOWN(fault_addr);
 
   //cprintf("On Page Boundary : 0x%p\n", page);
@@ -166,7 +166,7 @@ int pgflthandler(void){
 
   if(! (*pte & PTE_U)){
     cprintf("ERROR ----> Kernel space page fault!\n");
-    //return -1;
+    return -1;
   }
 
 

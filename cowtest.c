@@ -7,11 +7,12 @@
 
 void cowpatest(void);
 
-void
+int
 main(void)
 {
   cowpatest();
   exit();
+  return 0;
 }
 
 void 

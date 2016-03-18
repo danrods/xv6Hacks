@@ -274,7 +274,6 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
           decRefCount(v);
       }
       else if(refCount == 1){
-          decRefCount(v);
           kfree(v);
           *pte = 0;
       }

@@ -269,8 +269,20 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       if(pa == 0)
         panic("kfree");
       char *v = p2v(pa);
-      kfree(v);
-      *pte = 0;
+      void* vpage = uva2ka(pgdir, v);
+      cprintf("Deallocuvm: P2V--> %p ; uva2kva-->%p\n", v, vpage);
+      int refCount = getRefCount(vpage);
+      if(refCount > 1){
+          decRefCount(vpage);
+      }
+      else if( refCount == 0){
+          kfree(v);
+          *pte = 0;
+      }
+      else{
+        panic("Ref Count < 0");
+      }
+      
     }
   }
   return newsz;

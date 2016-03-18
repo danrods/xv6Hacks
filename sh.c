@@ -137,9 +137,7 @@ getcmd(char *buf, int nbuf)
 {
   printf(2, "$ ");
   memset(buf, 0, nbuf);
-  printf(1, "Getting command\n");
   gets(buf, nbuf);
-  printf(1, "Got command %s\n", buf);
   if(buf[0] == 0) // EOF
     return -1;
   return 0;
@@ -172,7 +170,10 @@ main(void)
       continue;
     }
     if(fork1() == 0)
+      printf(1, "Child is running!\n");
       runcmd(parsecmd(buf));
+      printf(1, "Child ran command\n");
+    printf(1, "Parent is waiting!\n");
     wait();
   }
   exit();

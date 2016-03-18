@@ -92,7 +92,7 @@ trap(struct trapframe *tf)
 
     }
     else{
-      cprintf("Read Page Fault? --> 0x%x\n", tf->err);
+      cprintf("Read Page Fault? --> 0x%x from address 0x%x\n", tf->err, rcr2());
       lapiceoi();
     }
 

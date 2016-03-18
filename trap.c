@@ -163,7 +163,7 @@ int pgflthandler(void){
 
   uint pa = PTE_ADDR(*pte);
   uint flags = PTE_FLAGS(*pte);
-  //cprintf("Found flags 0x%p\n", flags);
+  cprintf("Found flags 0x%p\n", flags);
 
   if(! (*pte & PTE_U)){
     cprintf("ERROR ----> Kernel space page fault!\n");

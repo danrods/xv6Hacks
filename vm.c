@@ -363,7 +363,7 @@ cowuvm(pde_t* pgdir, uint sz){
     flags &= ~(PTE_W | PTE_P); // Remove the Writeable and Present flags
 
     void* page1 = (void*) PGROUNDDOWN(P2V_WO(pa));
-    void* page2 = (void*) uva2ka(pgdir, (char*)p2v(pa));
+    //void* page2 = (void*) uva2ka(pgdir, (char*)p2v(pa));
     //cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page1, page2);
     incRefCount(page1);
     invlpg(pte);

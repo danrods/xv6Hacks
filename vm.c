@@ -349,8 +349,6 @@ cowuvm(pde_t* pgdir, uint sz){
   pde_t *d;
   pte_t *pte;
   uint pa, i, flags;
-  //, ref_count;
-  
 
   if((d = setupkvm()) == 0)
     return 0;
@@ -363,17 +361,16 @@ cowuvm(pde_t* pgdir, uint sz){
     flags = PTE_FLAGS(*pte);
     flags |= PTE_COW; // Add the Copy-On-Write flag
     flags &= ~(PTE_W | PTE_P); // Remove the Writeable and Present flags
-    //*pte |= PTE_COW; 
-    //*pte &= ~PTE_W; 
 
     if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0){
-      panic("Error mapping");
+      freevm(d);
+      d=0;
     }
-    void* page = (void*) PGROUNDDOWN(P2V_WO(pa));
-    //ref_count = getRefCount(page);
-    //cprintf("Read Struct run with ref count : %d\n", ref_count);
-    incRefCount(page);
-    invlpg(pte);
+    else{
+      void* page = (void*) PGROUNDDOWN(P2V_WO(pa));
+      incRefCount(page);
+      invlpg(pte);
+    } 
 
   }
 

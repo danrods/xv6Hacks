@@ -269,17 +269,8 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       if(pa == 0)
         panic("kfree");
       char *v = p2v(pa);
-      int refCount = getRefCount(v);
-      if(refCount > 1){
-          decRefCount(v);
-      }
-      else if(refCount == 1){
-          kfree(v);
-          *pte = 0;
-      }
-      else{
-        panic("Ref Count < 0");
-      }
+      kfree(v);
+      *pte = 0;
       
     }
   }

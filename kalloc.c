@@ -78,9 +78,6 @@ _kfree(char* v, int isStartup){
     acquire(&kmem.lock);
 
     r = &kmem.runs[(V2P(v) / PGSIZE)];
-    r->next = kmem.freelist;
-    kmem.freelist = r;
-
 #ifndef original
     if(isStartup == 0){ //If we're not starting up
        if(r->ref_count){
@@ -90,8 +87,17 @@ _kfree(char* v, int isStartup){
          panic("ref_count < 1 when freeing");
        }
     }
-   
+    if(r-> ref_count == 0){
+      r->next = kmem.freelist;
+      kmem.freelist = r;
+    }   
+  
+#else
+    r->next = kmem.freelist;
+    kmem.freelist = r;
+
 #endif 
+
   if(kmem.use_lock)
     release(&kmem.lock);
 }

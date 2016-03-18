@@ -98,7 +98,7 @@ trap(struct trapframe *tf)
       if(pgflthandler()){
           //cprintf("Not a User address, lets not confirm\n");
       }
-      lapiceoi();
+      else lapiceoi();
       
       
       //proc->killed = 1;
@@ -149,9 +149,9 @@ int pgflthandler(void){
 
   uint fault_addr = rcr2();
   //cprintf("Found fault_addr: 0x%p\n", fault_addr);
-  void* page1 = (void*) PGROUNDDOWN(fault_addr);
-  void* page = (void*) uva2ka(proc->pgdir, (char*)fault_addr);
-  cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page1, page);
+  void* page = (void*) PGROUNDDOWN(fault_addr);
+  void* vpage = (void*) uva2ka(proc->pgdir, (char*)fault_addr);
+  cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page, vpage);
   //void* page = (void*) PGROUNDDOWN(fault_addr);
 
   //cprintf("On Page Boundary : 0x%p\n", page);
@@ -172,8 +172,8 @@ int pgflthandler(void){
 
   if(*pte & PTE_COW){
     //cprintf("ERROR ----> COW page fault for process %d!\n", proc->pid);
-
-    int ref_count = getRefCount(p2v(pa));
+    int ref_count = getRefCount(vpage);
+    //int ref_count = getRefCount(p2v(pa));
     if (ref_count > 1) {
       cprintf("%d References\n", ref_count);
       
@@ -185,7 +185,7 @@ int pgflthandler(void){
         panic("Error mapping pages");
       }
 
-      decRefCount(p2v(pa));
+      decRefCount(vpage);
     } 
     else if (ref_count == 1) {
       cprintf("Only One Reference\n");

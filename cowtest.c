@@ -10,11 +10,11 @@ void cowpatest(void);
 int
 main(void)
 {
-  cowpatest();
+ // cowpatest();
   exit();
   return 0;
 }
-
+/*
 void 
 cowpatest() 
 {
@@ -58,4 +58,4 @@ cowpatest()
 
   exit();
 }
-
+*/

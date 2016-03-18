@@ -137,9 +137,9 @@ getcmd(char *buf, int nbuf)
 {
   printf(2, "$ ");
   memset(buf, 0, nbuf);
-  cprintf("Getting command\n");
+  printf(1, "Getting command\n");
   gets(buf, nbuf);
-  cprintf("Got command %s\n", buf);
+  printf(1, "Got command %s\n", buf);
   if(buf[0] == 0) // EOF
     return -1;
   return 0;

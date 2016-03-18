@@ -17,7 +17,6 @@ sys_fork(void)
 int
 sys_exit(void)
 {
-  cprintf("Y U ZOMBIE");
   exit();
   return 0;  // not reached
 }

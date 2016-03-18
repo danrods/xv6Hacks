@@ -163,7 +163,6 @@ int pgflthandler(void){
 
   if(! (*pte & PTE_U)){
     cprintf("ERROR ----> Kernel space page fault!\n");
-    return -1;
   }
 
 

@@ -70,6 +70,7 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+//  cprintf("Created new Process with pid : %d\n", p->pid);
   return p;
 }
 
@@ -122,6 +123,13 @@ growproc(int n)
   return 0;
 }
 
+
+
+
+
+#ifdef original
+
+
 // Create a new process copying p as the parent.
 // Sets up stack to return as if from system call.
 // Caller must set state of returned proc to RUNNABLE.
@@ -166,12 +174,72 @@ fork(void)
   return pid;
 }
 
+#else
+
+// Create a new process copying p as the parent.
+// Sets up stack to return as if from system call.
+// Caller must set state of returned proc to RUNNABLE.
+int
+fork(void)
+{
+  int i, pid;
+  struct proc *np;
+
+  cprintf("FORK --> Started!\n");
+
+  // Allocate process.
+  if((np = allocproc()) == 0)
+    return -1;
+  cprintf("FORK --> Allocated!\n");
+
+  // Copy process state from p.
+  if((np->pgdir = cowuvm(proc->pgdir, proc->sz)) == 0){
+    kfree(np->kstack);
+    np->kstack = 0;
+    np->state = UNUSED;
+    return -1;
+  }
+
+  cprintf("FORK --> COWUVM!\n");
+
+  np->sz = proc->sz;
+  np->parent = proc;
+  *np->tf = *proc->tf;
+
+  // Clear %eax so that fork returns 0 in the child.
+  np->tf->eax = 0;
+
+  for(i = 0; i < NOFILE; i++)
+    if(proc->ofile[i])
+      np->ofile[i] = filedup(proc->ofile[i]);
+  np->cwd = idup(proc->cwd);
+
+  cprintf("FORK --> File Copy!\n");
+
+  safestrcpy(np->name, proc->name, sizeof(proc->name));
+ 
+  pid = np->pid;
+
+  // lock to force the compiler to emit the np->state write last.
+  acquire(&ptable.lock);
+  np->state = RUNNABLE;
+  release(&ptable.lock);
+  
+  cprintf("FORK --> Done!\n");
+  return pid;
+}
+
+
+#endif
+
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
 // until its parent calls wait() to find out it exited.
 void
 exit(void)
 {
+  cprintf("Exiting the process : {PID:%d, Name:%s, INode:0x%p, Killed:%d, Parent:%d, Size:%d}\n",
+                                proc->pid, proc->name, proc->cwd, proc->killed, proc->parent->pid, proc->sz);
   struct proc *p;
   int fd;
 
@@ -229,6 +297,8 @@ wait(void)
       havekids = 1;
       if(p->state == ZOMBIE){
         // Found one.
+        cprintf("Found Zombie : {PID:%d, Name:%s, INode:0x%p, Killed:%d, Parent:%d, Size:%d, Pgdir:0x%x}\n",
+                                proc->pid, proc->name, proc->cwd, proc->killed, proc->parent->pid, proc->sz, proc->pgdir);
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;

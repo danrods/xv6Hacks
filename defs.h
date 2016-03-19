@@ -9,6 +9,7 @@ struct spinlock;
 struct stat;
 struct superblock;
 
+
 // bio.c
 void            binit(void);
 struct buf*     bread(uint, uint);
@@ -65,8 +66,12 @@ void            ioapicinit(void);
 // kalloc.c
 char*           kalloc(void);
 void            kfree(char*);
+void 			kfree_sys(char*);
 void            kinit1(void*, void*);
 void            kinit2(void*, void*);
+void      incRefCount(void* va);
+void      decRefCount(void* va);
+int 	  getRefCount(void* va);
 
 // kbd.c
 void            kbdintr(void);
@@ -174,10 +179,13 @@ void            freevm(pde_t*);
 void            inituvm(pde_t*, char*, uint);
 int             loaduvm(pde_t*, char*, struct inode*, uint, uint);
 pde_t*          copyuvm(pde_t*, uint);
+pde_t*          cowuvm(pde_t*, uint);
 void            switchuvm(struct proc*);
 void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
+void* 			walkpagedir(pde_t *pgdir, const void *va, int alloc);
+int 			mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))

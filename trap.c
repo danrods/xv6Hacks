@@ -14,6 +14,8 @@ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
 
+int pgflthandler(void);
+
 void
 tvinit(void)
 {
@@ -77,10 +79,31 @@ trap(struct trapframe *tf)
             cpu->id, tf->cs, tf->eip);
     lapiceoi();
     break;
-   
+
+  #ifndef original
+  case T_PGFLT: //Page fault interrupt
+
+    if(tf->err & FEC_WR){
+      //cprintf("We're in user space! --> EIP : %x\n", tf->eip);
+      if(pgflthandler()){
+          //cprintf("Not a User address, lets not confirm\n");
+      }
+      else lapiceoi();
+
+    }
+    else{
+      cprintf("Read Page Fault? --> 0x%x from address 0x%x, eip %x\n", tf->err, uva2ka(proc->pgdir, (char*) rcr2()), tf->eip);
+      lapiceoi();
+    }
+
+
+    break;
+
+  #endif
+
   //PAGEBREAK: 13
   default:
-    if(proc == 0 || (tf->cs&3) == 0){
+    if(proc == 0 || (tf->cs&3) == 0){ //CS stores privilege level : 0 for Kernel, 3 for User
       // In kernel, it must be our mistake.
       cprintf("unexpected trap %d from cpu %d eip %x (cr2=0x%x)\n",
               tf->trapno, cpu->id, tf->eip, rcr2());
@@ -97,8 +120,11 @@ trap(struct trapframe *tf)
   // Force process exit if it has been killed and is in user space.
   // (If it is still executing in the kernel, let it keep running 
   // until it gets to the regular system call return.)
-  if(proc && proc->killed && (tf->cs&3) == DPL_USER)
-    exit();
+  if(proc && proc->killed && (tf->cs&3) == DPL_USER){
+      cprintf("DIE Process %d",proc->pid);
+      exit();
+  }
+    
 
   // Force process to give up CPU on clock tick.
   // If interrupts were on while locks held, would need to check nlock.
@@ -106,6 +132,83 @@ trap(struct trapframe *tf)
     yield();
 
   // Check if the process has been killed since we yielded
-  if(proc && proc->killed && (tf->cs&3) == DPL_USER)
-    exit();
+  if(proc && proc->killed && (tf->cs&3) == DPL_USER){
+      cprintf("DIE Process %d",proc->pid);
+      exit();
+  }
+    
 }
+
+#ifndef original
+
+int pgflthandler(void){
+  //cprintf("-----------------Starting Page Fault Handler---------------------\n");
+  pte_t * pte;
+
+  uint fault_addr = rcr2();
+  //cprintf("Found fault_addr: 0x%p\n", fault_addr);
+  void* page = (void*) PGROUNDDOWN(fault_addr);
+  void* vpage = (void*) uva2ka(proc->pgdir, (char*)fault_addr);
+  //cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page, vpage);
+  //void* page = (void*) PGROUNDDOWN(fault_addr);
+
+  //cprintf("On Page Boundary : 0x%p\n", page);
+
+  cprintf("Page Fault for proc : {PID:%d, Name:%s, INode:0x%p, Killed:%d, Parent:%d, Size:%d, Pgdir:0x%x, vpage:0x%x}\n",
+                                proc->pid, proc->name, proc->cwd, proc->killed, proc->parent->pid, proc->sz, proc->pgdir, vpage);
+
+  if((pte = (pte_t *)walkpagedir(proc->pgdir, page, 0)) == 0){
+      panic("Error fetching PTE from CR2 Register!\n");
+  }
+
+  uint pa = PTE_ADDR(*pte);
+  uint flags = PTE_FLAGS(*pte);
+  cprintf("Found flags 0x%p\n", flags);
+
+  if(! (*pte & PTE_U)){
+    cprintf("ERROR ----> Kernel space page fault!\n");
+  }
+
+
+  if(*pte & PTE_COW){
+    //cprintf("ERROR ----> COW page fault for process %d!\n", proc->pid);
+    int ref_count = getRefCount(vpage);
+    //int ref_count = getRefCount(p2v(pa));
+    if (ref_count > 1) {
+      cprintf("%d References\n", ref_count);
+      
+      char *mem = kalloc();
+      memset(mem, 0, PGSIZE);
+      memmove(mem, (char*)p2v(pa), PGSIZE);
+      *pte &= ~PTE_P;
+      if(mappages(proc->pgdir, page, PGSIZE, v2p(mem), PTE_W|flags)){
+        panic("Error mapping pages");
+      }
+
+      decRefCount(vpage);
+    } 
+    else if (ref_count == 1) {
+      cprintf("Only One Reference\n");
+      *pte &= ~PTE_P;
+      flags &= ~(PTE_COW | PTE_P);
+      flags |= PTE_W;
+      if(mappages(proc->pgdir, page, PGSIZE, pa, flags)){
+          panic("Error mapping pages");
+      }
+    }
+
+    invlpg((void*)fault_addr);
+  }
+  else {
+    //PANIC
+    panic("User page not Copy on Write");
+    proc->killed = 1;
+  }
+  
+  //cprintf("-----------------Ending Page Fault Handler---------------------\n");
+  
+  return 0;
+}
+
+
+#endif

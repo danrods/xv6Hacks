@@ -64,10 +64,14 @@ walkpgdir(pde_t *pgdir, const void *va, int alloc)
   return &pgtab[PTX(va)];
 }
 
+void* 
+walkpagedir(pde_t *pgdir, const void *va, int alloc){
+  return (void*) walkpgdir(pgdir, va, alloc);
+}
 // Create PTEs for virtual addresses starting at va that refer to
 // physical addresses starting at pa. va and size might not
 // be page-aligned.
-static int
+int
 mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
 {
   char *a, *last;
@@ -267,6 +271,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       char *v = p2v(pa);
       kfree(v);
       *pte = 0;
+      
     }
   }
   return newsz;
@@ -335,6 +340,46 @@ bad:
   freevm(d);
   return 0;
 }
+
+
+#ifndef original
+
+pde_t*
+cowuvm(pde_t* pgdir, uint sz){
+
+  pde_t *d;
+  pte_t *pte;
+  uint pa, i, flags;
+
+  if((d = setupkvm()) == 0)
+    return 0;
+  for(i = 0; i < sz; i += PGSIZE){
+    if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
+      panic("copyuvm: pte should exist");
+    if(!(*pte & PTE_P))
+      panic("copyuvm: page not present");
+    pa = PTE_ADDR(*pte);
+    flags = PTE_FLAGS(*pte);
+    flags |= PTE_COW; // Add the Copy-On-Write flag
+    flags &= ~(PTE_W | PTE_P); // Remove the Writeable and Present flags
+
+    void* page1 = (void*) PGROUNDDOWN(P2V_WO(pa));
+    //void* page2 = (void*) uva2ka(pgdir, (char*)p2v(pa));
+    //cprintf("Comparing two addresses : Rounding--> %p ; uva2kva-->%p\n", page1, page2);
+    incRefCount(page1);
+    invlpg(pte);
+
+    if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0){
+      freevm(d);
+      d=0;
+    }
+
+  }
+
+  return d;
+}
+
+#endif
 
 //PAGEBREAK!
 // Map user virtual address to kernel address.

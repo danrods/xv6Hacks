@@ -1,3 +1,18 @@
 List challenge problems completed as part of the lab 2 handin, as well
 as the problem number.  If you worked any previous lab challenges and
 submitted them with this lab, list them here, along with the lab number.
+
+Lab 2 Unit Testing Challenges
+
+test 1
+Compare the referent count of the page before and after fork(). The number 
+should increment.
+
+test 2
+Compare the physical addresses of the parent and child pages before and 
+after copy-on-write. With the same virtual address throughout the time,
+the pysical addresses should be different.
+
+test 3
+When copy-on-write, a new page is allocated for the child process. The 
+reference count of the parent page should decrement.

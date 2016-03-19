@@ -197,7 +197,7 @@ int pgflthandler(void){
       }
     }
 
-    invlpg((void*)page);
+    invlpg((void*)fault_addr);
   }
   else {
     //PANIC

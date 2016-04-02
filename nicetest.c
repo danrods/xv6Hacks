@@ -4,9 +4,11 @@
 #define BADNICE  = -80;
 
 void
-main() {
+main(void) {
 	nicetestpositive();
 	nicetestnegative();
+
+	exit();
 }
 
 // nice positive test

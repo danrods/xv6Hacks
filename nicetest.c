@@ -22,10 +22,10 @@ nicetestpositive() {
 	nice_value = nice(GOODNICE);
 
 	if(nice_value >= 100 || nice_value < 140) {
-		printf(1, "Nice function works!\n");
+		printf(1, "POSITIVE: :) Nice function works!\n");
 	}
 	else {
-		printf(1, "Nice test fails!\n");
+		printf(1, "POSITIVE: :( Nice test fails!\n");
 	}
 }
 
@@ -37,10 +37,10 @@ nicetestnegative() {
 	nice_value = nice(BADNICE);
 
 	if(nice_value >= 100 || nice_value < 140) {
-		printf(1, "Nice function works!\n");
+		printf(1, "NEGATIVE: :) Nice function works!\n");
 	}
 	else {
-		printf(1, "Nice test fails!\n");
+		printf(1, "NEGATIVE: :( Nice test fails!\n");
 	}
 }
 

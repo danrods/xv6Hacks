@@ -1,3 +1,4 @@
+#include "types.h"
 #include "user.h"
 
 #define GOODNICE 15

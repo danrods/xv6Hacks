@@ -6,7 +6,7 @@
 void nicetestpositive(void);
 void nicetestnegative(void);
 
-void
+int
 main(void) {
 	nicetestpositive();
 	nicetestnegative();

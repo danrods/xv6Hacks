@@ -535,3 +535,18 @@ sys_wolfie(void){
   } 
   return strlen(strncpy(buf, wolfie_img, size));//Returns the size of the string in buf
 }
+
+int 
+sys_nice(void) {
+  struct proc *cp;
+  int base = 120;
+  int value;
+
+  if(value < -20 || value > 19) {
+    cprintf("Set nice between -20 and 19!\n");
+    return cp->nice;
+  }
+  cp->nice = base + value;
+
+  return cp->nice;
+}

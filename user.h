@@ -24,6 +24,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int wolfie(void* buf, uint);
+int nice(int);
 
 // ulib.c
 int stat(char*, struct stat*);

@@ -540,11 +540,17 @@ int
 sys_nice(void) {
   int value;
 
+  if(argint(0, &value) < 0){
+    cprintf("Error getting arguments\n");
+    return -1;
+  }
+
   if(value < -20 || value > 19) {
     cprintf("Set nice input between -20 and 19!\n");
-    return *proc->nice;
+    return proc->nice;
   }
-  *proc->nice += value;
 
-  return *proc->nice;
+  proc->nice += value;
+
+  return proc->nice;
 }

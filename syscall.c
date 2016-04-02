@@ -124,7 +124,7 @@ static int (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_wolfie]  sys_wolfie,
-[SYS_nice]    sys_nice;
+[SYS_nice]    sys_nice,
 };
 
 void

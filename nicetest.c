@@ -2,11 +2,13 @@
 
 #define GOODNICE = 15;
 #define BADNICE  = -80;
+#define ERRORNICE = "ABC";
 
 void
 main(void) {
 	nicetestpositive();
 	nicetestnegative();
+	nicetester
 
 	exit();
 }
@@ -14,29 +16,44 @@ main(void) {
 // nice positive test
 void
 nicetestpositive() {
+	int nice_value;
 
-	nice(GOODNICE);
+	nice_value = nice(GOODNICE);
 
-	if(*proc->nice >= 100 || *proc->nice < 140) {
-		cprintf("Nice function works!\n");
-		exit();
+	if(nice_value >= 100 || nice_value < 140) {
+		printf(1, "Nice function works!\n");
 	}
 	else {
-		cprintf("Nice test fails!\n");
-		exit();
+		printf(1, "Nice test fails!\n");
 	}
 }
 
 // nice negative test
-void nicetestnegative() {
-	nice(BADNICE);
+void 
+nicetestnegative() {
+	int nice_value;
 
-	if(*proc->nice >= 100 || *proc->nice < 140) {
-		cprintf("Nice function works!\n");
-		exit();
+	nice_value = nice(BADNICE);
+
+	if(nice_value >= 100 || nice_value < 140) {
+		printf(1, "Nice function works!\n");
 	}
 	else {
-		cprintf("Nice test fails!\n");
-		exit();
+		printf(1, "Nice test fails!\n");
 	}
+}
+
+// Non int nice input test() {
+void
+nicetesterror() {
+	int nice_value;
+
+	nice_value = nice(ERRORNICE);
+
+	if (nice_value == -1) {
+		printf(1, "Nice function works!\n");
+	}
+	else {
+		printf(1, "Nice test fails!\n");
+	}	
 }

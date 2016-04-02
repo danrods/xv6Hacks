@@ -538,15 +538,13 @@ sys_wolfie(void){
 
 int 
 sys_nice(void) {
-  struct proc *cp;
-  int base = 120;
   int value;
 
   if(value < -20 || value > 19) {
     cprintf("Set nice between -20 and 19!\n");
-    return cp->nice;
+    return *proc->nice;
   }
-  cp->nice = base + value;
+  *proc->nice += value;
 
-  return cp->nice;
+  return *proc->nice;
 }

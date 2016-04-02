@@ -2,6 +2,8 @@
 
 #define GOODNICE 15
 #define BADNICE  -80
+void nicetestpositive(void);
+void nicetestnegative(void);
 
 void
 main(void) {

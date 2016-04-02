@@ -179,6 +179,7 @@ UPROGS=\
 	_wolfietest\
 	_lab2test\
 	_cowtest\
+	_nicetest\
 
 
 fs.img: mkfs README $(UPROGS)

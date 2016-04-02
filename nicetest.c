@@ -1,7 +1,7 @@
 #include "user.h"
 
-#define GOODNICE 15;
-#define BADNICE  -80;
+#define GOODNICE 15
+#define BADNICE  -80
 
 void
 main(void) {

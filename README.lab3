@@ -1,0 +1,11 @@
+EXERCISE 1
+	There is a file called nicetest.c which contains the 
+both the positive and negative tests for nice.
+	Run xv6 and type nicetest. You will see the result
+whether it works or not.
+	if needed, you may go into the nicetest.c file to change 
+the inputs(GOODNICE and BADNICE) and run the test again.
+
+
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-

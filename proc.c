@@ -104,7 +104,8 @@ found:
 
 static
 int getTicketAmount(struct proc * proc){
-    return 4; //Because xKCD
+    uint val = prng();
+    return (int)val; //Because xKCD
 }
 
 //PAGEBREAK: 32

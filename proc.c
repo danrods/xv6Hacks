@@ -24,6 +24,10 @@ static void wakeup1(void *chan);
 static void getseeds(uint *val);
 static uint prng(void);
 
+static TicketHolder binarySearch(int rand, int start, int end);
+
+int totalTickets;
+int totalTicketHolders;
 struct TicketHolder holders[NPROC];
 
 void
@@ -105,9 +109,7 @@ found:
 
 static
 int getTicketAmount(struct proc * proc){
-    uint val = prng();
-    cprintf("PRNG returned %d\n", val);
-    return (int)val; //Because xKCD
+    return 4; //Because xKCD
 }
 
 //PAGEBREAK: 32
@@ -405,6 +407,7 @@ scheduler(void)
 
 #else
 
+// NEW ONE
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
 // Scheduler never returns.  It loops, doing:
@@ -425,10 +428,30 @@ scheduler(void)
     acquire(&ptable.lock);
 
 
+    uint random = prng();
+
+    struct TicketHolder* t;
+
+
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
+      
+
+      for(t=holders; t && t < &holders[NPROC];t++){
+         if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
+            t->proc = p;
+            t->totalTickets = getTicketAmount(p); 
+
+            //If we're not the first location lets get the previous running total and add to it.
+            t->runningTotal = (t > holders ) ? ( ( (t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; //I think this works
+            p->stub = t;
+
+            //cprintf("Successfully Added a Holder to a process with %d tickets at position %d\n", t->totalTickets, i);
+         }
+      }
+        
 
 
       // Switch to chosen process.  It is the process's job
@@ -443,17 +466,29 @@ scheduler(void)
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       proc = 0;
+
     }
 
     release(&ptable.lock);
   }
 }
 
-
-
-
-
 #endif
+
+
+static 
+TicketHolder binarySearch(int random, int start, int end){
+     
+     if(start == end){
+        if(holders[start]->runningTotal < random)
+     }
+
+     int mid = (start + end) / 2;
+
+     if(holders[mid]->runningTotal > random){ 
+        return binarySearch(random, start, mid - 1);
+     }
+}
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state.

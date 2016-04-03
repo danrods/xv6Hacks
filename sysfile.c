@@ -553,15 +553,15 @@ sys_nice(void) {
   proc->nice += value;
 
   return proc->nice;
-}
+} 
 
 int
 sys_printTickets(void){
 
   struct TicketHolder* t;
-
+  int i;
   for(t=holders; t && t < &holders[NPROC];t++){
-    cprintf("Found Ticket : { Total Tickets : %d\t Running Total : %d\t Process :%p}\n", t->totalTickets, t->runningTotal, t->proc);
+    cprintf("Found Ticket %d: { Total Tickets : %d\t Running Total : %d\t Process :%p}\n",i, t->totalTickets, t->runningTotal, t->proc);
   }
 
   return 0;

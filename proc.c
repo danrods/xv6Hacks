@@ -23,7 +23,7 @@ extern void trapret(void);
 static int getTicketAmount(struct proc * proc);
 static void wakeup1(void *chan);
 
-static uint getseeds(uint *val);
+static void getseeds(uint *val);
 static uint prng(void);
 
 void
@@ -623,10 +623,10 @@ procdump(void)
   }
 }
 
-static uint
+static void
 getseeds(uint *val) {
   *val = (uint)&ptable;
-  *(val + 1) = (uint)&p;
+  *(val + 1) = (uint)&proc;
 }
 
 // Title: xorshift+
@@ -637,7 +637,7 @@ getseeds(uint *val) {
 static uint 
 prng(void) {
   uint s[2];
-  getseeds(&s);
+  getseeds((uint*)&s);
   uint x = s[0];
   uint const y = s[1];
   s[0] = y;

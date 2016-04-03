@@ -21,6 +21,7 @@ extern void trapret(void);
 static void wakeup1(void *chan);
 
 static uint prng(void);
+static uint getseeds(int val);
 
 void
 pinit(void)

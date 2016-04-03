@@ -83,8 +83,9 @@ found:
   #ifndef lottery
 
   struct TicketHolder* t;
+  int i;
 
-  for(t=holders; t && t < &holders[NPROC];t++){
+  for(t=holders; t && t < &holders[NPROC];t++,i++){
      if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
         t->proc = p;
         t->totalTickets = getTicketAmount(p); 
@@ -93,7 +94,7 @@ found:
         t->runningTotal = (t > holders ) ? ( ( (t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; //I think this works
         p->stub = t;
 
-        cprintf("Successfully Added a Holder for the Process %s with %d tickets\n", p->name, t->totalTickets);
+        cprintf("Successfully Added a Holder to a process with %d tickets at position %d\n", t->totalTickets, i);
      }
   }
 

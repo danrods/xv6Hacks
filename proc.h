@@ -57,7 +57,7 @@ struct TicketHolder{
   struct proc* proc;
 };
 
-extern TicketHolder holders[NPROC];
+extern struct TicketHolder holders[NPROC];
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 

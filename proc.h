@@ -57,6 +57,8 @@ struct TicketHolder{
   struct proc* proc;
 };
 
+extern TicketHolder holders[NPROC];
+
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
 // Per-process state

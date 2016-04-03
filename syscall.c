@@ -100,6 +100,7 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_wolfie(void);
 extern int sys_nice(void);
+extern int SYS_printTickets(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -125,6 +126,7 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_wolfie]  sys_wolfie,
 [SYS_nice]    sys_nice,
+[SYS_printTickets] SYS_printTickets,
 };
 
 void

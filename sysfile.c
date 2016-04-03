@@ -554,3 +554,11 @@ sys_nice(void) {
 
   return proc->nice;
 }
+
+int
+sys_printTickets(void){
+
+  for(t=holders; t && t < &holders[NPROC];t++){
+    cprintf("Found Ticket : { Total Tickets : %d\t Running Total : %d\t Process :%p}\n", t->totalTickets, t->runningTotal, t->proc);
+  }
+}

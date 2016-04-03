@@ -180,6 +180,7 @@ UPROGS=\
 	_lab2test\
 	_cowtest\
 	_nicetest\
+	_printTickets\
 
 
 fs.img: mkfs README $(UPROGS)

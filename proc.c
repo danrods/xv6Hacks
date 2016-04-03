@@ -626,11 +626,11 @@ procdump(void)
 // Author: Saito and Matsumoto
 // Date: 4/2/2016
 // Availability: https://en.wikipedia.org/wiki/Xorshift#xorshift+
-
+// Pseudo random number generator
 static uint 
 prng(void) {
   uint s[2];
-  s[0] = getseeds(ptable);
+  s[0] = getseeds(int *ptable);
   s[1] = *s[0];
   uint x = s[0];
   uint const y = s[1];
@@ -641,6 +641,6 @@ prng(void) {
 }
 
 static uint
-getseeds(int *val) {
+getseeds(int val) {
   return uint (&val);
 }

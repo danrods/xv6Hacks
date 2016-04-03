@@ -50,12 +50,12 @@ struct context {
   uint eip;
 };
 
-/*
+
 struct TicketHolder{
   int totalTickets;
   int runningTotal;
   struct proc* proc;
-};*/
+};
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 

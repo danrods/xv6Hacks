@@ -32,7 +32,7 @@ pinit(void)
   initlock(&ptable.lock, "ptable");
 
   #ifndef lottery
-  //memset(holders, 0, NPROC * sizeof(struct TicketHolder));
+  memset(holders, 0, NPROC * sizeof(struct TicketHolder));
   #endif
 }
 
@@ -81,7 +81,7 @@ found:
   p->context->eip = (uint)forkret;
 
   #ifndef lottery
-/*
+
   struct TicketHolder* t;
 
   for(t=holders; t && t < &holders[NPROC];t++){
@@ -96,8 +96,7 @@ found:
         cprintf("Successfully Added a Holder for the Process %s with %d tickets\n", p->name, t->totalTickets);
      }
   }
-*/
-  getTicketAmount(p);
+
   #endif
 
 //  cprintf("Created new Process with pid : %d\n", p->pid);

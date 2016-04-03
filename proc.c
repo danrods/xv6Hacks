@@ -81,8 +81,9 @@ found:
   p->context->eip = (uint)forkret;
 
   #ifndef lottery
-  struct TicketHolder* t;
 /*
+  struct TicketHolder* t;
+
   for(t=holders; t && t < &holders[NPROC];t++){
      if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
         t->proc = p;

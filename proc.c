@@ -12,8 +12,6 @@ struct {
   struct proc proc[NPROC];
 } ptable;
 
-struct TicketHolder holders[NPROC];
-
 static struct proc *initproc;
 
 int nextpid = 1;
@@ -25,6 +23,8 @@ static void wakeup1(void *chan);
 
 static void getseeds(uint *val);
 static uint prng(void);
+
+struct TicketHolder holders[NPROC];
 
 void
 pinit(void)

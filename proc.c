@@ -23,8 +23,8 @@ extern void trapret(void);
 static int getTicketAmount(struct proc * proc);
 static void wakeup1(void *chan);
 
+static uint getseeds(uint *val);
 static uint prng(void);
-static uint getseeds(int val);
 
 void
 pinit(void)
@@ -622,6 +622,12 @@ procdump(void)
   }
 }
 
+static uint
+getseeds(uint *val) {
+  *val = (uint)&ptable;
+  *(val + 1) = (uint)&p;
+}
+
 // Title: xorshift+
 // Author: Saito and Matsumoto
 // Date: 4/2/2016
@@ -630,8 +636,7 @@ procdump(void)
 static uint 
 prng(void) {
   uint s[2];
-  s[0] = getseeds(*ptable);
-  s[1] = &(s[0]);
+  getseeds(&s);
   uint x = s[0];
   uint const y = s[1];
   s[0] = y;
@@ -640,7 +645,3 @@ prng(void) {
   return s[1] + y;
 }
 
-static uint
-getseeds(int val) {
-  return uint (&val);
-}

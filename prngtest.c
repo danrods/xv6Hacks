@@ -9,7 +9,7 @@ main(int argc, char *argv[]) {
 	
 	for (int i = 0; i < RUN; ++i)
 	{
-		uint index = getSeeds(*ptable);
+		uint index = prng();
 		RANNUMS[index] += 1;
 	}
 

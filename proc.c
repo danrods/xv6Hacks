@@ -636,7 +636,7 @@ getseeds(uint *val) {
 static uint 
 prng(void) {
   uint s[2];
-  getseeds(&s);
+  getseeds((uint*)&s);
   uint x = s[0];
   uint const y = s[1];
   s[0] = y;

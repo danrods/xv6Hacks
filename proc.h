@@ -17,12 +17,6 @@ struct cpu {
 };
 
 
-struct TicketHolder{
-  int totalTickets;
-  int runningTotal;
-  struct proc* proc;
-};
-
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 
@@ -54,6 +48,12 @@ struct context {
   uint ebx;
   uint ebp;
   uint eip;
+};
+
+struct TicketHolder{
+  int totalTickets;
+  int runningTotal;
+  struct proc* proc;
 };
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };

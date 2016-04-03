@@ -16,6 +16,13 @@ struct cpu {
   struct proc *proc;           // The currently-running process.
 };
 
+
+struct TicketHolder{
+  int totalTickets;
+  int runningTotal;
+  struct proc* proc;
+};
+
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 
@@ -65,8 +72,9 @@ struct proc {
   int killed;                  // If non-zero, have been killed
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
-  char name[16];               // Process name (debugging)
   int nice;                    // Nice value to specify the priority
+  struct TicketHolder* stub;   // Storage for the tickets
+  char name[16];               // Process name (debugging)
 };
 
 // Process memory is laid out contiguously, low addresses first:

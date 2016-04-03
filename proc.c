@@ -12,18 +12,25 @@ struct {
   struct proc proc[NPROC];
 } ptable;
 
+struct TicketHolder holders[NPROC];
+
 static struct proc *initproc;
 
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
 
+static int getTicketAmount(struct proc * proc);
 static void wakeup1(void *chan);
 
 void
 pinit(void)
 {
   initlock(&ptable.lock, "ptable");
+
+  #ifndef lottery
+  memset(&holders, 0, NPROC * sizeof(struct TicketHolder));
+  #endif
 }
 
 //PAGEBREAK: 32
@@ -70,8 +77,31 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  #ifndef lottery
+  struct TicketHolder* t;
+
+  for(t=holders; t && t < &holders[NPROC];t++){
+     if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
+        t->proc = p;
+        t->totalTickets = getTicketAmount(p); 
+
+        //If we're not the first location lets get the previous running total and add to it.
+        t->runningTotal = (t > holders ) ? ( ( (t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; //I think this works
+        p->stub = t;
+
+        cprintf("Successfully Added a Holder for the Process %s with %d tickets\n", p->name, t->totalTickets);
+     }
+  }
+
+  #endif
+
 //  cprintf("Created new Process with pid : %d\n", p->pid);
   return p;
+}
+
+static
+int getTicketAmount(struct proc * proc){
+    return 4; //Because xKCD
 }
 
 //PAGEBREAK: 32
@@ -324,6 +354,8 @@ wait(void)
   }
 }
 
+
+#ifndef lottery
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -364,6 +396,58 @@ scheduler(void)
 
   }
 }
+
+#else
+
+// Per-CPU process scheduler.
+// Each CPU calls scheduler() after setting itself up.
+// Scheduler never returns.  It loops, doing:
+//  - choose a process to run
+//  - swtch to start running that process
+//  - eventually that process transfers control
+//      via swtch back to the scheduler.
+void
+scheduler(void)
+{
+  struct proc *p;
+
+  for(;;){
+    // Enable interrupts on this processor.
+    sti();
+
+    // Loop over process table looking for process to run.
+    acquire(&ptable.lock);
+
+
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+
+
+
+      // Switch to chosen process.  It is the process's job
+      // to release ptable.lock and then reacquire it
+      // before jumping back to us.
+      proc = p;
+      switchuvm(p);
+      p->state = RUNNING;
+      swtch(&cpu->scheduler, proc->context);
+      switchkvm();
+
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      proc = 0;
+    }
+
+    release(&ptable.lock);
+  }
+}
+
+
+
+
+
+#endif
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state.

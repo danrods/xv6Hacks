@@ -106,6 +106,7 @@ found:
 static
 int getTicketAmount(struct proc * proc){
     uint val = prng();
+    cprintf("PRNG returned %d\n", val);
     return (int)val; //Because xKCD
 }
 
@@ -629,6 +630,7 @@ getseeds(uint *val) {
   uint reg1, reg2;
   asm("movl %%esp,%0" : "=r"(reg1));
   asm("movl %%esi,%0" : "=r"(reg2));
+  cprintf("Found reg values : ESP-->%d\t ESI-->%d", reg1, reg2);
   *val = reg1;
   *(val + 1) = reg2;
 }

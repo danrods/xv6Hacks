@@ -24,7 +24,7 @@ static void wakeup1(void *chan);
 static void getseeds(uint *val);
 static uint prng(void);
 
-struct TicketHolder holders[NPROC];
+//struct TicketHolder holders[NPROC];
 
 void
 pinit(void)

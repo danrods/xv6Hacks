@@ -126,7 +126,7 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_wolfie]  sys_wolfie,
 [SYS_nice]    sys_nice,
-[SYS_printTickets] SYS_printTickets,
+[SYS_printTickets] sys_printTickets,
 };
 
 void

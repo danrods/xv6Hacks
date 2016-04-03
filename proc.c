@@ -83,7 +83,7 @@ found:
   #ifndef lottery
 
   struct TicketHolder* t;
-  int i;
+  int i = 0;
 
   for(t=holders; t && t < &holders[NPROC];t++,i++){
      if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed

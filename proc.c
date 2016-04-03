@@ -626,7 +626,7 @@ procdump(void)
 
 static void
 getseeds(uint *val) {
-  //*val = (uint)&ptable;
+  *val = (uint)&ptable;
   //*(val + 1) = (uint)&proc;
 }
 

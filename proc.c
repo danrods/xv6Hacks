@@ -23,7 +23,7 @@ extern void trapret(void);
 static int getTicketAmount(struct proc * proc);
 static void wakeup1(void *chan);
 
-static uint getseeds(uint *val);
+static void getseeds(uint *val);
 static uint prng(void);
 
 void
@@ -622,7 +622,7 @@ procdump(void)
   }
 }
 
-static uint
+static void
 getseeds(uint *val) {
   *val = (uint)&ptable;
   *(val + 1) = (uint)&proc;

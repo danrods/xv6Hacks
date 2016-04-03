@@ -558,5 +558,5 @@ prng(void) {
 
 static uint
 getseeds(int val) {
-  return &val;
+  return uint &val;
 }

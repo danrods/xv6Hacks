@@ -32,7 +32,7 @@ pinit(void)
   initlock(&ptable.lock, "ptable");
 
   #ifndef lottery
-  memset(holders, 0, NPROC * sizeof(struct TicketHolder));
+  //memset(holders, 0, NPROC * sizeof(struct TicketHolder));
   #endif
 }
 

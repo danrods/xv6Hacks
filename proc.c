@@ -628,7 +628,7 @@ static void
 getseeds(uint *val) {
   uint reg1, reg2;
   asm("movl %%esp,%0" : "=r"(reg1));
-  asm("movl %%eip,%0" : "=r"(reg2));
+  asm("movl %%esi,%0" : "=r"(reg2));
   *val = reg1;
   *(val + 1) = reg2;
 }

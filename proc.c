@@ -20,6 +20,8 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+static uint prng(void);
+
 void
 pinit(void)
 {
@@ -533,4 +535,27 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+// Title: xorshift+
+// Author: Saito and Matsumoto
+// Date: 4/2/2016
+// Availability: https://en.wikipedia.org/wiki/Xorshift#xorshift+
+
+static uint 
+prng(void) {
+  uint s[2];
+  s[0] = getseeds(*ptable);
+  s[1] = *s[0];
+  uint x = s[0];
+  uint const y = s[1];
+  s[0] = y;
+  x ^= x << 23; // a
+  s[1] = x ^ y ^ (x >> 17) ^ (y >> 26); // b, c
+  return s[1] + y;
+}
+
+static uint
+getseeds(int val) {
+  return &val;
 }

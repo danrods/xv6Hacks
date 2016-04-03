@@ -626,8 +626,11 @@ procdump(void)
 
 static void
 getseeds(uint *val) {
-  *val = (uint)&ptable;
-  *(val + 1) = (uint)proc;
+  uint reg1, reg2;
+  asm("movl %%ebx,%0" : "=r"(reg1));
+  asm("movl %%edx,%0" : "=r"(reg2));
+  *val = reg1;
+  *(val + 1) = reg2;
 }
 
 // Title: xorshift+

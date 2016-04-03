@@ -16,7 +16,7 @@ main(int argc, char *argv[]) {
 
 	for (int i = 0; i < RUN; ++i)
 	{
-		cprintf(i, ": ", RANNUMS[i]);
+		cprintf("%d : %d", i, RANNUMS[i]);
 	}
 
 	exit();

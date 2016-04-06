@@ -40,6 +40,9 @@ pinit(void)
   #endif
 }
 
+
+#ifdef lottery //TODO : Switch this over when want to use lottery officially
+
 //PAGEBREAK: 32
 // Look in the process table for an UNUSED proc.
 // If found, change state to EMBRYO and initialize
@@ -84,9 +87,67 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
-  #ifndef lottery
+//  cprintf("Created new Process with pid : %d\n", p->pid);
+  return p;
+}
+
+#else
+
+//PAGEBREAK: 32
+// Look in the process table for an UNUSED proc.
+// If found, change state to EMBRYO and initialize
+// state required to run in the kernel.
+// Otherwise return 0.
+static struct proc*
+allocproc(void)
+{
+  struct proc *p;
+  char *sp;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if(p->state == UNUSED)
+      goto found;
+  release(&ptable.lock);
+  return 0;
+
+found:
+  p->state = EMBRYO;
+  p->pid = nextpid++;
+  release(&ptable.lock);
+
+  // Allocate kernel stack.
+  if((p->kstack = kalloc()) == 0){
+    p->state = UNUSED;
+    return 0;
+  }
+  sp = p->kstack + KSTACKSIZE;
+  
+  // Leave room for trap frame.
+  sp -= sizeof *p->tf;
+  p->tf = (struct trapframe*)sp;
+  
+  // Set up new context to start executing at forkret,
+  // which returns to trapret.
+  sp -= 4;
+  *(uint*)sp = (uint)trapret;
+
+  sp -= sizeof *p->context;
+  p->context = (struct context*)sp;
+  memset(p->context, 0, sizeof *p->context);
+  p->context->eip = (uint)forkret;
+
+
 
   struct TicketHolder* t;
+  uint random = prng();
+
+  if((t = binarySearch(random, 0, NPROC))){
+
+  }
+  else{
+      panic("Can't find Process to run from random number %d", random)
+  }
 
   for(t=holders; t && t < &holders[NPROC];t++){
      if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
@@ -101,15 +162,51 @@ found:
      }
   }
 
-  #endif
 
 //  cprintf("Created new Process with pid : %d\n", p->pid);
   return p;
 }
 
+
+
+#endif
+
+/**
+* Convenience method to return the amount of tickets based on the nice value of the process.
+*/
 static
 int getTicketAmount(struct proc * proc){
-    return 4; //Because xKCD
+
+  int returnVal = 3;//By Default Return the default value for 120
+
+    if(proc > 139){//Too High
+        cprintf("Nice value is too high!");
+        proc->nice = 120;
+    }
+    else if(proc == 139){
+        returnVal =  1;
+    }
+    else if(proc > 129){ // 130 - 138
+        returnVal =  2;
+    }
+    else if(proc > 119){ // 120 - 129
+        returnVal =  3;
+    } 
+    else if(proc > 109){ // 110 - 119
+        returnVal =  4;
+    }
+    else if(proc > 100){ // 101 - 109
+        returnVal =  5;
+    }
+    else if(proc == 100){ 
+        returnVal =  6;
+    }
+    else{ // Too Low
+        cprintf("Nice value is too low!");
+        proc->nice = 120;
+    }
+
+    return returnVal; 
 }
 
 //PAGEBREAK: 32
@@ -496,6 +593,7 @@ TicketHolder binarySearch(int random, int start, int end){
     if( (lastTicket >= random) && (ticketStart <= random) ){ 
         struct proc* winner = holders[mid]->proc;
         cprintf("Found Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}", proc->name, proc->nice, proc->pid, proc->killed)
+        return holders[mid];
     }
     else if(lastTicket < random ){ // It's bigger
         return binarySearch(random, mid + 1, end);
@@ -507,11 +605,8 @@ TicketHolder binarySearch(int random, int start, int end){
       cprintf("It's not bigger than or less than and not bounded by. ERR!\n");
       panic("scheduler - binary search");
     }
-     
 
-     if(holders[mid]->runningTotal > random){  
-        return binarySearch(random, start, mid - 1);
-     }
+    return NULL;
 }
 
 // Enter scheduler.  Must hold only ptable.lock

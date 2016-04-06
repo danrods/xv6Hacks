@@ -476,16 +476,40 @@ scheduler(void)
 #endif
 
 
+/**
+* Method that will perform binary search to find which process should be running.
+* Random is a randomly generated number between 0 and the number of tickets that exist 
+* in the system. Searches from start - end, will do work recursively
+*/
 static 
 TicketHolder binarySearch(int random, int start, int end){
      
-     if(start == end){
-        if(holders[start]->runningTotal < random)
-     }
+     if(start > end) return NULL; // While start <= end continue
+     
+    int mid = (start + end) / 2;
 
-     int mid = (start + end) / 2;
+    
+    int ticketStart = holders[mid]->runningTotal - holders[mid]->totalTickets;
+    int lastTicket = holders[mid]->runningTotal;
 
-     if(holders[mid]->runningTotal > random){ 
+    //Is the random number bound by the current TicketHolder 
+    if( (lastTicket >= random) && (ticketStart <= random) ){ 
+        struct proc* winner = holders[mid]->proc;
+        cprintf("Found Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}", proc->name, proc->nice, proc->pid, proc->killed)
+    }
+    else if(lastTicket < random ){ // It's bigger
+        return binarySearch(random, mid + 1, end);
+    }
+    else if(ticketStart > random ) { // It's smaller
+        return binarySearch(random, start, mid);
+    }
+    else{
+      cprintf("It's not bigger than or less than and not bounded by. ERR!\n");
+      panic("scheduler - binary search");
+    }
+     
+
+     if(holders[mid]->runningTotal > random){  
         return binarySearch(random, start, mid - 1);
      }
 }

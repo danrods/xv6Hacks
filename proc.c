@@ -30,7 +30,7 @@ extern void trapret(void);
 static void wakeup1(void *chan);
 
 static int count = 0;
-static int seeds[] = {1, 8, 5, 2, 3, 4, 5, 7, 9, 5, 2, 1, 0, 2, 1, 0, 9, 7, 6, 4};
+static int seeds[] = {6, 9, 3, 4, 5, 8, 6, 8, 5, 2};
 static void getseeds(uint *val);
 static uint prng(void);
 
@@ -839,8 +839,7 @@ procdump(void)
 
 static void
 getseeds(uint *val) {
-  int *tf = *(proc->trapframe);
-  int len = strlen(seeds);
+  int len = strlen(*seeds);
   int index = count % len;
   seeds[index] = *tf;
   *val = (uint)seeds[index];

@@ -567,9 +567,9 @@ TicketHolder* binarySearch(uint random, int start, int end){
 
     //Is the random number bound by the current TicketHolder 
     if( (lastTicket >= random) && (ticketStart <= random) ){ 
-        struct proc* winner = (&holders[mid])->proc;
+        struct proc* winner = (&tickettable.holders[mid])->proc;
         cprintf("Found Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}", winner->name, winner->nice, winner->pid, winner->killed);
-        return &holders[mid];
+        return &tickettable.holders[mid];
     }
     else if(lastTicket < random ){ // It's bigger
         return binarySearch(random, mid + 1, end);

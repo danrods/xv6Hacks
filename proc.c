@@ -29,6 +29,8 @@ extern void trapret(void);
 static int getTicketAmount(struct proc * proc);
 static void wakeup1(void *chan);
 
+static int count = 0;
+static int seeds[] = {1, 8, 5, 2, 3, 4, 5, 7, 9, 5, 2, 1, 0, 2, 1, 0, 9, 7, 6, 4};
 static void getseeds(uint *val);
 static uint prng(void);
 
@@ -837,12 +839,17 @@ procdump(void)
 
 static void
 getseeds(uint *val) {
-  uint reg1, reg2;
-  asm("movl %%esp,%0" : "=r"(reg1));
-  asm("movl %%esi,%0" : "=r"(reg2));
-  cprintf("Found reg values : ESP-->%d\t ESI-->%d", reg1, reg2);
-  *val = reg1;
-  *(val + 1) = reg2;
+  int len = strlen(seeds);
+  int index = count % len;
+  *val = (uint)seeds[index];
+  if (index + 1 < len)
+  {
+    *(val + 1) = (uint)seeds[index+1];
+  }
+  else {
+    *(val + 1) = (uint)seeds[0];
+  }
+  
 }
 
 // Title: xorshift+

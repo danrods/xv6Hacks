@@ -669,6 +669,10 @@ scheduler(void)
           panic("Can't find Process to run from random number %d\n", random);
       }
 
+      cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",
+                       t->totalTickets, t->runningTotal, states[t->status],t->proc);
+  
+
       release(&tickettable.lock);
 
       if(t->status == AVAILABLE || t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed

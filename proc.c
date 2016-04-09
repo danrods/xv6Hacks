@@ -875,7 +875,7 @@ ticketdump(void){
 
     static char *states[] = {
   [AVAILABLE]    "Available",
-  [BOUGHT]    "bought"
+  [BOUGHT]    "Bought"
   };
 
   struct TicketHolder* t;

@@ -170,10 +170,9 @@ main(void)
       continue;
     }
     if(fork1() == 0)
-      printf(1, "Child is running!\n");
       runcmd(parsecmd(buf));
-      printf(1, "Child ran command\n");
-    printf(1, "Parent is waiting!\n");
+      
+    //printf(1, "Parent is waiting!\n");
     wait();
   }
   exit();

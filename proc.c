@@ -560,7 +560,7 @@ TicketHolder* binarySearch(uint random, int start, int end){
 
 
 
-#ifdef lottery
+#ifndef lottery
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -888,7 +888,7 @@ uint
 prng(void) {
   uint s[2];
   getseeds((uint*)&s);
-  cprintf("first d%; second d% ", s[0], s[1]);
+  cprintf("first %d; second %d", s[0], s[1]);
   uint x = s[0];
   uint const y = s[1];
   s[0] = y;

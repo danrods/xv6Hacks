@@ -32,7 +32,7 @@ static void wakeup1(void *chan);
 static void getseeds(uint *val);
 static uint prng(void);
 
-static TicketHolder binarySearch(int rand, int start, int end);
+static TicketHolder* binarySearch(int rand, int start, int end);
 
 static void updateTicketHolders(struct TicketHolder* holder); 
 

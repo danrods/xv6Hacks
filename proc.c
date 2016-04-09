@@ -688,6 +688,7 @@ scheduler(void)
             p = t->proc;
           }
       }
+      else release(&tickettable.lock);
 
     }while(! isFound); //While we didn't find a valid process
 

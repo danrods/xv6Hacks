@@ -658,7 +658,7 @@ scheduler(void)
     
     isFound = 0;
 
-    do{
+//    do{
 
 
       random = prng();                //Step 1. Get a Random number
@@ -687,23 +687,26 @@ scheduler(void)
             isFound = 1;
             p = t->proc;
           }
+
+
+          // Switch to chosen process.  It is the process's job
+          // to release ptable.lock and then reacquire it
+          // before jumping back to us.
+          proc = p;
+          switchuvm(p);
+          p->state = RUNNING;
+          swtch(&cpu->scheduler, proc->context);
+          switchkvm();
+
+          // Process is done running for now.
+          // It should have changed its p->state before coming back.
+          proc = 0;
       }
       else release(&tickettable.lock);
 
-    }while(! isFound); //While we didn't find a valid process
+//    }while(! isFound); //While we didn't find a valid process
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
-      swtch(&cpu->scheduler, proc->context);
-      switchkvm();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      proc = 0;
 
     release(&ptable.lock);
   }

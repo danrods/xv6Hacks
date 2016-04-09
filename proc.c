@@ -146,14 +146,14 @@ found:
   p->context->eip = (uint)forkret;
 
 
-  int i = 0;
-  struct TicketHolder* t;
+  // int i = 0;
+  // struct TicketHolder* t;
 
-  acquire(&tickettable.lock);
-  for(t = tickettable.holders; t < &tickettable.holders[NPROC]; t++, i++)
-    if(t->status == AVAILABLE)
-      goto found_ticket;
-  release(&tickettable.lock);
+  // acquire(&tickettable.lock);
+  // for(t = tickettable.holders; t < &tickettable.holders[NPROC]; t++, i++)
+  //   if(t->status == AVAILABLE)
+  //     goto found_ticket;
+  // release(&tickettable.lock);
   return 0;
 
 

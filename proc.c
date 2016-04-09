@@ -659,11 +659,13 @@ scheduler(void)
 
     do{
 
-      random = prng();                //Step 1. Get a Random number
+      int ticketers = tickettable.totalTicketHolders;
+
+      random = prng() % ticketers;                //Step 1. Get a Random number
       cprintf("Found a Random number : %d\n", random);
       acquire(&tickettable.lock);     // Lock the table until we've found it
 
-      int ticketers = tickettable.totalTicketHolders;
+      
 
       if(NULL ==(t = binarySearch(random, 0, ticketers))){
           release(&tickettable.lock);
@@ -896,7 +898,7 @@ getseeds(uint *val) {
   uint reg1, reg2;
   asm("movl %%esp,%0" : "=r"(reg1));
   asm("movl %%esi,%0" : "=r"(reg2));
-  cprintf("Found reg values : ESP-->%d\t ESI-->%d", reg1, reg2);
+  cprintf("Found reg values : ESP-->%d\t ESI-->%d\n", reg1, reg2);
   *val = reg1;
   *(val + 1) = reg2;
 }

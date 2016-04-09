@@ -645,7 +645,7 @@ scheduler(void)
 {
   struct proc *p;
   struct TicketHolder* t;
-  int isFound;
+ // int isFound;
   uint random;
   int tickets;
 

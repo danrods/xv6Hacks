@@ -559,8 +559,8 @@ int
 sys_printTickets(void){
 
   struct TicketHolder* t;
-  int i;
-  for(t=holders; t && t < &holders[NPROC];t++){
+  int i = 0;
+  for(t=tickettable.holders; t && t < &tickettable.holders[NPROC];t++,i++){
     cprintf("Found Ticket %d: { Total Tickets : %d\t Running Total : %d\t Process :%p}\n",i, t->totalTickets, t->runningTotal, t->proc);
   }
 

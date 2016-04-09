@@ -146,39 +146,6 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
-/*
-  int i = 0;
-  struct TicketHolder* t;
-
-  acquire(&tickettable.lock);
-  for(t = tickettable.holders; t < &tickettable.holders[NPROC]; t++, i++)
-    if(t->status == AVAILABLE)
-      goto found_ticket;
-  release(&tickettable.lock);
-  return 0;
-
-
-found_ticket:
-
-  if(NULL == t){ //If we didn't find any tickets, then we haven't found any processes. Should really never be here.
-      panic("Process array size is less than ticket array size %d\n", random)
-  }
-
-  t->status = BOUGHT;
-  t->totalTickets = getTicketAmount(p);
-
-  //I think this works to update the runnningTotal. If the ticket index > 0, get the previous and add this ticket count.
-  t->runningTotal = (i) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
-
-  tickettable.totalTickets += t->totalTickets; 
-  tickettable.totalTicketHolders++;
-  updateTicketHolders(i); //Fix the runningTotal to reflect the change
-  release(&tickettable.lock);
-
-  t->proc = p;
-  p->stub = t;
-
-*/
   struct TicketHolder* t = NULL;
   acquire(&tickettable.lock);
 
@@ -496,6 +463,7 @@ exit(void)
   }
 
   acquire(&tickettable.lock);
+  cprintf("Updating Ticket Holders!\n");
   updateTicketHolders(p->stub); //Fix the runningTotal to reflect the change
   release(&tickettable.lock);
 

@@ -157,29 +157,29 @@ found:
   return 0;
 
 
-found_ticket:
+// found_ticket:
 
-  if(NULL == t){ //If we didn't find any tickets, then we haven't found any processes. Should really never be here.
-      panic("Process array size is less than ticket array size %d\n", random)
-  }
+//   if(NULL == t){ //If we didn't find any tickets, then we haven't found any processes. Should really never be here.
+//       panic("Process array size is less than ticket array size %d\n", random)
+//   }
 
-  t->status = BOUGHT;
-  t->totalTickets = getTicketAmount(p);
+//   t->status = BOUGHT;
+//   t->totalTickets = getTicketAmount(p);
 
-  //I think this works to update the runnningTotal. If the ticket index > 0, get the previous and add this ticket count.
-  t->runningTotal = (i) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
+//   //I think this works to update the runnningTotal. If the ticket index > 0, get the previous and add this ticket count.
+//   t->runningTotal = (i) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
 
-  tickettable.totalTickets += t->totalTickets; 
-  tickettable.totalTicketHolders++;
-  updateTicketHolders(i); //Fix the runningTotal to reflect the change
-  release(&tickettable.lock);
+//   tickettable.totalTickets += t->totalTickets; 
+//   tickettable.totalTicketHolders++;
+//   updateTicketHolders(i); //Fix the runningTotal to reflect the change
+//   release(&tickettable.lock);
 
-  t->proc = p;
-  p->stub = t;
+//   t->proc = p;
+//   p->stub = t;
 
-  cprintf("Successfully Added a Holder to process %d with %d tickets at position %d\n" p->pid, t->totalTickets, i);
-  return p;
-}
+//   cprintf("Successfully Added a Holder to process %d with %d tickets at position %d\n" p->pid, t->totalTickets, i);
+//   return p;
+// }
 
 
 
@@ -230,20 +230,20 @@ int getTicketAmount(struct proc * proc){
 * Convenience method to update the runningTotal for the subsequent tickets after i.
 * NOTE : Tickettable Lock should be acquired before calling this method.
 */
-static 
-void updateTicketHolders(int i){
+// static 
+// void updateTicketHolders(int i){
 
-    if(i < 0 || i > NPROC) return; // i must be bounded by the size of the tickettable. 
+//     if(i < 0 || i > NPROC) return; // i must be bounded by the size of the tickettable. 
 
-    struct TicketHolder t1, t2;
-    for(t1 = (tickettable.holders + i), t2 = t1 + 1;  //First pointer is at the initialized ticket, Second pointer is at the one after
-        t1 < &tickettable.holders[NPROC - 1], t2 < &tickettable.holders[NPROC]; //If the 1st & 2nd pointers are the second to last and last, continue
-        t1++, t2++){ 
+//     struct TicketHolder t1, t2;
+//     for(t1 = (tickettable.holders + i), t2 = t1 + 1;  //First pointer is at the initialized ticket, Second pointer is at the one after
+//         t1 < &tickettable.holders[NPROC - 1], t2 < &tickettable.holders[NPROC]; //If the 1st & 2nd pointers are the second to last and last, continue
+//         t1++, t2++){ 
 
-        if(t2->status == AVAILABLE) break; //Lets not add a runningTotal to unused tickets
-        t2->runningTotal = t1->runningTotal + t2->totalTickets;
-    }
-}
+//         if(t2->status == AVAILABLE) break; //Lets not add a runningTotal to unused tickets
+//         t2->runningTotal = t1->runningTotal + t2->totalTickets;
+//     }
+// }
 
 //PAGEBREAK: 32
 // Set up first user process.
@@ -636,36 +636,36 @@ scheduler(void)
 * Random is a randomly generated number between 0 and the number of tickets that exist 
 * in the system. Searches from start - end, will do work recursively
 */
-static 
-TicketHolder binarySearch(int random, int start, int end){
+// static 
+// TicketHolder binarySearch(int random, int start, int end){
      
-     if(start > end) return NULL; // While start <= end continue
+//      if(start > end) return NULL; // While start <= end continue
      
-    int mid = (start + end) / 2;
+//     int mid = (start + end) / 2;
 
     
-    int ticketStart = holders[mid]->runningTotal - holders[mid]->totalTickets;
-    int lastTicket = holders[mid]->runningTotal;
+//     int ticketStart = holders[mid]->runningTotal - holders[mid]->totalTickets;
+//     int lastTicket = holders[mid]->runningTotal;
 
-    //Is the random number bound by the current TicketHolder 
-    if( (lastTicket >= random) && (ticketStart <= random) ){ 
-        struct proc* winner = holders[mid]->proc;
-        cprintf("Found Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}", proc->name, proc->nice, proc->pid, proc->killed)
-        return holders[mid];
-    }
-    else if(lastTicket < random ){ // It's bigger
-        return binarySearch(random, mid + 1, end);
-    }
-    else if(ticketStart > random ) { // It's smaller
-        return binarySearch(random, start, mid);
-    }
-    else{
-      cprintf("It's not bigger than or less than and not bounded by. ERR!\n");
-      panic("scheduler - binary search");
-    }
+//     //Is the random number bound by the current TicketHolder 
+//     if( (lastTicket >= random) && (ticketStart <= random) ){ 
+//         struct proc* winner = holders[mid]->proc;
+//         cprintf("Found Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}", proc->name, proc->nice, proc->pid, proc->killed)
+//         return holders[mid];
+//     }
+//     else if(lastTicket < random ){ // It's bigger
+//         return binarySearch(random, mid + 1, end);
+//     }
+//     else if(ticketStart > random ) { // It's smaller
+//         return binarySearch(random, start, mid);
+//     }
+//     else{
+//       cprintf("It's not bigger than or less than and not bounded by. ERR!\n");
+//       panic("scheduler - binary search");
+//     }
 
-    return NULL;
-}
+//     return NULL;
+// }
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state.
@@ -839,8 +839,10 @@ procdump(void)
 
 static void
 getseeds(uint *val) {
+  int *tf = *(proc->trapframe);
   int len = strlen(seeds);
   int index = count % len;
+  seeds[index] = *tf;
   *val = (uint)seeds[index];
   if (index + 1 < len)
   {
@@ -849,6 +851,8 @@ getseeds(uint *val) {
   else {
     *(val + 1) = (uint)seeds[0];
   }
+  
+  count += 1;
   
 }
 

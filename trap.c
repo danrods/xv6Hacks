@@ -121,7 +121,7 @@ trap(struct trapframe *tf)
   // (If it is still executing in the kernel, let it keep running 
   // until it gets to the regular system call return.)
   if(proc && proc->killed && (tf->cs&3) == DPL_USER){
-      cprintf("DIE Process %d",proc->pid);
+      cprintf("DIE Process %d\n",proc->pid);
       exit();
   }
     
@@ -133,7 +133,7 @@ trap(struct trapframe *tf)
 
   // Check if the process has been killed since we yielded
   if(proc && proc->killed && (tf->cs&3) == DPL_USER){
-      cprintf("DIE Process %d",proc->pid);
+      cprintf("DIE Process %d\n",proc->pid);
       exit();
   }
     

@@ -30,7 +30,7 @@ extern void trapret(void);
 static void wakeup1(void *chan);
 
 static int count = 0;
-static int seeds[] = {6, 9, 3, 4, 5, 8, 6, 8, 5, 2};
+static int seeds[10] = {};
 static void getseeds(uint *val);
 static uint prng(void);
 
@@ -839,9 +839,10 @@ procdump(void)
 
 static void
 getseeds(uint *val) {
-  int len = strlen(*seeds);
-  int index = count % len;
-  seeds[index] = *tf;
+  int ran = proc->eflags;
+  int index = count % 10;
+  seeds[index] = ran;
+
   *val = (uint)seeds[index];
   if (index + 1 < len)
   {

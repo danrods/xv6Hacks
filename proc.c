@@ -566,26 +566,26 @@ scheduler(void)
     struct TicketHolder* t;
 
 
-    do{
-      if(NULL ==(t = binarySearch(random, 0, NPROC))){
-          panic("Can't find Process to run from random number %d\n", random)
-      }
+    // do{
+    //   if(NULL ==(t = binarySearch(random, 0, NPROC))){
+    //       panic("Can't find Process to run from random number %d\n", random)
+    //   }
 
-      if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
-        t->proc = p;
-        t->totalTickets = getTicketAmount(p); 
+    //   if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
+    //     t->proc = p;
+    //     t->totalTickets = getTicketAmount(p); 
 
-        //If we're not the first location lets get the previous running total and add to it.
-        //t->runningTotal = (t > holders ) ? ( ( (t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; //I think this works
-        p->stub = t;
+    //     //If we're not the first location lets get the previous running total and add to it.
+    //     //t->runningTotal = (t > holders ) ? ( ( (t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; //I think this works
+    //     p->stub = t;
 
-        //cprintf("Successfully Added a Holder to a process with %d tickets at position %d\n", t->totalTickets, i);
-      }
-      else{
+    //     //cprintf("Successfully Added a Holder to a process with %d tickets at position %d\n", t->totalTickets, i);
+    //   }
+    //   else{
 
-      }
+    //   }
     
-    }while(! isFound); //While we didn't find a valid process
+    // }while(! isFound); //While we didn't find a valid process
 
 
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){

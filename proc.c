@@ -43,7 +43,9 @@ pinit(void)
 
   #ifndef lottery
   initlock(&tickettable.lock, "tickettable");
-  //memset(holders, 0, NPROC * sizeof(struct TicketHolder));
+  tickettable.totalTickets=0;
+  tickettable.totalTicketHolders=0;
+  memset(tickettable.holders, 0, NPROC * sizeof(struct TicketHolder));
   #endif
 }
 

@@ -34,7 +34,7 @@ static int seeds[] = {1, 8, 5, 2, 3, 4, 5, 7, 9, 5, 2, 1, 0, 2, 1, 0, 9, 7, 6, 4
 static void getseeds(uint *val);
 static uint prng(void);
 
-static TicketHolder binarySearch(int rand, int start, int end);
+//static TicketHolder binarySearch(int rand, int start, int end);
 
 
 void
@@ -851,7 +851,7 @@ getseeds(uint *val) {
   else {
     *(val + 1) = (uint)seeds[0];
   }
-  
+
   count += 1;
   
 }

@@ -60,6 +60,7 @@ typedef struct TicketHolder{
 } TicketHolder;
 
 extern struct TicketHolder holders[NPROC];
+extern int seeds[10];
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 

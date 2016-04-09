@@ -684,9 +684,9 @@ scheduler(void)
             cprintf("Will not be scheduling a process that was killed.\n");
           } 
           else{
-            isFound = 1;
+            //isFound = 1;
             p = t->proc;
-          }
+          
 
 
           // Switch to chosen process.  It is the process's job
@@ -701,6 +701,7 @@ scheduler(void)
           // Process is done running for now.
           // It should have changed its p->state before coming back.
           proc = 0;
+        }
       }
       else release(&tickettable.lock);
 

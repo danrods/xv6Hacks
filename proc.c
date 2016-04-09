@@ -647,6 +647,7 @@ scheduler(void)
   struct TicketHolder* t;
   int isFound;
   uint random;
+  int tickets;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -659,31 +660,33 @@ scheduler(void)
 
     do{
 
+
       random = prng();                //Step 1. Get a Random number
       acquire(&tickettable.lock);     // Lock the table until we've found it
 
-      int tickets = tickettable.totalTickets;
+      if((tickets = tickettable.totalTickets)){
 
-      random = (tickets)? random % tickets : tickets;
+          random = (tickets)? random % tickets : tickets;
 
-      cprintf("Found a Random number : %d\n", random);
-      if(NULL ==(t = binarySearch(random, 0, random))){
+          cprintf("Found a Random number : %d\n", random);
+          if(NULL ==(t = binarySearch(random, 0, random))){
+              release(&tickettable.lock);
+              panic("Can't find Process to run from random number\n");
+          }
+
           release(&tickettable.lock);
-          panic("Can't find Process to run from random number\n");
-      }
-
-      release(&tickettable.lock);
 
 
-      cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",
-                       t->totalTickets, t->runningTotal, t->status,t->proc);
+          cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",
+                           t->totalTickets, t->runningTotal, t->status,t->proc);
 
-      if(t->status == AVAILABLE || t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
-        cprintf("Will not be scheduling a process that was killed.\n");
-      } 
-      else{
-        isFound = 1;
-        p = t->proc;
+          if(t->status == AVAILABLE || t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
+            cprintf("Will not be scheduling a process that was killed.\n");
+          } 
+          else{
+            isFound = 1;
+            p = t->proc;
+          }
       }
 
     }while(! isFound); //While we didn't find a valid process

@@ -34,7 +34,7 @@ static uint prng(void);
 
 static TicketHolder binarySearch(int rand, int start, int end);
 
-void updateTicketHolders(struct TicketHolder* holder); 
+static void updateTicketHolders(struct TicketHolder* holder); 
 
 void
 pinit(void)
@@ -183,7 +183,7 @@ found_ticket:
   int nextInd = tickettable.totalTicketHolders;
   if(nextInd >= 0 && nextInd < NPROC){ //So long as the next Index is less than the total number of processes, and non-negative
 
-      if(NULL == (t = tickettable.holders[nextInd]){
+      if(NULL == (t = &tickettable.holders[nextInd])){
           panic(" Error fetching ticket holder %d\n", random)
       }
 
@@ -204,7 +204,7 @@ found_ticket:
     return 0;
   }
 
-  cprintf("Successfully Added a Holder to process %d with %d tickets at position %d\n" p->pid, t->totalTickets, i);
+  cprintf("Successfully Added a Holder to process %d with %d tickets at position %d\n", p->pid, t->totalTickets, i);
   return p;
 }
 
@@ -261,7 +261,7 @@ static
 void updateTicketHolders(struct TicketHolder* holder){
 
     if(NULL == &tickettable.holders[NPROC] || 
-        holder < tickettable.holders
+        holder < tickettable.holders       ||
         holder > &tickettable.holders[NPROC]) return; // i must be bounded by the tickettable array. 
 
     int ticketHolders = tickettable.totalTicketHolders;
@@ -277,8 +277,8 @@ void updateTicketHolders(struct TicketHolder* holder){
     holder->runningTotal = (holder > tickettable.holders) ? (((holder - 1)->runningTotal) + holder->totalTickets) : holder->totalTickets; 
     holder->proc->stub = holder; //Make sure the process is updated
 
-    struct TicketHolder *t1, *t2;
-    for(t1 = holder, t2 = t1 + 1;  //First pointer is at the initialized ticket, Second pointer is at the one after
+    struct TicketHolder *t1 = holder, *t2;
+    for(t2 = t1 + 1;  //First pointer is at the initialized ticket, Second pointer is at the one after
         t1 < &tickettable.holders[ticketHolders - 1], t2 < &tickettable.holders[ticketHolders]; //If the 1st & 2nd pointers are the second to last and last, continue
         t1++, t2++){ 
 
@@ -672,14 +672,15 @@ TicketHolder binarySearch(int random, int start, int end){
      
     int mid = (start + end) / 2;
 
+
     
-    int ticketStart = holders[mid]->runningTotal - holders[mid]->totalTickets;
-    int lastTicket = holders[mid]->runningTotal;
+    int ticketStart = (&tickettable.holders[mid])->runningTotal - (&tickettable.holders[mid])->totalTickets;
+    int lastTicket = tickettable.holders[mid].runningTotal;
 
     //Is the random number bound by the current TicketHolder 
     if( (lastTicket >= random) && (ticketStart <= random) ){ 
         struct proc* winner = holders[mid]->proc;
-        cprintf("Found Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}", proc->name, proc->nice, proc->pid, proc->killed)
+        cprintf("Found Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}", winner->name, winner->nice, winner->pid, winner->killed);
         return holders[mid];
     }
     else if(lastTicket < random ){ // It's bigger

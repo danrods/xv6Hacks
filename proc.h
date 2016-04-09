@@ -52,12 +52,12 @@ struct context {
 
 enum ticketstate {AVAILABLE, BOUGHT};
 
-struct TicketHolder{
+typedef struct TicketHolder{
   int totalTickets;
   int runningTotal;
   enum ticketstate status;
   struct proc* proc;
-};
+} TicketHolder;
 
 extern struct TicketHolder holders[NPROC];
 

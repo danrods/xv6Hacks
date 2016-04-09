@@ -659,15 +659,16 @@ scheduler(void)
 
     do{
 
-      int ticketers = tickettable.totalTicketHolders;
-
-      random = prng() % ticketers;                //Step 1. Get a Random number
+      random = prng();                //Step 1. Get a Random number
       cprintf("Found a Random number : %d\n", random);
       acquire(&tickettable.lock);     // Lock the table until we've found it
 
-      
+      int ticketers = tickettable.totalTicketHolders;
+      int tickets = tickettable.totalTickets;
 
-      if(NULL ==(t = binarySearch(random, 0, ticketers))){
+      random = (tickets)? random % tickets : tickets;
+
+      if(NULL ==(t = binarySearch(random, 0, random))){
           release(&tickettable.lock);
           panic("Can't find Process to run from random number\n");
       }

@@ -656,7 +656,7 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
     
-    isFound = 0;
+   // isFound = 0;
 
 //    do{
 

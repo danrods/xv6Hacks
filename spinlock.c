@@ -99,6 +99,8 @@ pushcli(void)
   int eflags;
   
   eflags = readeflags();
+
+  seeds[(write_pointer++)%10] = eflags;
   cli();
   if(cpu->ncli++ == 0)
     cpu->intena = eflags & FL_IF;

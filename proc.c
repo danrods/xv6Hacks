@@ -29,10 +29,14 @@ extern void trapret(void);
 static int getTicketAmount(struct proc * proc);
 static void wakeup1(void *chan);
 
+int read_pointer = 0;
+int write_pointer = 0;
+int seeds[10];
 static void getseeds(uint *val);
 uint prng(void);
 
 TicketHolder* binarySearch(uint random, int start, int end);
+
 
 static void updateTicketHolders(struct TicketHolder* holder); 
 
@@ -871,12 +875,8 @@ ticketdump(void){
 
 static void
 getseeds(uint *val) {
-  uint reg1, reg2;
-  asm("movl %%esp,%0" : "=r"(reg1));
-  asm("movl %%esi,%0" : "=r"(reg2));
-  cprintf("Found reg values : ESP-->%d\t ESI-->%d\n", reg1, reg2);
-  *val = reg1;
-  *(val + 1) = reg2;
+  *val = (uint)seeds[(read_pointer++) % 10];
+  *(val + 1) = (uint)seeds[(read_pointer++) % 10];
 }
 
 // Title: xorshift+
@@ -888,6 +888,7 @@ uint
 prng(void) {
   uint s[2];
   getseeds((uint*)&s);
+  cprintf("first d%; second d% ", s[0], s[1]);
   uint x = s[0];
   uint const y = s[1];
   s[0] = y;

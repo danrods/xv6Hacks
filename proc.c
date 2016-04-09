@@ -667,14 +667,14 @@ scheduler(void)
 
       if(NULL ==(t = binarySearch(random, 0, ticketers))){
           release(&tickettable.lock);
-          panic("Can't find Process to run from random number %d\n", random);
+          panic("Can't find Process to run from random number\n");
       }
 
       release(&tickettable.lock);
 
 
       cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",
-                       t->totalTickets, t->runningTotal, states[t->status],t->proc);
+                       t->totalTickets, t->runningTotal, t->status,t->proc);
 
       if(t->status == AVAILABLE || t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
         cprintf("Will not be scheduling a process that was killed.\n");

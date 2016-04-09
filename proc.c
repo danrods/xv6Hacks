@@ -183,7 +183,7 @@ found:
 
 
 
-#endif
+//#endif
 
 /**
 * Convenience method to return the amount of tickets based on the nice value of the process.
@@ -844,7 +844,7 @@ getseeds(uint *val) {
   seeds[index] = ran;
 
   *val = (uint)seeds[index];
-  if (index + 1 < len)
+  if (index + 1 < 10)
   {
     *(val + 1) = (uint)seeds[index+1];
   }
@@ -865,6 +865,7 @@ static uint
 prng(void) {
   uint s[2];
   getseeds((uint*)&s);
+  cprintf("first d%; second d% ", s[0], s[1]);
   uint x = s[0];
   uint const y = s[1];
   s[0] = y;

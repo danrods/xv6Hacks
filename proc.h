@@ -50,10 +50,12 @@ struct context {
   uint eip;
 };
 
+enum ticketstate {AVAILABLE, BOUGHT};
 
 struct TicketHolder{
   int totalTickets;
   int runningTotal;
+  enum ticketstate status;
   struct proc* proc;
 };
 

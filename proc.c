@@ -12,6 +12,14 @@ struct {
   struct proc proc[NPROC];
 } ptable;
 
+struct {
+  int totalTickets;
+  int totalTicketHolders;
+  struct spinlock lock;
+  struct TicketHolder holders[NPROC];
+} tickettable;
+
+
 static struct proc *initproc;
 
 int nextpid = 1;
@@ -26,9 +34,6 @@ static uint prng(void);
 
 static TicketHolder binarySearch(int rand, int start, int end);
 
-int totalTickets;
-int totalTicketHolders;
-struct TicketHolder holders[NPROC];
 
 void
 pinit(void)
@@ -36,7 +41,8 @@ pinit(void)
   initlock(&ptable.lock, "ptable");
 
   #ifndef lottery
-  memset(holders, 0, NPROC * sizeof(struct TicketHolder));
+  initlock(&tickettable.lock, "tickettable");
+  //memset(holders, 0, NPROC * sizeof(struct TicketHolder));
   #endif
 }
 
@@ -138,32 +144,38 @@ found:
   p->context->eip = (uint)forkret;
 
 
-
+  int i = 0;
   struct TicketHolder* t;
-  uint random = prng();
 
-  if((t = binarySearch(random, 0, NPROC))){
+  acquire(&tickettable.lock);
+  for(t = tickettable.holders; t < &tickettable.holders[NPROC]; t++, i++)
+    if(t->status == AVAILABLE)
+      goto found_ticket;
+  release(&tickettable.lock);
+  return 0;
 
-  }
-  else{
-      panic("Can't find Process to run from random number %d", random)
-  }
 
-  for(t=holders; t && t < &holders[NPROC];t++){
-     if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
-        t->proc = p;
-        t->totalTickets = getTicketAmount(p); 
+found_ticket:
 
-        //If we're not the first location lets get the previous running total and add to it.
-        t->runningTotal = (t > holders ) ? ( ( (t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; //I think this works
-        p->stub = t;
-
-        //cprintf("Successfully Added a Holder to a process with %d tickets at position %d\n", t->totalTickets, i);
-     }
+  if(NULL == t){ //If we didn't find any tickets, then we haven't found any processes. Should really never be here.
+      panic("Process array size is less than ticket array size %d\n", random)
   }
 
+  t->status = BOUGHT;
+  t->totalTickets = getTicketAmount(p);
 
-//  cprintf("Created new Process with pid : %d\n", p->pid);
+  //I think this works to update the runnningTotal. If the ticket index > 0, get the previous and add this ticket count.
+  t->runningTotal = (i) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
+
+  tickettable.totalTickets += t->totalTickets; 
+  tickettable.totalTicketHolders++;
+  updateTicketHolders(i); //Fix the runningTotal to reflect the change
+  release(&tickettable.lock);
+
+  t->proc = p;
+  p->stub = t;
+
+  cprintf("Successfully Added a Holder to process %d with %d tickets at position %d\n" p->pid, t->totalTickets, i);
   return p;
 }
 
@@ -177,28 +189,30 @@ found:
 static
 int getTicketAmount(struct proc * proc){
 
+  if(NULL == proc) return 3; //shouldn't be null
+
   int returnVal = 3;//By Default Return the default value for 120
 
-    if(proc > 139){//Too High
+    if(proc->nice > 139){//Too High
         cprintf("Nice value is too high!");
         proc->nice = 120;
     }
-    else if(proc == 139){
+    else if(proc->nice == 139){
         returnVal =  1;
     }
-    else if(proc > 129){ // 130 - 138
+    else if(proc->nice > 129){ // 130 - 138
         returnVal =  2;
     }
-    else if(proc > 119){ // 120 - 129
+    else if(proc->nice > 119){ // 120 - 129
         returnVal =  3;
     } 
-    else if(proc > 109){ // 110 - 119
+    else if(proc->nice > 109){ // 110 - 119
         returnVal =  4;
     }
-    else if(proc > 100){ // 101 - 109
+    else if(proc->nice > 100){ // 101 - 109
         returnVal =  5;
     }
-    else if(proc == 100){ 
+    else if(proc->nice == 100){ 
         returnVal =  6;
     }
     else{ // Too Low
@@ -207,6 +221,26 @@ int getTicketAmount(struct proc * proc){
     }
 
     return returnVal; 
+}
+
+
+/**
+* Convenience method to update the runningTotal for the subsequent tickets after i.
+* NOTE : Tickettable Lock should be acquired before calling this method.
+*/
+static 
+void updateTicketHolders(int i){
+
+    if(i < 0 || i > NPROC) return; // i must be bounded by the size of the tickettable. 
+
+    struct TicketHolder t1, t2;
+    for(t1 = (tickettable.holders + i), t2 = t1 + 1;  //First pointer is at the initialized ticket, Second pointer is at the one after
+        t1 < &tickettable.holders[NPROC - 1], t2 < &tickettable.holders[NPROC]; //If the 1st & 2nd pointers are the second to last and last, continue
+        t1++, t2++){ 
+
+        if(t2->status == AVAILABLE) break; //Lets not add a runningTotal to unused tickets
+        t2->runningTotal = t1->runningTotal + t2->totalTickets;
+    }
 }
 
 //PAGEBREAK: 32
@@ -528,6 +562,28 @@ scheduler(void)
     uint random = prng();
 
     struct TicketHolder* t;
+
+
+    do{
+      if(NULL ==(t = binarySearch(random, 0, NPROC))){
+          panic("Can't find Process to run from random number %d\n", random)
+      }
+
+      if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
+        t->proc = p;
+        t->totalTickets = getTicketAmount(p); 
+
+        //If we're not the first location lets get the previous running total and add to it.
+        //t->runningTotal = (t > holders ) ? ( ( (t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; //I think this works
+        p->stub = t;
+
+        //cprintf("Successfully Added a Holder to a process with %d tickets at position %d\n", t->totalTickets, i);
+      }
+      else{
+
+      }
+    
+    }while(! isFound); //While we didn't find a valid process
 
 
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){

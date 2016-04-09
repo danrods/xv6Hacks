@@ -184,7 +184,7 @@ found_ticket:
   if(nextInd >= 0 && nextInd < NPROC){ //So long as the next Index is less than the total number of processes, and non-negative
 
       if(NULL == (t = &tickettable.holders[nextInd])){
-          panic(" Error fetching ticket holder %d\n", random)
+          panic(" Error fetching ticket holder\n");
       }
 
       t->status = BOUGHT;
@@ -204,7 +204,7 @@ found_ticket:
     return 0;
   }
 
-  cprintf("Successfully Added a Holder to process %d with %d tickets at position %d\n", p->pid, t->totalTickets, i);
+  cprintf("Successfully Added a Holder to process %d with %d tickets\n", p->pid, t->totalTickets);
   return p;
 }
 
@@ -279,7 +279,7 @@ void updateTicketHolders(struct TicketHolder* holder){
 
     struct TicketHolder *t1 = holder, *t2;
     for(t2 = t1 + 1;  //First pointer is at the initialized ticket, Second pointer is at the one after
-        t1 < &tickettable.holders[ticketHolders - 1], t2 < &tickettable.holders[ticketHolders]; //If the 1st & 2nd pointers are the second to last and last, continue
+        t2 < &tickettable.holders[ticketHolders]; //While the 1st & 2nd pointers are less than the second to last and last, continue
         t1++, t2++){ 
 
         if(t2->status == AVAILABLE){
@@ -666,7 +666,7 @@ scheduler(void)
 * in the system. Searches from start - end, will do work recursively
 */
 static 
-TicketHolder binarySearch(int random, int start, int end){
+TicketHolder* binarySearch(int random, int start, int end){
      
      if(start > end) return NULL; // While start <= end continue
      
@@ -681,7 +681,7 @@ TicketHolder binarySearch(int random, int start, int end){
     if( (lastTicket >= random) && (ticketStart <= random) ){ 
         struct proc* winner = holders[mid]->proc;
         cprintf("Found Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}", winner->name, winner->nice, winner->pid, winner->killed);
-        return holders[mid];
+        return &holders[mid];
     }
     else if(lastTicket < random ){ // It's bigger
         return binarySearch(random, mid + 1, end);

@@ -32,7 +32,7 @@ static void wakeup1(void *chan);
 static void getseeds(uint *val);
 static uint prng(void);
 
-static TicketHolder* binarySearch(int rand, int start, int end);
+static TicketHolder* binarySearch(uint random, int start, int end);
 
 static void updateTicketHolders(struct TicketHolder* holder); 
 
@@ -553,7 +553,7 @@ wait(void)
 * in the system. Searches from start - end, will do work recursively
 */
 static 
-TicketHolder* binarySearch(int random, int start, int end){
+TicketHolder* binarySearch(uint random, int start, int end){
      
      if(start > end) return NULL; // While start <= end continue
      
@@ -566,7 +566,7 @@ TicketHolder* binarySearch(int random, int start, int end){
 
     //Is the random number bound by the current TicketHolder 
     if( (lastTicket >= random) && (ticketStart <= random) ){ 
-        struct proc* winner = holders[mid]->proc;
+        struct proc* winner = (&holders[mid])->proc;
         cprintf("Found Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}", winner->name, winner->nice, winner->pid, winner->killed);
         return &holders[mid];
     }

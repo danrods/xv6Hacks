@@ -588,7 +588,7 @@ TicketHolder* binarySearch(uint random, int start, int end){
 
 
 
-#ifndef lottery
+#ifdef lottery
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.

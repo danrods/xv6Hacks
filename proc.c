@@ -30,9 +30,9 @@ static int getTicketAmount(struct proc * proc);
 static void wakeup1(void *chan);
 
 static void getseeds(uint *val);
-static uint prng(void);
+uint prng(void);
 
-static TicketHolder* binarySearch(uint random, int start, int end);
+TicketHolder* binarySearch(uint random, int start, int end);
 
 static void updateTicketHolders(struct TicketHolder* holder); 
 
@@ -553,8 +553,7 @@ wait(void)
 * Method that will perform binary search to find which process should be running.
 * Random is a randomly generated number between 0 and the number of tickets that exist 
 * in the system. Searches from start - end, will do work recursively
-*/
-static 
+*/ 
 TicketHolder* binarySearch(uint random, int start, int end){
      
      if(start > end) return NULL; // While start <= end continue
@@ -886,7 +885,7 @@ getseeds(uint *val) {
 // Date: 4/2/2016
 // Availability: https://en.wikipedia.org/wiki/Xorshift#xorshift+
 // Pseudo random number generator
-static uint 
+uint 
 prng(void) {
   uint s[2];
   getseeds((uint*)&s);

@@ -29,8 +29,9 @@ extern void trapret(void);
 //static int getTicketAmount(struct proc * proc);
 static void wakeup1(void *chan);
 
-static int count = 0;
-static int seeds[10] = {};
+int read_pointer = 0;
+int write_pointer = 0;
+int seeds[10];
 static void getseeds(uint *val);
 static uint prng(void);
 
@@ -839,21 +840,9 @@ procdump(void)
 
 static void
 getseeds(uint *val) {
-  int ran = proc->eflags;
-  int index = count % 10;
-  seeds[index] = ran;
+  *val = (uint)seeds[(read_pointer++) % 10];
+  *(val + 1) = (uint)seeds[(read_pointer++) % 10];
 
-  *val = (uint)seeds[index];
-  if (index + 1 < 10)
-  {
-    *(val + 1) = (uint)seeds[index+1];
-  }
-  else {
-    *(val + 1) = (uint)seeds[0];
-  }
-
-  count += 1;
-  
 }
 
 // Title: xorshift+

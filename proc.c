@@ -663,7 +663,6 @@ scheduler(void)
       cprintf("Found a Random number : %d\n", random);
       acquire(&tickettable.lock);     // Lock the table until we've found it
 
-      int ticketers = tickettable.totalTicketHolders;
       int tickets = tickettable.totalTickets;
 
       random = (tickets)? random % tickets : tickets;

@@ -26,7 +26,7 @@ int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
 
-static int getTicketAmount(struct proc * proc);
+//static int getTicketAmount(struct proc * proc);
 static void wakeup1(void *chan);
 
 static int count = 0;
@@ -188,42 +188,42 @@ found:
 /**
 * Convenience method to return the amount of tickets based on the nice value of the process.
 */
-static
-int getTicketAmount(struct proc * proc){
+// static
+// int getTicketAmount(struct proc * proc){
 
-  if(NULL == proc) return 3; //shouldn't be null
+//   if(NULL == proc) return 3; //shouldn't be null
 
-  int returnVal = 3;//By Default Return the default value for 120
+//   int returnVal = 3;//By Default Return the default value for 120
 
-    if(proc->nice > 139){//Too High
-        cprintf("Nice value is too high!");
-        proc->nice = 120;
-    }
-    else if(proc->nice == 139){
-        returnVal =  1;
-    }
-    else if(proc->nice > 129){ // 130 - 138
-        returnVal =  2;
-    }
-    else if(proc->nice > 119){ // 120 - 129
-        returnVal =  3;
-    } 
-    else if(proc->nice > 109){ // 110 - 119
-        returnVal =  4;
-    }
-    else if(proc->nice > 100){ // 101 - 109
-        returnVal =  5;
-    }
-    else if(proc->nice == 100){ 
-        returnVal =  6;
-    }
-    else{ // Too Low
-        cprintf("Nice value is too low!");
-        proc->nice = 120;
-    }
+//     if(proc->nice > 139){//Too High
+//         cprintf("Nice value is too high!");
+//         proc->nice = 120;
+//     }
+//     else if(proc->nice == 139){
+//         returnVal =  1;
+//     }
+//     else if(proc->nice > 129){ // 130 - 138
+//         returnVal =  2;
+//     }
+//     else if(proc->nice > 119){ // 120 - 129
+//         returnVal =  3;
+//     } 
+//     else if(proc->nice > 109){ // 110 - 119
+//         returnVal =  4;
+//     }
+//     else if(proc->nice > 100){ // 101 - 109
+//         returnVal =  5;
+//     }
+//     else if(proc->nice == 100){ 
+//         returnVal =  6;
+//     }
+//     else{ // Too Low
+//         cprintf("Nice value is too low!");
+//         proc->nice = 120;
+//     }
 
-    return returnVal; 
-}
+//     return returnVal; 
+// }
 
 
 /**
@@ -588,24 +588,24 @@ scheduler(void)
     // }while(! isFound); //While we didn't find a valid process
 
 
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
+    // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    //   if(p->state != RUNNABLE)
+    //     continue;
 
       
 
-      for(t=holders; t && t < &holders[NPROC];t++){
-         if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
-            t->proc = p;
-            t->totalTickets = getTicketAmount(p); 
+    //   for(t=holders; t && t < &holders[NPROC];t++){
+    //      if(t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
+    //         t->proc = p;
+    //         t->totalTickets = getTicketAmount(p); 
 
-            //If we're not the first location lets get the previous running total and add to it.
-            t->runningTotal = (t > holders ) ? ( ( (t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; //I think this works
-            p->stub = t;
+    //         //If we're not the first location lets get the previous running total and add to it.
+    //         t->runningTotal = (t > holders ) ? ( ( (t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; //I think this works
+    //         p->stub = t;
 
-            //cprintf("Successfully Added a Holder to a process with %d tickets at position %d\n", t->totalTickets, i);
-         }
-      }
+    //         //cprintf("Successfully Added a Holder to a process with %d tickets at position %d\n", t->totalTickets, i);
+    //      }
+    //   }
         
 
 

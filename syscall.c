@@ -101,6 +101,7 @@ extern int sys_uptime(void);
 extern int sys_wolfie(void);
 extern int sys_nice(void);
 extern int sys_printTickets(void);
+extern int sys_prng(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,

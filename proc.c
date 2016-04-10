@@ -154,6 +154,42 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+
+
+  struct TicketHolder* t = NULL;
+  acquire(&tickettable.lock);
+
+  int nextInd = tickettable.totalTicketHolders;
+  if(nextInd >= 0 && nextInd < NPROC){ //So long as the next Index is less than the total number of processes, and non-negative
+
+      if(NULL == (t = &tickettable.holders[nextInd])){
+          panic(" Error fetching ticket holder\n");
+      }
+
+      t->status = BOUGHT;
+      t->totalTickets = getTicketAmount(np);
+      t->runningTotal = (nextInd) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
+      tickettable.totalTickets += t->totalTickets; 
+      tickettable.totalTicketHolders++;
+
+      release(&tickettable.lock);
+
+      t->proc = np;
+      np->stub = t;
+
+  }
+  else{ //Else there was some kind of error
+    cprintf("Error! Too many processes or impl error --> nextIND : %d\n", nextInd);
+    release(&tickettable.lock);
+    return 0;
+  }
+
+  cprintf("Successfully Added a Holder to process %d with %d tickets\n", np->pid, t->totalTickets);
+  
+
+
+
+
   return p;
 }
 
@@ -338,47 +374,6 @@ fork(void)
   safestrcpy(np->name, proc->name, sizeof(proc->name));
  
   pid = np->pid;
-
-
-#ifndef lottery
-
-
-  if(proc->stub == NULL){
-
-      struct TicketHolder* t = NULL;
-      acquire(&tickettable.lock);
-
-      int nextInd = tickettable.totalTicketHolders;
-      if(nextInd >= 0 && nextInd < NPROC){ //So long as the next Index is less than the total number of processes, and non-negative
-
-          if(NULL == (t = &tickettable.holders[nextInd])){
-              panic(" Error fetching ticket holder\n");
-          }
-
-          t->status = BOUGHT;
-          t->totalTickets = getTicketAmount(np);
-          t->runningTotal = (nextInd) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
-          tickettable.totalTickets += t->totalTickets; 
-          tickettable.totalTicketHolders++;
-
-          release(&tickettable.lock);
-
-          t->proc = np;
-          np->stub = t;
-
-      }
-      else{ //Else there was some kind of error
-        cprintf("Error! Too many processes or impl error --> nextIND : %d\n", nextInd);
-        release(&tickettable.lock);
-        return 0;
-      }
-
-      cprintf("Successfully Added a Holder to process %d with %d tickets\n", np->pid, t->totalTickets);
-  }
-  
-
-
-#endif
 
 
   // lock to force the compiler to emit the np->state write last.

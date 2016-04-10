@@ -26,7 +26,7 @@ int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
 
-static int getTicketAmount(struct proc * proc);
+
 static void wakeup1(void *chan);
 
 int read_pointer = 0;
@@ -37,8 +37,12 @@ uint prng(void);
 
 TicketHolder* binarySearch(uint random, int start, int end);
 
+#ifndef lottery
 
 static void updateTicketHolders(struct TicketHolder* holder); 
+static int getTicketAmount(struct proc * proc);
+
+#endif
 
 void
 pinit(void)

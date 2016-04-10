@@ -32,6 +32,8 @@ static void wakeup1(void *chan);
 int read_pointer = 0;
 int write_pointer = 0;
 int seeds[10];
+int M = 16873;
+uint random_number = 0;
 static void getseeds(uint *val);
 
 
@@ -873,32 +875,39 @@ ticketdump(void){
   }
 }
 
-static void
-getseeds(uint *val) {
-  // *val = (uint)seeds[(read_pointer++) % 10];
-  // *(val + 1) = (uint)seeds[(read_pointer++) % 10];
-  struct rtcdate *rt;
-  uint sec = rt->second;
-  *val = sec;
-  uint sec1 = rt->second;
-  *(val + 1) = sec1;
-}
+// static void
+// getseeds(uint *val) {
+//   // *val = (uint)seeds[(read_pointer++) % 10];
+//   // *(val + 1) = (uint)seeds[(read_pointer++) % 10];
+//   struct rtcdate *rt;
+//   uint sec = rt->second;
+//   *val = sec;
+//   uint sec1 = rt->second;
+//   *(val + 1) = sec1;
+// }
 
 // Title: xorshift+
 // Author: Saito and Matsumoto
 // Date: 4/2/2016
 // Availability: https://en.wikipedia.org/wiki/Xorshift#xorshift+
 // Pseudo random number generator
+// uint 
+// prng(void) {
+//   uint s[2];
+//   getseeds((uint*)&s);
+//   cprintf("first %d; second %d \n", s[0], s[1]);
+//   uint x = s[0];
+//   uint const y = s[1];
+//   s[0] = y;
+//   x ^= x << 23; // a
+//   s[1] = x ^ y ^ (x >> 17) ^ (y >> 26); // b, c
+//   return s[1] + y;
+// }
+
 uint 
 prng(void) {
-  uint s[2];
-  getseeds((uint*)&s);
-  cprintf("first %d; second %d \n", s[0], s[1]);
-  uint x = s[0];
-  uint const y = s[1];
-  s[0] = y;
-  x ^= x << 23; // a
-  s[1] = x ^ y ^ (x >> 17) ^ (y >> 26); // b, c
-  return s[1] + y;
+  x = x * x;
+  x = x % M;
+  cprintf("%d \n", x);
+  return x;
 }
-

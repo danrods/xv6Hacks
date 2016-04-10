@@ -1,7 +1,7 @@
 #include "types.h"
 #include "user.h"
 
-#define RUN 0x48964
+#define RUN 100
 
 
 
@@ -11,7 +11,7 @@ main(int argc, char *argv[]) {
 	for (i = 0; i < RUN; ++i)
 	{
 		uint index = prng();
-		printf(1, "%d : %d", i, index);
+		printf(1, "%d : %d \n", i, index);
 	}
 
 	exit();

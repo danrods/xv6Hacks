@@ -911,6 +911,7 @@ uint
 prng(uint upper) {
   random_number = random_number * random_number;
   random_number = random_number % M;
-  random_number = random_number / M * upper;
-  return random_number;
+  uint x = x / M * upper;
+  cprintf("random: %d; x: %d", random_number, x);
+  return x;
 }

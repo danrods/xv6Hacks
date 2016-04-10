@@ -545,10 +545,10 @@ wait(void)
 */ 
 TicketHolder* binarySearch(uint random, int start, int end){
      
+     cprintf("Binary Search --> {Random: %d, Start: %d, End: %d\n", random, start, end);
      if(start > end) return NULL; // While start <= end continue
      
     int mid = (start + end) / 2;
-
 
     
     int ticketStart = (&tickettable.holders[mid])->runningTotal - (&tickettable.holders[mid])->totalTickets;
@@ -557,18 +557,19 @@ TicketHolder* binarySearch(uint random, int start, int end){
     //Is the random number bound by the current TicketHolder 
     if( (lastTicket >= random) && (ticketStart <= random) ){ 
         struct proc* winner = (&tickettable.holders[mid])->proc;
-        cprintf("Found Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}\n", winner->name, winner->nice, winner->pid, winner->killed);
+        cprintf("\tFound Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}\n", winner->name, winner->nice, winner->pid, winner->killed);
         return &tickettable.holders[mid];
     }
     else if(lastTicket < random ){ // It's bigger
+        cprintf("\tRecursive Bigger\n");
         return binarySearch(random, mid + 1, end);
     }
     else if(ticketStart > random ) { // It's smaller
+        cprintf("\tRecursive Smaller\n");
         return binarySearch(random, start, mid);
     }
     else{
       cprintf("It's not bigger than or less than and not bounded by. ERR!\n");
-      panic("scheduler - binary search");
     }
 
     return NULL;
@@ -666,7 +667,6 @@ scheduler(void)
 
           if(t->status == AVAILABLE || t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
             cprintf("Will not be scheduling a process that was killed.\n");
-
           } 
           else{
             //isFound = 1;

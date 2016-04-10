@@ -561,7 +561,7 @@ sys_printTickets(void){
   return 0;
 }
 
-int
+uint
 sys_prng(void) {
   return prng();
 }

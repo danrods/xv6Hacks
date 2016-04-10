@@ -33,7 +33,7 @@ int read_pointer = 0;
 int write_pointer = 0;
 int seeds[10];
 static void getseeds(uint *val);
-uint prng(void);
+
 
 TicketHolder* binarySearch(uint random, int start, int end);
 

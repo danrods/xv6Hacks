@@ -666,7 +666,10 @@ scheduler(void)
 
           //cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",t->totalTickets, t->runningTotal, t->status,t->proc);
 
-          if(t->status == AVAILABLE || t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
+          if(t->status == AVAILABLE || 
+                        t->proc == 0 || 
+                        t->proc->killed||
+                        t->proc->state != RUNNABLE){ //If there's no process for this ticket, or if the proc was killed
             cprintf("Will not be scheduling a process that was killed.\n");
           } 
           else{

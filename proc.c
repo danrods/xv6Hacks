@@ -666,33 +666,31 @@ scheduler(void)
 
           //cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",t->totalTickets, t->runningTotal, t->status,t->proc);
 
-          if(t->status == AVAILABLE || 
-                        t->proc == 0 || 
-                        t->proc->killed||
-                        t->proc->state != RUNNABLE){ //If there's no process for this ticket, or if the proc was killed
-            cprintf("Will not be scheduling a process that was killed.\n");
-          } 
+          if(t->status == AVAILABLE)
+                cprintf("Ticket is not Bought!\n");
+          else if(t->proc == 0 || t->proc->killed)
+                cprintf("Will not be scheduling a process that was killed.\n");
+          else if(t->proc->state != RUNNABLE)
+                cprintf("Process is not Runnable.\n");
           else{
             //isFound = 1;
             p = t->proc;
           
-          // Switch to chosen process.  It is the process's job
-          // to release ptable.lock and then reacquire it
-          // before jumping back to us.
-          proc = p;
-          switchuvm(p);
-          p->state = RUNNING;
-          swtch(&cpu->scheduler, proc->context);
-          switchkvm();
+            // Switch to chosen process.  It is the process's job
+            // to release ptable.lock and then reacquire it
+            // before jumping back to us.
+            proc = p;
+            switchuvm(p);
+            p->state = RUNNING;
+            swtch(&cpu->scheduler, proc->context);
+            switchkvm();
 
-          // Process is done running for now.
-          // It should have changed its p->state before coming back.
-          proc = 0;
+            // Process is done running for now.
+            // It should have changed its p->state before coming back.
+            proc = 0;
         }
       }
       else release(&tickettable.lock);
-
-//    }while(! isFound); //While we didn't find a valid process
 
     
 

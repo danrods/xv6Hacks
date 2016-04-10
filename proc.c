@@ -875,8 +875,13 @@ ticketdump(void){
 
 static void
 getseeds(uint *val) {
-  *val = (uint)seeds[(read_pointer++) % 10];
-  *(val + 1) = (uint)seeds[(read_pointer++) % 10];
+  // *val = (uint)seeds[(read_pointer++) % 10];
+  // *(val + 1) = (uint)seeds[(read_pointer++) % 10];
+  struct rtcdate *rt;
+  uint sec = rt->second;
+  *val = sec;
+  uint sec1 = rt->second;
+  *(val + 1) = sec1;
 }
 
 // Title: xorshift+

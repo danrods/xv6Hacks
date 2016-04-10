@@ -560,3 +560,9 @@ sys_printTickets(void){
   ticketdump();
   return 0;
 }
+
+int
+sys_prng(void) {
+  prng();
+  return 0;
+}

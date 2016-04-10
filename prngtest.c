@@ -12,7 +12,7 @@ main(int argc, char *argv[]) {
 	for (i = 0; i < RUN; ++i)
 	{
 		uint index = prng(20);
-		table[index] += table[index];
+		table[index] = ++table[index];
 	}
 
 	int j;

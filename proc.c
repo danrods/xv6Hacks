@@ -662,19 +662,16 @@ scheduler(void)
           release(&tickettable.lock);
 
 
-          cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",
-                           t->totalTickets, t->runningTotal, t->status,t->proc);
+          //cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",t->totalTickets, t->runningTotal, t->status,t->proc);
 
           if(t->status == AVAILABLE || t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
             cprintf("Will not be scheduling a process that was killed.\n");
-            release(&tickettable.lock);
+
           } 
           else{
             //isFound = 1;
             p = t->proc;
           
-
-
           // Switch to chosen process.  It is the process's job
           // to release ptable.lock and then reacquire it
           // before jumping back to us.

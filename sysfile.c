@@ -563,6 +563,5 @@ sys_printTickets(void){
 
 int
 sys_prng(void) {
-  prng();
-  return 0;
+  return prng();
 }

@@ -338,7 +338,7 @@ fork(void)
   pid = np->pid;
 
 
-#ifdef lottery
+#ifndef lottery
 
 
   if(proc->stub == NULL){

@@ -897,7 +897,8 @@ ticketdump(void){
   struct TicketHolder* t;
   int i = 0;
   for(t=tickettable.holders; t && t < &tickettable.holders[NPROC];t++,i++){
-    cprintf("Found Ticket %d: { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",i, t->totalTickets, t->runningTotal, states[t->status],t->proc);
+    if(t->status == BOUGHT)
+      cprintf("Found Ticket %d: { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",i, t->totalTickets, t->runningTotal, states[t->status],t->proc);
   }
 }
 

@@ -875,8 +875,8 @@ ticketdump(void){
 
 static void
 getseeds(uint *val) {
-  *val = (uint)seeds[(++read_pointer) % 10];
-  *(val + 1) = (uint)seeds[(++read_pointer) % 10];
+  *val = (uint)seeds[(read_pointer++) % 10];
+  *(val + 1) = (uint)seeds[(read_pointer++) % 10];
 }
 
 // Title: xorshift+

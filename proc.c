@@ -552,15 +552,17 @@ TicketHolder* binarySearch(uint random, int start, int end){
 
     
     int ticketStart = (&tickettable.holders[mid])->runningTotal - (&tickettable.holders[mid])->totalTickets;
-    int lastTicket = tickettable.holders[mid].runningTotal;
+    int ticketEnd = tickettable.holders[mid].runningTotal;
+
+    cprintf("\tMiddle Ticket --> {TicketStart: %d, lastTicket: %d}\n", ticketStart, lastTicket);
 
     //Is the random number bound by the current TicketHolder 
-    if( (lastTicket >= random) && (ticketStart <= random) ){ 
+    if((ticketEnd >= random) && (ticketStart <= random) ){ 
         struct proc* winner = (&tickettable.holders[mid])->proc;
         cprintf("\tFound Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}\n", winner->name, winner->nice, winner->pid, winner->killed);
         return &tickettable.holders[mid];
     }
-    else if(lastTicket < random ){ // It's bigger
+    else if(ticketEnd < random ){ // It's bigger
         cprintf("\tRecursive Bigger\n");
         return binarySearch(random, mid + 1, end);
     }

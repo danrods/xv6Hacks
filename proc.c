@@ -875,8 +875,8 @@ ticketdump(void){
 
 static void
 getseeds(uint *val) {
-  *val = (uint)seeds[(read_pointer++) % 10];
-  *(val + 1) = (uint)seeds[(read_pointer++) % 10];
+  *val = (uint)seeds[(++read_pointer) % 10];
+  *(val + 1) = (uint)seeds[(++read_pointer) % 10];
 }
 
 // Title: xorshift+
@@ -888,7 +888,7 @@ uint
 prng(void) {
   uint s[2];
   getseeds((uint*)&s);
-  cprintf("first %d; second %d", s[0], s[1]);
+  cprintf("first %d; second %d \n", s[0], s[1]);
   uint x = s[0];
   uint const y = s[1];
   s[0] = y;

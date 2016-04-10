@@ -8,10 +8,9 @@ main(int argc, char *argv[]) {
 	int i;
 	for (i = 0; i < RUN; ++i)
 	{
-		uint index = prng();
+		int index = prng();
 		printf(1, "%d : %d", i, index);
 	}
-
 
 	exit();
 }

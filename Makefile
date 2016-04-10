@@ -181,7 +181,7 @@ UPROGS=\
 	_cowtest\
 	_nicetest\
 	_printTickets\
-	-prgntest\
+	_prgntest\
 
 
 fs.img: mkfs README $(UPROGS)

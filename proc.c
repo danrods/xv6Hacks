@@ -34,7 +34,7 @@ int write_pointer = 0;
 int seeds[10];
 int M = 16873;
 uint random_number = 0;
-static void getseeds(uint *val);
+//static void getseeds(uint *val);
 
 
 TicketHolder* binarySearch(uint random, int start, int end);

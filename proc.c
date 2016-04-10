@@ -904,10 +904,13 @@ ticketdump(void){
 //   return s[1] + y;
 // }
 
+
+// Title: Blum Blum Shub Generator
+// Availability: https://en.wikipedia.org/wiki/Blum_Blum_Shub
 uint 
-prng(void) {
+prng(uint upper) {
   random_number = random_number * random_number;
   random_number = random_number % M;
-  cprintf("%d \n", random_number);
+  random_number = random_number / M * n;
   return random_number;
 }

@@ -373,7 +373,7 @@ fork(void)
         return 0;
       }
 
-      cprintf("Successfully Added a Holder to process %d with %d tickets\n", p->pid, t->totalTickets);
+      cprintf("Successfully Added a Holder to process %d with %d tickets\n", np->pid, t->totalTickets);
   }
   
 

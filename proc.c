@@ -167,7 +167,7 @@ found:
       }
 
       t->status = BOUGHT;
-      t->totalTickets = getTicketAmount(np);
+      t->totalTickets = getTicketAmount(p);
       t->runningTotal = (nextInd) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
       tickettable.totalTickets += t->totalTickets; 
       tickettable.totalTicketHolders++;

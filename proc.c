@@ -356,15 +356,15 @@ fork(void)
           }
 
           t->status = BOUGHT;
-          t->totalTickets = getTicketAmount(p);
+          t->totalTickets = getTicketAmount(np);
           t->runningTotal = (nextInd) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
           tickettable.totalTickets += t->totalTickets; 
           tickettable.totalTicketHolders++;
 
           release(&tickettable.lock);
 
-          t->proc = p;
-          p->stub = t;
+          t->proc = np;
+          np->stub = t;
 
       }
       else{ //Else there was some kind of error

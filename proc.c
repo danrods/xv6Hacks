@@ -673,7 +673,7 @@ scheduler(void)
           else if(t->proc->state != RUNNABLE)
                 cprintf("Process is not Runnable.\n");
           else{
-            //isFound = 1;
+            cprintf("Lets get Scheduled!\n");
             p = t->proc;
           
             // Switch to chosen process.  It is the process's job

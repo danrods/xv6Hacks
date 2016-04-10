@@ -641,21 +641,15 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
 
-    // Loop over process table looking for process to run.
     acquire(&ptable.lock);
     
-   // isFound = 0;
-
-//    do{
-
-
       random = prng();                //Step 1. Get a Random number
       acquire(&tickettable.lock);     // Lock the table until we've found it
 
       procdump();
       ticketdump();
 
-      if((tickets = tickettable.totalTickets)){
+      if((tickets = tickettable.totalTickets)){ // if there are any tickets
 
           random = (tickets)? random % tickets : tickets;
 
@@ -673,6 +667,7 @@ scheduler(void)
 
           if(t->status == AVAILABLE || t->proc == 0 || t->proc->killed){ //If there's no process for this ticket, or if the proc was killed
             cprintf("Will not be scheduling a process that was killed.\n");
+            release(&tickettable.lock);
           } 
           else{
             //isFound = 1;

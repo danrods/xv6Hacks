@@ -1,7 +1,7 @@
 #include "types.h"
 #include "user.h"
 
-#define RUN 100
+#define RUN 1000
 
 
 

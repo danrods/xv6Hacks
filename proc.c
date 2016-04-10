@@ -545,7 +545,7 @@ wait(void)
 */ 
 TicketHolder* binarySearch(uint random, int start, int end){
      
-     cprintf("Binary Search --> {Random: %d, Start: %d, End: %d\n", random, start, end);
+     //cprintf("Binary Search --> {Random: %d, Start: %d, End: %d\n", random, start, end);
      if(start > end) return NULL; // While start <= end continue
      
     int mid = (start + end) / 2;
@@ -554,24 +554,24 @@ TicketHolder* binarySearch(uint random, int start, int end){
     int ticketStart = (&tickettable.holders[mid])->runningTotal - (&tickettable.holders[mid])->totalTickets;
     int ticketEnd = tickettable.holders[mid].runningTotal;
 
-    cprintf("\tMiddle Ticket --> {TicketStart: %d, lastTicket: %d}\n", ticketStart, ticketEnd);
+    //cprintf("\tMiddle Ticket --> {TicketStart: %d, lastTicket: %d}\n", ticketStart, ticketEnd);
 
     //Is the random number bound by the current TicketHolder 
     if((ticketEnd >= random) && (ticketStart <= random) ){ 
-        struct proc* winner = (&tickettable.holders[mid])->proc;
-        cprintf("\tFound Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}\n", winner->name, winner->nice, winner->pid, winner->killed);
+        //struct proc* winner = (&tickettable.holders[mid])->proc;
+        //cprintf("\tFound Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}\n", winner->name, winner->nice, winner->pid, winner->killed);
         return &tickettable.holders[mid];
     }
     else if(ticketEnd < random ){ // It's bigger
-        cprintf("\tRecursive Bigger\n");
+        //cprintf("\tRecursive Bigger\n");
         return binarySearch(random, mid + 1, end);
     }
     else if(ticketStart > random ) { // It's smaller
-        cprintf("\tRecursive Smaller\n");
+        //cprintf("\tRecursive Smaller\n");
         return binarySearch(random, start, mid);
     }
     else{
-      cprintf("It's not bigger than or less than and not bounded by. ERR!\n");
+      //cprintf("It's not bigger than or less than and not bounded by. ERR!\n");
     }
 
     return NULL;
@@ -666,11 +666,11 @@ scheduler(void)
 
           //cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",t->totalTickets, t->runningTotal, t->status,t->proc);
 
-          if(t->status == AVAILABLE)
+          if(t->status == AVAILABLE){}
                 //cprintf("Ticket is not Bought!\n");
-          else if(t->proc == 0 || t->proc->killed)
+          else if(t->proc == 0 || t->proc->killed){}
                 //cprintf("Will not be scheduling a process that was killed.\n");
-          else if(t->proc->state != RUNNABLE)
+          else if(t->proc->state != RUNNABLE){}
                 //cprintf("Process is not Runnable.\n");
           else{
             //cprintf("Lets get Scheduled!\n");

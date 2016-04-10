@@ -175,7 +175,7 @@ found:
       release(&tickettable.lock);
 
       t->proc = p;
-      np->stub = t;
+      p->stub = t;
 
   }
   else{ //Else there was some kind of error

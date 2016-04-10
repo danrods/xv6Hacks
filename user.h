@@ -26,7 +26,7 @@ int uptime(void);
 int wolfie(void* buf, uint);
 int nice(int);
 void printTickets(void);
-int sys_prng(void);
+int prng(void);
 
 // ulib.c
 int stat(char*, struct stat*);

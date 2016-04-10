@@ -554,7 +554,7 @@ TicketHolder* binarySearch(uint random, int start, int end){
     int ticketStart = (&tickettable.holders[mid])->runningTotal - (&tickettable.holders[mid])->totalTickets;
     int ticketEnd = tickettable.holders[mid].runningTotal;
 
-    cprintf("\tMiddle Ticket --> {TicketStart: %d, lastTicket: %d}\n", ticketStart, lastTicket);
+    cprintf("\tMiddle Ticket --> {TicketStart: %d, lastTicket: %d}\n", ticketStart, ticketEnd);
 
     //Is the random number bound by the current TicketHolder 
     if((ticketEnd >= random) && (ticketStart <= random) ){ 

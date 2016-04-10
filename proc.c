@@ -487,10 +487,12 @@ exit(void)
     }
   }
 
+#ifndef lottery
   acquire(&tickettable.lock);
   cprintf("Updating Ticket Holders!\n");
   updateTicketHolders(p->stub); //Fix the runningTotal to reflect the change
   release(&tickettable.lock);
+#endif
 
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;

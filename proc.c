@@ -161,6 +161,9 @@ found:
 
 #endif
 
+
+#ifndef lottery
+
 /**
 * Convenience method to return the amount of tickets based on the nice value of the process.
 */
@@ -202,7 +205,6 @@ int getTicketAmount(struct proc * proc){
 }
 
 
-#ifndef lottery
 /**
 * Convenience method to update the runningTotal for the subsequent tickets after i.
 * NOTE : Tickettable Lock should be acquired before calling this method.

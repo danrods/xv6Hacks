@@ -227,6 +227,7 @@ int getTicketAmount(struct proc * proc){
 }
 
 
+#ifndef lottery
 /**
 * Convenience method to update the runningTotal for the subsequent tickets after i.
 * NOTE : Tickettable Lock should be acquired before calling this method.
@@ -266,6 +267,8 @@ void updateTicketHolders(struct TicketHolder* holder){
     tickettable.totalTickets -=  numTickets;
     tickettable.totalTicketHolders--;
 }
+
+#endif
 
 //PAGEBREAK: 32
 // Set up first user process.
@@ -873,6 +876,8 @@ ticketdump(void){
   }
 }
 
+#ifndef lottery
+
 static void
 getseeds(uint *val) {
   *val = (uint)seeds[(read_pointer++) % 10];
@@ -896,4 +901,6 @@ prng(void) {
   s[1] = x ^ y ^ (x >> 17) ^ (y >> 26); // b, c
   return s[1] + y;
 }
+
+#endif
 

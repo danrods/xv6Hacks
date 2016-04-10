@@ -23,3 +23,4 @@
 #define SYS_wolfie 22
 #define SYS_nice   23
 #define SYS_printTickets 24
+#define SYS_prng   25

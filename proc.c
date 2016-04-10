@@ -635,7 +635,7 @@ scheduler(void)
 //    do{
 
 
-      random = prng();                //Step 1. Get a Random number
+      random = prng(20);                //Step 1. Get a Random number
       acquire(&tickettable.lock);     // Lock the table until we've found it
 
       if((tickets = tickettable.totalTickets)){

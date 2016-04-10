@@ -906,8 +906,8 @@ ticketdump(void){
 
 uint 
 prng(void) {
-  x = x * x;
-  x = x % M;
-  cprintf("%d \n", x);
-  return x;
+  random_number = random_number * random_number;
+  random_number = random_number % M;
+  cprintf("%d \n", random_number);
+  return random_number;
 }

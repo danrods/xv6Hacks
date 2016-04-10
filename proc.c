@@ -911,6 +911,6 @@ uint
 prng(uint upper) {
   random_number = random_number * random_number;
   random_number = random_number % M;
-  random_number = random_number / M * n;
+  random_number = random_number / M * upper;
   return random_number;
 }

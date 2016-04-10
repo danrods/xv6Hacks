@@ -652,10 +652,10 @@ scheduler(void)
 
       if((tickets = tickettable.totalTickets)){ // if there are any tickets
 
-          random = (tickets)? random % tickets : tickets;
+          random = (tickets)? random % tickets : 0;
 
           cprintf("Found a Random number : %d\n", random);
-          if(NULL ==(t = binarySearch(random, 0, random))){
+          if(NULL ==(t = binarySearch(random, 0, tickets))){
               release(&tickettable.lock);
               panic("Can't find Process to run from random number\n");
           }

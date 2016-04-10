@@ -8,16 +8,17 @@
 int 
 main(int argc, char *argv[]) {
 	int table[20] = {0};
-
-	for (int i = 0; i < RUN; ++i)
+	int i;
+	for (i = 0; i < RUN; ++i)
 	{
 		uint index = prng(20);
 		table[index] += table[index];
 	}
 
-	for (int i = 0; i < 20; ++i)
+	int j;
+	for (j = 0; j < 20; ++j)
 	{
-		printf(1, "%d\n", table[i]);
+		printf(1, "%d\n", table[j]);
 	}
 
 	exit();

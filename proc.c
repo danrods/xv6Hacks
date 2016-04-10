@@ -32,7 +32,7 @@ static void wakeup1(void *chan);
 int read_pointer = 0;
 int write_pointer = 0;
 int seeds[10];
-static void getseeds(uint *val);
+void getseeds(uint *val);
 uint prng(void);
 
 TicketHolder* binarySearch(uint random, int start, int end);
@@ -150,35 +150,6 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
-  struct TicketHolder* t = NULL;
-  acquire(&tickettable.lock);
-
-  int nextInd = tickettable.totalTicketHolders;
-  if(nextInd >= 0 && nextInd < NPROC){ //So long as the next Index is less than the total number of processes, and non-negative
-
-      if(NULL == (t = &tickettable.holders[nextInd])){
-          panic(" Error fetching ticket holder\n");
-      }
-
-      t->status = BOUGHT;
-      t->totalTickets = getTicketAmount(p);
-      t->runningTotal = (nextInd) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
-      tickettable.totalTickets += t->totalTickets; 
-      tickettable.totalTicketHolders++;
-
-      release(&tickettable.lock);
-
-      t->proc = p;
-      p->stub = t;
-
-  }
-  else{ //Else there was some kind of error
-    cprintf("Error! Too many processes or impl error --> nextIND : %d\n", nextInd);
-    release(&tickettable.lock);
-    return 0;
-  }
-
-  cprintf("Successfully Added a Holder to process %d with %d tickets\n", p->pid, t->totalTickets);
   return p;
 }
 
@@ -362,6 +333,48 @@ fork(void)
  
   pid = np->pid;
 
+
+#ifdef lottery
+
+
+  if(proc->stub == NULL){
+
+      struct TicketHolder* t = NULL;
+      acquire(&tickettable.lock);
+
+      int nextInd = tickettable.totalTicketHolders;
+      if(nextInd >= 0 && nextInd < NPROC){ //So long as the next Index is less than the total number of processes, and non-negative
+
+          if(NULL == (t = &tickettable.holders[nextInd])){
+              panic(" Error fetching ticket holder\n");
+          }
+
+          t->status = BOUGHT;
+          t->totalTickets = getTicketAmount(p);
+          t->runningTotal = (nextInd) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
+          tickettable.totalTickets += t->totalTickets; 
+          tickettable.totalTicketHolders++;
+
+          release(&tickettable.lock);
+
+          t->proc = p;
+          p->stub = t;
+
+      }
+      else{ //Else there was some kind of error
+        cprintf("Error! Too many processes or impl error --> nextIND : %d\n", nextInd);
+        release(&tickettable.lock);
+        return 0;
+      }
+
+      cprintf("Successfully Added a Holder to process %d with %d tickets\n", p->pid, t->totalTickets);
+  }
+  
+
+
+#endif
+
+
   // lock to force the compiler to emit the np->state write last.
   acquire(&ptable.lock);
   np->state = RUNNABLE;
@@ -369,6 +382,7 @@ fork(void)
   
   return pid;
 }
+
 
 #else
 
@@ -878,7 +892,7 @@ ticketdump(void){
 
 #ifndef lottery
 
-static void
+ void
 getseeds(uint *val) {
   *val = (uint)seeds[(read_pointer++) % 10];
   *(val + 1) = (uint)seeds[(read_pointer++) % 10];

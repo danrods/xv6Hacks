@@ -667,13 +667,13 @@ scheduler(void)
           //cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",t->totalTickets, t->runningTotal, t->status,t->proc);
 
           if(t->status == AVAILABLE)
-                cprintf("Ticket is not Bought!\n");
+                //cprintf("Ticket is not Bought!\n");
           else if(t->proc == 0 || t->proc->killed)
-                cprintf("Will not be scheduling a process that was killed.\n");
+                //cprintf("Will not be scheduling a process that was killed.\n");
           else if(t->proc->state != RUNNABLE)
-                cprintf("Process is not Runnable.\n");
+                //cprintf("Process is not Runnable.\n");
           else{
-            cprintf("Lets get Scheduled!\n");
+            //cprintf("Lets get Scheduled!\n");
             p = t->proc;
           
             // Switch to chosen process.  It is the process's job

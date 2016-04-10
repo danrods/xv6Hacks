@@ -639,6 +639,7 @@ scheduler(void)
  // int isFound;
   uint random;
   int tickets;
+  int ticketers;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -649,15 +650,13 @@ scheduler(void)
       random = prng();                //Step 1. Get a Random number
       acquire(&tickettable.lock);     // Lock the table until we've found it
 
-      procdump();
-      ticketdump();
-
+      ticketers = tickettable.totalTicketHolders;
       if((tickets = tickettable.totalTickets)){ // if there are any tickets
 
           random = (tickets)? random % tickets : 0;
 
           cprintf("Found a Random number : %d\n", random);
-          if(NULL ==(t = binarySearch(random, 0, tickets))){
+          if(NULL ==(t = binarySearch(random, 0, ticketers))){
               release(&tickettable.lock);
               panic("Can't find Process to run from random number\n");
           }

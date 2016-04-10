@@ -18,7 +18,7 @@ main(int argc, char *argv[]) {
 	int j;
 	for (j = 0; j < 20; ++j)
 	{
-		printf(1, "%d\n", table[j]);
+		printf(1, "%d: %d\n", j, table[j]);
 	}
 
 	exit();

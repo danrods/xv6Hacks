@@ -661,6 +661,8 @@ scheduler(void)
       random = prng();                //Step 1. Get a Random number
       acquire(&tickettable.lock);     // Lock the table until we've found it
 
+      ticketdump();
+
       if((tickets = tickettable.totalTickets)){
 
           random = (tickets)? random % tickets : tickets;
@@ -704,7 +706,7 @@ scheduler(void)
 
 //    }while(! isFound); //While we didn't find a valid process
 
-
+    procdump();
 
     release(&ptable.lock);
   }

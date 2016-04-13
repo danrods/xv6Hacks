@@ -719,6 +719,7 @@ scheduler(void)
         }
 
         if(holding(&p->lock)){
+          cprintf("someone else is using the lock!\n");
           break;
         }
 

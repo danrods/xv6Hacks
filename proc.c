@@ -460,8 +460,11 @@ exit(void)
   int fd;
 
   #ifndef lottery
-  if(! holding(&proc->lock))
-      acquire(&proc->lock);
+  if(! holding(&proc->lock)){
+    acquire(&proc->lock);
+    cprintf("----Acquired in Exit!----\n");
+  }
+      
   #endif
 
   if(proc == initproc)
@@ -506,7 +509,10 @@ exit(void)
   proc->state = ZOMBIE;
   cprintf("Exiting Process --> %s\n", proc->name);
   #ifndef lottery
-    if(holding(&proc->lock))release(&proc->lock);
+    if(holding(&proc->lock)){
+      release(&proc->lock);
+      cprintf("---Released in Exit---\n");
+    }
   #endif
   sched();
   panic("zombie exit");
@@ -741,6 +747,7 @@ scheduler(void)
             cprintf("Acquired in Scheduler!\n");
             if(winner->state != RUNNABLE){
               release(&winner->lock);
+              cprintf("Released because not Runnable!\n");
               continue;
             }
         }
@@ -763,8 +770,6 @@ scheduler(void)
               release(&winner->lock);
               cprintf("Releasing in Scheduler!\n");
           }
-              
-
           else continue;
           swtch(&cpu->scheduler, proc->context);
           switchkvm();

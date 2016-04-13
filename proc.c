@@ -460,7 +460,7 @@ exit(void)
   int fd;
 
   #ifndef lottery
-  acquire(&proc->lock);
+  if(! holding(&proc->lock)) acquire(&proc->lock);
   #endif
 
   if(proc == initproc)
@@ -505,7 +505,7 @@ exit(void)
   proc->state = ZOMBIE;
   cprintf("Exiting Process --> %s\n", proc->name);
   #ifndef lottery
-  release(&proc->lock);
+    if(holding(&proc->lock))release(&proc->lock);
   #endif
   sched();
   panic("zombie exit");

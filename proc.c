@@ -739,19 +739,18 @@ scheduler(void)
 
       }
 
-      if(winner){ // If we found a winner
-
-        
-        if(! holding(&winner->lock)){
+      if(! holding(&winner->lock)){
             acquire(&winner->lock);
             cprintf("Acquired in Scheduler!\n");
             if(winner->state != RUNNABLE){
               release(&winner->lock);
               cprintf("Released because not Runnable!\n");
-              continue;
+              winner = NULL;
             }
         }
-        else continue;  
+        else winner = NULL;  
+
+      if(winner){ // If we found a winner
 
 
           if(winner->pid > 2){

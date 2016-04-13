@@ -712,13 +712,13 @@ scheduler(void)
 */
       runningTotal = 0;
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        acquire(&p->lock);
         if(p->state != RUNNABLE){
-          release(&p->lock);
           continue;
         }
 
-        release(&p->lock);
+        if(holding(&p->lock)){
+          break;
+        }
 
         runningTotal += getTicketAmount(p);
 

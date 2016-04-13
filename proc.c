@@ -707,7 +707,7 @@ scheduler(void)
 
         runningTotal += getTicketAmount(p);
 
-        if(runningTotal > random && p->killed){
+        if(runningTotal > random ){
             winner = p;
             break;
         }

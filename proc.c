@@ -750,7 +750,7 @@ scheduler(void)
         }
         else winner = NULL;  
 
-      if(winner){ // If we found a winner
+      if(winner == NULL){ // If we found a winner
 
 
           if(winner->pid > 2){

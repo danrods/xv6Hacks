@@ -459,6 +459,10 @@ exit(void)
   struct proc *p;
   int fd;
 
+  #ifndef lottery
+  acquire(&proc->lock);
+  #endif
+  
   if(proc == initproc)
     panic("init exiting");
 
@@ -497,9 +501,6 @@ exit(void)
   release(&tickettable.lock);
 #endif
 */
-  #ifndef lottery
-  acquire(&proc->lock);
-  #endif
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
   #ifndef lottery

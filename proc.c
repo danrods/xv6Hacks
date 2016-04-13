@@ -155,7 +155,7 @@ found:
   p->context->eip = (uint)forkret;
 
 
-
+/*
   struct TicketHolder* t = NULL;
   acquire(&tickettable.lock);
 
@@ -183,6 +183,9 @@ found:
     release(&tickettable.lock);
     return 0;
   }
+*/
+  p->nice = 120; //Default nice
+
 
   cprintf("Successfully Added a Holder to process %d with %d tickets\n", p->pid, t->totalTickets);
   
@@ -480,13 +483,14 @@ exit(void)
     }
   }
 
+/*
 #ifndef lottery
   acquire(&tickettable.lock);
   cprintf("Updating Ticket Holders!\n");
   updateTicketHolders(p->stub); //Fix the runningTotal to reflect the change
   release(&tickettable.lock);
 #endif
-
+*/
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
   sched();
@@ -634,12 +638,12 @@ scheduler(void)
 void
 scheduler(void)
 {
-  struct proc *p;
-  struct TicketHolder* t;
+  struct proc *p, *winner = NULL;
+  //struct TicketHolder* t;
  // int isFound;
   uint random;
-  int tickets;
-  int ticketers;
+  //int tickets;
+  //int ticketers;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -648,7 +652,7 @@ scheduler(void)
     acquire(&ptable.lock);
     
       random = prng();                //Step 1. Get a Random number
-      acquire(&tickettable.lock);     // Lock the table until we've found it
+/*      acquire(&tickettable.lock);     // Lock the table until we've found it
 
       ticketers = tickettable.totalTicketHolders;
       if((tickets = tickettable.totalTickets)){ // if there are any tickets
@@ -691,7 +695,39 @@ scheduler(void)
         }
       }
       else release(&tickettable.lock);
+*/
+      int runningTotal = 0;
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->state != RUNNABLE)
+          continue;
 
+        runningTotal += getTicketAmount(p);
+
+        if(runningTotal > random){
+            winner = p;
+            cprintf("Winner! --> Found Ticket : { Name : %s\t Tickets : %d\t PID: %d\t Parent PID :%d \t Killed : %d \t Nice: %d\t }\n", 
+              winner->name, winner->tickets, winner->pid, winner->parent->pid, winner->killed, winner->nice);
+            break;
+        }
+
+      }
+
+      if(winner){ // If we found a winner
+
+          // Switch to chosen process.  It is the process's job
+          // to release ptable.lock and then reacquire it
+          // before jumping back to us.
+          proc = p;
+          switchuvm(p);
+          p->state = RUNNING;
+          swtch(&cpu->scheduler, proc->context);
+          switchkvm();
+
+          // Process is done running for now.
+          // It should have changed its p->state before coming back.
+          proc = 0;        
+      }
+   
     
 
     release(&ptable.lock);

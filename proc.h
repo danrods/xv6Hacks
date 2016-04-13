@@ -82,6 +82,7 @@ struct proc {
   struct inode *cwd;           // Current directory
   int nice;                    // Nice value to specify the priority
   struct TicketHolder* stub;   // Storage for the tickets
+  int tickets;
   char name[16];               // Process name (debugging)
 };
 

@@ -557,6 +557,6 @@ sys_nice(void) {
 
 int
 sys_printTickets(void){
-  ticketdump();
+  procdump();
   return 0;
 }

@@ -39,7 +39,7 @@ TicketHolder* binarySearch(uint random, int start, int end);
 
 #ifndef lottery
 
-static void updateTicketHolders(struct TicketHolder* holder); 
+void updateTicketHolders(struct TicketHolder* holder); 
 static int getTicketAmount(struct proc * proc);
 
 #endif
@@ -187,7 +187,7 @@ found:
   p->nice = 120; //Default nice
 
 
-  cprintf("Successfully Added a Holder to process %d with %d tickets\n", p->pid, t->totalTickets);
+  //cprintf("Successfully Added a Holder to process %d with %d tickets\n", p->pid, t->totalTickets);
   
   return p;
 }
@@ -244,7 +244,7 @@ int getTicketAmount(struct proc * proc){
 * Convenience method to update the runningTotal for the subsequent tickets after i.
 * NOTE : Tickettable Lock should be acquired before calling this method.
 */
-static 
+ 
 void updateTicketHolders(struct TicketHolder* holder){
 
     if(NULL == &tickettable.holders[NPROC] || 

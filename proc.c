@@ -51,10 +51,14 @@ pinit(void)
   initlock(&ptable.lock, "ptable");
 
   #ifndef lottery
-  initlock(&tickettable.lock, "tickettable");
-  tickettable.totalTickets=0;
-  tickettable.totalTicketHolders=0;
-  memset(tickettable.holders, 0, NPROC * sizeof(struct TicketHolder));
+  struct proc* p;
+  // initlock(&tickettable.lock, "tickettable");
+  // tickettable.totalTickets=0;
+  // tickettable.totalTicketHolders=0;
+  // memset(tickettable.holders, 0, NPROC * sizeof(struct TicketHolder));
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    initlock(&p->lock, p->name);
+  }
   #endif
 }
 
@@ -473,6 +477,9 @@ exit(void)
 
   acquire(&ptable.lock);
 
+  #ifndef lottery
+  acquire(&proc->lock);
+  #endif
   // Parent might be sleeping in wait().
   wakeup1(proc->parent);
 
@@ -495,6 +502,9 @@ exit(void)
 */
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
+  #ifndef lottery
+  release(&proc->lock);
+  #endif
   sched();
   panic("zombie exit");
 }
@@ -702,8 +712,13 @@ scheduler(void)
 */
       runningTotal = 0;
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        if(p->state != RUNNABLE)
+        acquire(&p->lock);
+        if(p->state != RUNNABLE){
+          release(&p->lock);
           continue;
+        }
+
+        release(&p->lock);
 
         runningTotal += getTicketAmount(p);
 

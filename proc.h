@@ -81,8 +81,8 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   int nice;                    // Nice value to specify the priority
-  struct TicketHolder* stub;   // Storage for the tickets
   int tickets;
+  struct spinlock lock;        // Lock the process to prevent contention
   char name[16];               // Process name (debugging)
 };
 

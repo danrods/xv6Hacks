@@ -460,7 +460,8 @@ exit(void)
   int fd;
 
   #ifndef lottery
-  if(! holding(&proc->lock)) acquire(&proc->lock);
+  if(! holding(&proc->lock))
+      acquire(&proc->lock);
   #endif
 
   if(proc == initproc)
@@ -737,7 +738,11 @@ scheduler(void)
         
         if(! holding(&winner->lock)){
             acquire(&winner->lock);
-            if(winner->state != RUNNABLE) continue;
+            cprintf("Acquired in Scheduler!\n");
+            if(winner->state != RUNNABLE){
+              release(&winner->lock);
+              continue;
+            }
         }
         else continue;  
 
@@ -754,8 +759,12 @@ scheduler(void)
           switchuvm(winner);
           winner->state = RUNNING;
 
-          if(holding(&winner->lock))
+          if(holding(&winner->lock)){
               release(&winner->lock);
+              cprintf("Releasing in Scheduler!\n");
+          }
+              
+
           else continue;
           swtch(&cpu->scheduler, proc->context);
           switchkvm();

@@ -268,7 +268,7 @@ void updateTicketHolders(struct TicketHolder* holder){
 
     //Update the runningTotal of the one we copied
     holder->runningTotal = (holder > tickettable.holders) ? (((holder - 1)->runningTotal) + holder->totalTickets) : holder->totalTickets; 
-    holder->proc->stub = holder; //Make sure the process is updated
+    //holder->proc->stub = holder; //Make sure the process is updated
 
     struct TicketHolder *t1 = holder, *t2;
     for(t2 = t1 + 1;  //First pointer is at the initialized ticket, Second pointer is at the one after

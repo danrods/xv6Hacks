@@ -737,7 +737,7 @@ scheduler(void)
         
         if(! holding(&winner->lock)){
             acquire(&winner->lock);
-            if(winner->status != RUNNABLE) continue;
+            if(winner->state != RUNNABLE) continue;
         }
         else continue;  
 

@@ -477,9 +477,6 @@ exit(void)
 
   acquire(&ptable.lock);
 
-  #ifndef lottery
-  acquire(&proc->lock);
-  #endif
   // Parent might be sleeping in wait().
   wakeup1(proc->parent);
 
@@ -500,6 +497,9 @@ exit(void)
   release(&tickettable.lock);
 #endif
 */
+  #ifndef lottery
+  acquire(&proc->lock);
+  #endif
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
   #ifndef lottery

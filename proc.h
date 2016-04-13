@@ -1,7 +1,5 @@
-#ifndef _SPINLOCK_H
-#define _SPINLOCK_H
 #include "spinlock.h"
-#endif
+
 // Segments in proc->gdt.
 #define NSEGS     7
 

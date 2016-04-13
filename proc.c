@@ -462,7 +462,7 @@ exit(void)
   #ifndef lottery
   acquire(&proc->lock);
   #endif
-  
+
   if(proc == initproc)
     panic("init exiting");
 
@@ -503,6 +503,7 @@ exit(void)
 */
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
+  cprintf("Exiting Process --> %s\n", proc->name);
   #ifndef lottery
   release(&proc->lock);
   #endif

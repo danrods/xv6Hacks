@@ -709,8 +709,8 @@ scheduler(void)
 
         if(runningTotal > random){
             winner = p;
-            cprintf("Winner! --> Found Ticket : { Name : %s\t Tickets : %d\t PID: %d\t Parent PID :%d \t Killed : %d \t Nice: %d\t }\n", 
-              winner->name, winner->tickets, winner->pid, winner->parent->pid, winner->killed, winner->nice);
+            cprintf("Winner! --> Found Ticket : { Name : %s\t Tickets : %d\t PID: %d\t Parent PID :%p \t Killed : %d \t Nice: %d\t }\n", 
+              winner->name, winner->tickets, winner->pid, winner->parent, winner->killed, winner->nice);
             break;
         }
 

@@ -702,12 +702,12 @@ scheduler(void)
 */
       runningTotal = 0;
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        if(p->state != RUNNABLE)
+        if(p->state != RUNNABLE || p->killed || )
           continue;
 
         runningTotal += getTicketAmount(p);
 
-        if(runningTotal > random){
+        if(runningTotal > random && p->killed){
             winner = p;
             break;
         }
@@ -715,11 +715,11 @@ scheduler(void)
       }
 
       if(winner){ // If we found a winner
-        /*  if(winner != initproc){
+          if(winner->pid > 2){
               cprintf("Winner on CPU : %d! --> Found Ticket : { Name : %s\t Tickets : %d\t PID: %d\t Parent PID :%p \t Killed : %d \t Nice: %d\t PDIR: %p}\n", 
               cpu->id, winner->name, winner->tickets, winner->pid, winner->parent, winner->killed, winner->nice, winner->pgdir);
           }
-*/
+
           // Switch to chosen process.  It is the process's job
           // to release ptable.lock and then reacquire it
           // before jumping back to us.

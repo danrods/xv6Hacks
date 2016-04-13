@@ -702,7 +702,7 @@ scheduler(void)
 */
       runningTotal = 0;
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        if(p->state != RUNNABLE || p->killed )
+        if(p->state != RUNNABLE)
           continue;
 
         runningTotal += getTicketAmount(p);

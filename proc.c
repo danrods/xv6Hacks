@@ -715,8 +715,10 @@ scheduler(void)
       }
 
       if(winner){ // If we found a winner
+          if(winner != initproc){
               cprintf("Winner on CPU : %d! --> Found Ticket : { Name : %s\t Tickets : %d\t PID: %d\t Parent PID :%p \t Killed : %d \t Nice: %d\t PDIR: %p}\n", 
               cpu->id, winner->name, winner->tickets, winner->pid, winner->parent, winner->killed, winner->nice, winner->pgdir);
+          }
 
           // Switch to chosen process.  It is the process's job
           // to release ptable.lock and then reacquire it

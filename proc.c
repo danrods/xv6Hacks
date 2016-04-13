@@ -655,7 +655,7 @@ scheduler(void)
     acquire(&ptable.lock);
     
       random = prng();                //Step 1. Get a Random number
-      random = (tickets)? random % totalTickets : 0;
+      random = (totalTickets)? random % totalTickets : 0;
 /*      acquire(&tickettable.lock);     // Lock the table until we've found it
 
       ticketers = tickettable.totalTicketHolders;

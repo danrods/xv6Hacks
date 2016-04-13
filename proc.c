@@ -19,6 +19,7 @@ struct {
   struct TicketHolder holders[NPROC];
 } tickettable;
 
+int totalTickets = 0;
 
 static struct proc *initproc;
 
@@ -185,7 +186,8 @@ found:
   }
 */
   p->nice = 120; //Default nice
-
+  p->tickets = getTicketAmount(p);
+  totalTickets += p->tickets; 
 
   //cprintf("Successfully Added a Holder to process %d with %d tickets\n", p->pid, t->totalTickets);
   
@@ -644,6 +646,7 @@ scheduler(void)
   uint random;
   //int tickets;
   //int ticketers;
+  int runningTotal;
 
   for(;;){
     // Enable interrupts on this processor.
@@ -652,12 +655,13 @@ scheduler(void)
     acquire(&ptable.lock);
     
       random = prng();                //Step 1. Get a Random number
+      random = (tickets)? random % totalTickets : 0;
 /*      acquire(&tickettable.lock);     // Lock the table until we've found it
 
       ticketers = tickettable.totalTicketHolders;
       if((tickets = tickettable.totalTickets)){ // if there are any tickets
 
-          random = (tickets)? random % tickets : 0;
+          
 
           //cprintf("Found a Random number : %d\n", random);
           if(NULL ==(t = binarySearch(random, 0, ticketers))){
@@ -696,7 +700,7 @@ scheduler(void)
       }
       else release(&tickettable.lock);
 */
-      int runningTotal = 0;
+      runningTotal = 0;
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         if(p->state != RUNNABLE)
           continue;

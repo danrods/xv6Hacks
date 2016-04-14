@@ -715,6 +715,8 @@ scheduler(void)
       }
       else release(&tickettable.lock);
 */
+
+      winner = NULL;
       runningTotal = 0;
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         if(p->state != RUNNABLE){

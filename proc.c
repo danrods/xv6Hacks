@@ -460,10 +460,11 @@ exit(void)
   int fd;
 
   #ifndef lottery
-  if(! holding(&proc->lock)){
-    acquire(&proc->lock);
+  while(holding(&proc->lock))
+    ;
+
+  acquire(&proc->lock);
     cprintf("----Acquired in Exit!----\n");
-  }
       
   #endif
 
@@ -750,7 +751,7 @@ scheduler(void)
         }
         else winner = NULL;  
 
-      if(winner == NULL){ // If we found a winner
+      if(NULL == winner){ // If we found a winner
 
 
           if(winner->pid > 2){

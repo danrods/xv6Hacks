@@ -458,7 +458,7 @@ exit(void)
   
   struct proc *p;
   int fd;
-
+/*
   #ifndef lottery
   while(holding(&proc->lock))
     ;
@@ -467,7 +467,7 @@ exit(void)
     cprintf("----Acquired in Exit!----\n");
       
   #endif
-
+*/
   if(proc == initproc)
     panic("init exiting");
 
@@ -498,23 +498,17 @@ exit(void)
     }
   }
 
-/*
-#ifndef lottery
-  acquire(&tickettable.lock);
-  cprintf("Updating Ticket Holders!\n");
-  updateTicketHolders(p->stub); //Fix the runningTotal to reflect the change
-  release(&tickettable.lock);
-#endif
-*/
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
   cprintf("Exiting Process --> %s\n", proc->name);
+ /*
   #ifndef lottery
     if(holding(&proc->lock)){
       release(&proc->lock);
       cprintf("---Released in Exit---\n");
     }
   #endif
+  */
   sched();
   panic("zombie exit");
 }
@@ -726,11 +720,11 @@ scheduler(void)
           continue;
         }
 
-        if(holding(&p->lock)){
+      /*  if(holding(&p->lock)){
           cprintf("someone else is using the lock!\n");
           break;
         }
-
+*/
         runningTotal += getTicketAmount(p);
 
         if(runningTotal > random ){
@@ -739,7 +733,7 @@ scheduler(void)
         }
 
       }
-
+/*
       if(! holding(&winner->lock)){
             acquire(&winner->lock);
             cprintf("Acquired in Scheduler!\n");
@@ -751,7 +745,8 @@ scheduler(void)
         }
         else winner = NULL;  
 
-      if(NULL == winner){ // If we found a winner
+*/
+      if(winner){ // If we found a winner
 
 
           if(winner->pid > 2){
@@ -766,11 +761,13 @@ scheduler(void)
           switchuvm(winner);
           winner->state = RUNNING;
 
+/*
           if(holding(&winner->lock)){
               release(&winner->lock);
               cprintf("Releasing in Scheduler!\n");
           }
           else continue;
+          */
           swtch(&cpu->scheduler, proc->context);
           switchkvm();
 

@@ -499,8 +499,9 @@ exit(void)
   }
 
   // Jump into the scheduler, never to return.
-  proc->state = ZOMBIE;
-  cprintf("Exiting Process --> %s\n", proc->name);
+ 
+  cprintf("Exiting Process --> %s. Proc State : %d\n", proc->name, proc->state);
+   proc->state = ZOMBIE;
  /*
   #ifndef lottery
     if(holding(&proc->lock)){

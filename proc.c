@@ -659,8 +659,6 @@ scheduler(void)
   //struct TicketHolder* t;
  // int isFound;
   uint random;
-  //int tickets;
-  //int ticketers;
   int runningTotal;
 
   for(;;){
@@ -671,50 +669,6 @@ scheduler(void)
     
       random = prng();                //Step 1. Get a Random number
       random = (totalTickets)? random % totalTickets : 0;
-/*      acquire(&tickettable.lock);     // Lock the table until we've found it
-
-      ticketers = tickettable.totalTicketHolders;
-      if((tickets = tickettable.totalTickets)){ // if there are any tickets
-
-          
-
-          //cprintf("Found a Random number : %d\n", random);
-          if(NULL ==(t = binarySearch(random, 0, ticketers))){
-              release(&tickettable.lock);
-              panic("Can't find Process to run from random number\n");
-          }
-
-          release(&tickettable.lock);
-
-
-          //cprintf("Winner! --> Found Ticket : { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",t->totalTickets, t->runningTotal, t->status,t->proc);
-
-          if(t->status == AVAILABLE){}
-                //cprintf("Ticket is not Bought!\n");
-          else if(t->proc == 0 || t->proc->killed){}
-                //cprintf("Will not be scheduling a process that was killed.\n");
-          else if(t->proc->state != RUNNABLE){}
-                //cprintf("Process is not Runnable.\n");
-          else{
-            //cprintf("Lets get Scheduled!\n");
-            p = t->proc;
-          
-            // Switch to chosen process.  It is the process's job
-            // to release ptable.lock and then reacquire it
-            // before jumping back to us.
-            proc = p;
-            switchuvm(p);
-            p->state = RUNNING;
-            swtch(&cpu->scheduler, proc->context);
-            switchkvm();
-
-            // Process is done running for now.
-            // It should have changed its p->state before coming back.
-            proc = 0;
-        }
-      }
-      else release(&tickettable.lock);
-*/
 
       winner = NULL;
       runningTotal = 0;
@@ -723,38 +677,20 @@ scheduler(void)
           continue;
         }
 
-      /*  if(holding(&p->lock)){
-          cprintf("someone else is using the lock!\n");
-          break;
-        }
-*/
         runningTotal += getTicketAmount(p);
 
-        if(runningTotal > random ){
+        if(runningTotal > random){
             winner = p;
             break;
         }
 
       }
-/*
-      if(! holding(&winner->lock)){
-            acquire(&winner->lock);
-            cprintf("Acquired in Scheduler!\n");
-            if(winner->state != RUNNABLE){
-              release(&winner->lock);
-              cprintf("Released because not Runnable!\n");
-              winner = NULL;
-            }
-        }
-        else winner = NULL;  
 
-*/
       if(winner){ // If we found a winner
 
-
           if(winner->pid > 2){
-              cprintf("Winner on CPU : %d! --> Found Ticket : { Name : %s\t Tickets : %d\t PID: %d\t Parent PID :%p \t Killed : %d \t Nice: %d\t PDIR: %p\t State: %d\n}\n", 
-              cpu->id, winner->name, winner->tickets, winner->pid, winner->parent, winner->killed, winner->nice, winner->pgdir, winner->state);
+              //cprintf("Winner on CPU : %d! --> Found Ticket : { Name : %s\t Tickets : %d\t PID: %d\t Parent PID :%p \t Killed : %d \t Nice: %d\t PDIR: %p\t State: %d\n}\n", 
+              //cpu->id, winner->name, winner->tickets, winner->pid, winner->parent, winner->killed, winner->nice, winner->pgdir, winner->state);
           }
 
           // Switch to chosen process.  It is the process's job

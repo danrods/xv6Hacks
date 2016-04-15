@@ -851,6 +851,7 @@ ticketdump(void){
   struct proc *p;
   char *state;
 
+  cprintf("Total Tickets : ---> %d\n", totalTickets);
   
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)

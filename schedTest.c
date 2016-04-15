@@ -7,7 +7,7 @@ main(void)
 {
 	int pid;
 
-	int i,j,
+	int i,
 		niceval[4] = {19, 5, 0, -12};
 
 for(i = 0; i < 4; i++){

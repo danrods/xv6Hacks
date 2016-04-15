@@ -547,10 +547,14 @@ sys_nice(void) {
 
   if(value < -20 || value > 19) {
     cprintf("Set nice input between -20 and 19!\n");
-    return proc->nice;
+    return -1;
   }
 
-  proc->nice += value;
+  if(updateNice(value, proc)){
+      cprintf("Error updating the Nice Value!\n");
+      return -1;
+  }
+  
 
   return proc->nice;
 } 

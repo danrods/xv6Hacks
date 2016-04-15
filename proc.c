@@ -50,16 +50,6 @@ pinit(void)
 {
   initlock(&ptable.lock, "ptable");
 
-  #ifndef lottery
-  struct proc* p;
-  // initlock(&tickettable.lock, "tickettable");
-  // tickettable.totalTickets=0;
-  // tickettable.totalTicketHolders=0;
-  // memset(tickettable.holders, 0, NPROC * sizeof(struct TicketHolder));
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    initlock(&p->lock, p->name);
-  }
-  #endif
 }
 
 
@@ -159,39 +149,9 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
-
-/*
-  struct TicketHolder* t = NULL;
-  acquire(&tickettable.lock);
-
-  int nextInd = tickettable.totalTicketHolders;
-  if(nextInd >= 0 && nextInd < NPROC){ //So long as the next Index is less than the total number of processes, and non-negative
-
-      if(NULL == (t = &tickettable.holders[nextInd])){
-          panic(" Error fetching ticket holder\n");
-      }
-
-      t->status = BOUGHT;
-      t->totalTickets = getTicketAmount(p);
-      t->runningTotal = (nextInd) ? (((t - 1)->runningTotal) + t->totalTickets) : t->totalTickets; 
-      tickettable.totalTickets += t->totalTickets; 
-      tickettable.totalTicketHolders++;
-
-      release(&tickettable.lock);
-
-      t->proc = p;
-      p->stub = t;
-
-  }
-  else{ //Else there was some kind of error
-    cprintf("Error! Too many processes or impl error --> nextIND : %d\n", nextInd);
-    release(&tickettable.lock);
-    return 0;
-  }
-*/
   p->nice = 120; //Default nice
-  p->tickets = getTicketAmount(p);
-  totalTickets += p->tickets; 
+  p->tickets = getTicketAmount(proc); //Give it the same amount of tickets as it's parent for now.
+  totalTickets += p->tickets;  //Lets incrememnt that count son.
 
   //cprintf("Successfully Added a Holder to process %d with %d tickets\n", p->pid, t->totalTickets);
   
@@ -460,16 +420,7 @@ exit(void)
   
   struct proc *p;
   int fd;
-/*
-  #ifndef lottery
-  while(holding(&proc->lock))
-    ;
 
-  acquire(&proc->lock);
-    cprintf("----Acquired in Exit!----\n");
-      
-  #endif
-*/
   if(proc == initproc)
     panic("init exiting");
 
@@ -504,14 +455,11 @@ exit(void)
  
   cprintf("Exiting Process --> [%d:%s].  Proc State : %d\n", proc->pid, proc->name, proc->state);
    proc->state = ZOMBIE;
- /*
+ 
   #ifndef lottery
-    if(holding(&proc->lock)){
-      release(&proc->lock);
-      cprintf("---Released in Exit---\n");
-    }
+    totalTickets -= proc->tickets;
   #endif
-  */
+  
   sched();
   panic("zombie exit");
 }
@@ -919,6 +867,19 @@ ticketdump(void){
 }
 
 #ifndef lottery
+
+int updateNice(int nice, struct* proc){
+
+    int amount;
+
+    proc->nice = nice;
+
+    if((amount = getTicketAmount(proc)) < 0) return -1;
+
+    proc->tickets = amount;
+
+    return 0;
+}
 
  void
 getseeds(uint *val) {

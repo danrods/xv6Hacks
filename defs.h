@@ -124,6 +124,7 @@ int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 void			ticketdump(void);
+int 			updateNice(int nice, struct* proc)
 
 // swtch.S
 void            swtch(struct context**, struct context*);

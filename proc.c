@@ -868,15 +868,15 @@ ticketdump(void){
 
 #ifndef lottery
 
-int updateNice(int nice, struct* proc){
+int updateNice(int nice, struct proc* p){
 
     int amount;
 
-    proc->nice = nice;
+    p->nice = nice;
 
     if((amount = getTicketAmount(proc)) < 0) return -1;
 
-    proc->tickets = amount;
+    p->tickets = amount;
 
     return 0;
 }

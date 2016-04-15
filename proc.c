@@ -689,8 +689,8 @@ scheduler(void)
       if(winner){ // If we found a winner
 
           if(winner->pid > 2){
-              //cprintf("Winner on CPU : %d! --> Found Ticket : { Name : %s\t Tickets : %d\t PID: %d\t Parent PID :%p \t Killed : %d \t Nice: %d\t PDIR: %p\t State: %d\n}\n", 
-              //cpu->id, winner->name, winner->tickets, winner->pid, winner->parent, winner->killed, winner->nice, winner->pgdir, winner->state);
+              cprintf("Winner on CPU : %d! --> Found Ticket : { Name : %s\t Tickets : %d\t PID: %d\t Parent PID :%p \t Killed : %d \t Nice: %d\t PDIR: %p\t State: %d\n}\n", 
+              cpu->id, winner->name, winner->tickets, winner->pid, winner->parent, winner->killed, winner->nice, winner->pgdir, winner->state);
           }
 
           // Switch to chosen process.  It is the process's job
@@ -699,14 +699,6 @@ scheduler(void)
           proc = winner;
           switchuvm(winner);
           winner->state = RUNNING;
-
-/*
-          if(holding(&winner->lock)){
-              release(&winner->lock);
-              cprintf("Releasing in Scheduler!\n");
-          }
-          else continue;
-          */
           swtch(&cpu->scheduler, proc->context);
           switchkvm();
 

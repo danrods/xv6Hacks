@@ -62,14 +62,14 @@ viewProcessDump(void){
 		}
 		else if(pid == 0){ //Child
 		  	nice(niceval[i]);
-		  	printf(2, "-----Before Child %s-----\n", niceval[i]);
+		  	printf(2, "-----Before Child %d-----\n", niceval[i]);
 		  	printProcess();
 
 		  	int j;
 	 		for(j=0; j < 50; j++)
 	 			;
 
-	 		printf(2, "-----After Child %s------\n", niceval[i]);
+	 		printf(2, "-----After Child %d------\n", niceval[i]);
 		  	printProcess();
 
 	 		exit();

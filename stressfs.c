@@ -31,9 +31,11 @@ main(int argc, char *argv[])
 
   path[8] += i;
   fd = open(path, O_CREATE | O_RDWR);
-  for(i = 0; i < 20; i++)
+  for(i = 0; i < 20; i++){
 //    printf(fd, "%d\n", i);
-    write(fd, data, sizeof(data));
+    write(fd, data, sizeof(data));    
+  }
+
   close(fd);
 
   printf(1, "read\n");

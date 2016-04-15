@@ -877,7 +877,8 @@ int updateNice(int nice, struct proc* p){
 
     if((amount = getTicketAmount(proc)) < 0) return -1;
 
-    p->tickets = amount;
+    totalTickets -= p->tickets;
+    totalTickets += (p->tickets = amount);
 
     return 0;
 }

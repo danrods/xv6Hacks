@@ -19,7 +19,7 @@ for(i = 0; i < 4; i++){
 	  	printProcess();
 	  	int j;
  		for(j=0; j < 50; j++){
- 			printf(2, "CHILD : Nice Value ==> %d\n", nice[i]);
+ 			printf(2, "CHILD : Nice Value ==> %d\n", niceval[i]);
  		}
  		exit();
 	}

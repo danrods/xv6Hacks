@@ -567,3 +567,8 @@ sys_printProcess(void){
   ticketdump();
   return 0;
 }
+
+uint
+sys_prng(void) {
+  return prng(20);
+}

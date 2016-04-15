@@ -33,8 +33,10 @@ static void wakeup1(void *chan);
 int read_pointer = 0;
 int write_pointer = 0;
 int seeds[10];
-void getseeds(uint *val);
-uint prng(void);
+int M = 16873;
+uint random_number = 8;
+//static void getseeds(uint *val);
+
 
 TicketHolder* binarySearch(uint random, int start, int end);
 
@@ -616,9 +618,8 @@ scheduler(void)
     sti();
 
     acquire(&ptable.lock);
-    
-      random = prng();                //Step 1. Get a Random number
-      random = (totalTickets)? random % totalTickets : 0;
+
+      random = prng(totalTickets);                //Step 1. Get a Random number
 
       winner = NULL;
       runningTotal = 0;
@@ -865,6 +866,7 @@ ticketdump(void){
   }
 }
 
+
 #ifndef lottery
 
 int updateNice(int nice, struct proc* p){
@@ -881,29 +883,46 @@ int updateNice(int nice, struct proc* p){
     return 0;
 }
 
- void
-getseeds(uint *val) {
-  *val = (uint)seeds[(read_pointer++) % 10];
-  *(val + 1) = (uint)seeds[(read_pointer++) % 10];
-}
+#endif
+// static void
+// getseeds(uint *val) {
+//   // *val = (uint)seeds[(read_pointer++) % 10];
+//   // *(val + 1) = (uint)seeds[(read_pointer++) % 10];
+//   struct rtcdate *rt;
+//   uint sec = rt->second;
+//   *val = sec;
+//   uint sec1 = rt->second;
+//   *(val + 1) = sec1;
+// }
+
 
 // Title: xorshift+
 // Author: Saito and Matsumoto
 // Date: 4/2/2016
 // Availability: https://en.wikipedia.org/wiki/Xorshift#xorshift+
 // Pseudo random number generator
-uint 
-prng(void) {
-  uint s[2];
-  getseeds((uint*)&s);
-  //cprintf("first %d; second %d", s[0], s[1]);
-  uint x = s[0];
-  uint const y = s[1];
-  s[0] = y;
-  x ^= x << 23; // a
-  s[1] = x ^ y ^ (x >> 17) ^ (y >> 26); // b, c
-  return s[1] + y;
-}
+// uint 
+// prng(void) {
+//   uint s[2];
+//   getseeds((uint*)&s);
+//   cprintf("first %d; second %d \n", s[0], s[1]);
+//   uint x = s[0];
+//   uint const y = s[1];
+//   s[0] = y;
+//   x ^= x << 23; // a
+//   s[1] = x ^ y ^ (x >> 17) ^ (y >> 26); // b, c
+//   return s[1] + y;
+// }
 
-#endif
+
+// Title: Blum Blum Shub Generator
+// Availability: https://en.wikipedia.org/wiki/Blum_Blum_Shub
+uint 
+prng(uint upper) {
+  random_number = random_number * random_number;
+  random_number = random_number % M;
+  uint x = random_number % upper ;
+  //cprintf("random: %d; x: %d \n", random_number, x);
+  return x;
+}
 

@@ -101,6 +101,7 @@ extern int sys_uptime(void);
 extern int sys_wolfie(void);
 extern int sys_nice(void);
 extern int sys_printProcess(void);
+extern int sys_prng(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -127,6 +128,7 @@ static int (*syscalls[])(void) = {
 [SYS_wolfie]  sys_wolfie,
 [SYS_nice]    sys_nice,
 [SYS_printProcess] sys_printProcess,
+[SYS_prng]    sys_prng,
 };
 
 void

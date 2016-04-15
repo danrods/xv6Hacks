@@ -1,22 +1,24 @@
 #include "types.h"
 #include "user.h"
 
-#define RANNUMS[0xFFFFFFFF]
-#define RUN 0x48964
+#define RUN 1000
+
+
 
 int 
 main(int argc, char *argv[]) {
-	
-	for (int i = 0; i < RUN; ++i)
+	int table[20] = {0};
+	int i;
+	for (i = 0; i < RUN; ++i)
 	{
-		uint index = prng();
-		RANNUMS[index] += 1;
+		uint index = prng(20);
+		table[index] = table[index] + 1;
 	}
 
-
-	for (int i = 0; i < RUN; ++i)
+	int j;
+	for (j = 0; j < 20; ++j)
 	{
-		cprintf("%d : %d", i, RANNUMS[i]);
+		printf(1, "%d: %d\n", j, table[j]);
 	}
 
 	exit();

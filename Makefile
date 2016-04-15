@@ -180,7 +180,7 @@ UPROGS=\
 	_lab2test\
 	_cowtest\
 	_nicetest\
-	_printProcess\
+	_printTickets\
 	_schedTest\
 
 

@@ -4,7 +4,7 @@
 int
 main(void) {
 
-	printTickets();
+	printProcess();
 	exit();
 }
 

@@ -897,16 +897,31 @@ procdump(void)
 void
 ticketdump(void){
 
-    static char *states[] = {
-  [AVAILABLE]    "Available",
-  [BOUGHT]    "Bought"
+  static char *states[] = {
+  [UNUSED]    "unused",
+  [EMBRYO]    "embryo",
+  [SLEEPING]  "sleep ",
+  [RUNNABLE]  "runble",
+  [RUNNING]   "run   ",
+  [ZOMBIE]    "zombie"
   };
 
-  struct TicketHolder* t;
-  int i = 0;
-  for(t=tickettable.holders; t && t < &tickettable.holders[NPROC];t++,i++){
-    if(t->status == BOUGHT)
-      cprintf("Found Ticket %d: { Total Tickets : %d\t Running Total : %d\t Status: %s\tProcess :%p}\n",i, t->totalTickets, t->runningTotal, states[t->status],t->proc);
+  int i;
+  struct proc *p;
+  char *state;
+  uint pc[10];
+  
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == UNUSED)
+      continue;
+
+    if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
+      state = states[p->state];
+    else
+      state = "???";
+
+    cprintf("Running Process on CPU : %d -> {PID: %d, Name: %s, State: %s, Killed: %d, Nice-Value: %d, Tickets: %d}\n", 
+                                        cpu->id, p->pid, p->name, state, p->killed, p->nice, p->tickets);
   }
 }
 

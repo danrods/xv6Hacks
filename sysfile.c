@@ -556,7 +556,7 @@ sys_nice(void) {
 } 
 
 int
-sys_printTickets(void){
-  procdump();
+sys_printProcess(void){
+  ticketdump();
   return 0;
 }

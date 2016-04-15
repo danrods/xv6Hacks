@@ -64,7 +64,7 @@ runcmd(struct cmd *cmd)
   struct pipecmd *pcmd;
   struct redircmd *rcmd;
 
-  printf(1, "Running Command : %d\n", cmd->type);
+  //printf(1, "Running Command : %d\n", cmd->type);
 
   if(cmd == 0)
     exit();

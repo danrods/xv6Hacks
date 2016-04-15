@@ -919,10 +919,15 @@ int updateNice(int nice, struct proc* p){
 // Availability: https://en.wikipedia.org/wiki/Blum_Blum_Shub
 uint 
 prng(uint upper) {
-  random_number = random_number * random_number;
-  random_number = random_number % M;
-  uint x = random_number % upper ;
-  //cprintf("random: %d; x: %d \n", random_number, x);
+  uint x = 0;
+
+  if(upper){
+    random_number = random_number * random_number;
+    random_number = random_number % M;
+    x = random_number % upper ;
+    //cprintf("random: %d; x: %d \n", random_number, x);
+  }
+  
   return x;
 }
 

@@ -54,7 +54,7 @@ viewProcessDump(void){
 	int pid;
 
 	int i,
-		niceval[4] = {19, 5, 0, -12};
+		niceval[4] = {19, 10, 0, -12};
 
 	for(i = 0; i < 4; i++){
 		if((pid = fork()) < 0){// Error

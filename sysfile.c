@@ -550,11 +550,14 @@ sys_nice(void) {
     return -1;
   }
 
+  #ifndef lottery
+
   if(updateNice(value, proc)){
       cprintf("Error updating the Nice Value!\n");
       return -1;
   }
   
+  #endif
 
   return proc->nice;
 } 

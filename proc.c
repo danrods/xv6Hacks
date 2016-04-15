@@ -385,6 +385,8 @@ fork(void)
   acquire(&ptable.lock);
   np->state = RUNNABLE;
   release(&ptable.lock);
+
+  cprintf("Successfully Forked Process with PID : %d\n", pid);
   
   return pid;
 }
@@ -500,7 +502,7 @@ exit(void)
 
   // Jump into the scheduler, never to return.
  
-  cprintf("Exiting Process --> %s. Proc State : %d\n", proc->name, proc->state);
+  cprintf("Exiting Process --> [%d:%s].  Proc State : %d\n", proc->pid, proc->name, proc->state);
    proc->state = ZOMBIE;
  /*
   #ifndef lottery

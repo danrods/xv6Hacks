@@ -873,7 +873,7 @@ int updateNice(int nice, struct proc* p){
 
     int amount;
 
-    p->nice = nice;
+    p->nice = 120 + nice;
 
     if((amount = getTicketAmount(proc)) < 0) return -1;
 

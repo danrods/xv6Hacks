@@ -16,7 +16,7 @@ for(i = 0; i < 4; i++){
 	}
 	else if(pid == 0){ //Child
 	  nice(niceval[i]);
-	  	printProcess();
+	  	//printProcess();
 	  	int j;
  		for(j=0; j < 50; j++){
  			printf(2, "CHILD : Nice Value ==> %d\n", niceval[i]);

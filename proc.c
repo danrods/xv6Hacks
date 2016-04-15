@@ -656,12 +656,6 @@ scheduler(void)
           // It should have changed its p->state before coming back.
           proc = 0;        
       }
-      else{
-        if(totalTickets > 6)
-          cprintf("No Tickets Found!\n");
-      }
-   
-    
 
     release(&ptable.lock);
   }

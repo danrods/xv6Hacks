@@ -906,10 +906,9 @@ ticketdump(void){
   [ZOMBIE]    "zombie"
   };
 
-  int i;
   struct proc *p;
   char *state;
-  uint pc[10];
+
   
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)

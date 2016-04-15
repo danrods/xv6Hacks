@@ -1,5 +1,5 @@
 #include "types.h"
-#include "defs.h"
+#include "user.h"
 
 /*
 void cowpatest(void);

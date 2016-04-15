@@ -657,7 +657,8 @@ scheduler(void)
           proc = 0;        
       }
       else{
-        cprintf("No Tickets Found!\n");
+        if(totalTickets > 6)
+          cprintf("No Tickets Found!\n");
       }
    
     

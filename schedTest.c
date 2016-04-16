@@ -96,8 +96,7 @@ CPUBoundProc(void){
 
 	int niceval[4] = {19, 10, 0, -12};
 
-	int i, pid;
-	//, n = 1e3;
+	int i, pid, n = 1e3;
 	for(i=0; i < 4; i++){
 
 		if((pid = fork()) < 0){
@@ -106,7 +105,7 @@ CPUBoundProc(void){
 		}
 		else if(pid == 0){
 			nice(niceval[i]);
-			doCalculation(i, niceval[i]);
+			doCalculation(niceval[i], n);
 			exit();
 		}
 	}

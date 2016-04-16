@@ -7,7 +7,7 @@ void viewProcessDump(void);
 void CPUBoundProc(void);
 int computeFib(int i, int n);
 int computePrime(int index, int n);
-
+void doCalculation(int index, int n);
 
 int
 main(void)

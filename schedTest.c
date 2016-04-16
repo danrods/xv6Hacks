@@ -4,6 +4,9 @@
 
 void viewPrints(void);
 void viewProcessDump(void);
+void CPUBoundProc(void);
+int computeFib(int i, int n);
+
 
 int
 main(void)
@@ -85,5 +88,40 @@ viewProcessDump(void){
 		printf(2, "\n\n\n\n");
 
 }
+
+void
+CPUBoundProc(void){
+
+	int niceval[4] = {19, 10, 0, -12};
+
+	int i, pid, n = 1e10;
+	for(i=0; i < 4; i++){
+
+		if((pid = fork()) < 0){
+			printf(2, "Error forking!\n");
+			exit();
+		}
+		else if(pid == 0){
+			nice(niceval[i]);
+			computeFib(i, n);
+			exit();
+		}
+	}
+
+	while(wait() >= 0)
+			;
+
+}
+
+
+int computeFib(int i, int n){
+		if(n%100 == 0){
+			printf(1, "Computing Fib Process : %d, N=%d", i,n);
+		}
+
+		if(n > 1) return computeFib(i, n-2) + computeFib(i, n-1);
+		else return 1;
+
+	}
 
 

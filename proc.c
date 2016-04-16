@@ -173,31 +173,31 @@ found:
 static
 int getTicketAmount(struct proc * proc){
 
-  if(NULL == proc) return 3; //shouldn't be null
+  if(NULL == proc) return 20; //shouldn't be null
 
-  int returnVal = 3;//By Default Return the default value for 120
+  int returnVal = 20;//By Default Return the default value for 120
 
     if(proc->nice > 139){//Too High
         cprintf("Nice value is too high!");
         proc->nice = 120;
     }
     else if(proc->nice == 139){
-        returnVal =  1;
-    }
-    else if(proc->nice > 129){ // 130 - 138
-        returnVal =  2;
-    }
-    else if(proc->nice > 119){ // 120 - 129
-        returnVal =  3;
-    } 
-    else if(proc->nice > 109){ // 110 - 119
-        returnVal =  4;
-    }
-    else if(proc->nice > 100){ // 101 - 109
         returnVal =  5;
     }
+    else if(proc->nice > 129){ // 130 - 138
+        returnVal =  10;
+    }
+    else if(proc->nice > 119){ // 120 - 129
+        returnVal =  20;
+    } 
+    else if(proc->nice > 109){ // 110 - 119
+        returnVal =  30;
+    }
+    else if(proc->nice > 100){ // 101 - 109
+        returnVal =  40;
+    }
     else if(proc->nice == 100){ 
-        returnVal =  6;
+        returnVal =  50;
     }
     else{ // Too Low
         cprintf("Nice value is too low!");

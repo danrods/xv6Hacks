@@ -152,8 +152,8 @@ void doCalculation(int index, int n){
 	int i;
 	int sum;
 	for(i=0; i< n; i++){
-		if(n%100 == 0){
-			printf(1, "Proc %d running!: , N=%d\n", i,n);
+		if(n%1000 == 0){
+			printf(1, "Proc %d running!: , N=%d\n", index,n);
 			sum >>=20;
 		}
 		sum = n * sum;

@@ -9,3 +9,17 @@ the inputs(GOODNICE and BADNICE) and run the test again.
 
 
 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+EXERCISE 2
+	The algorithm we used for pseudo random number generator
+(PRNG) is Blum Blum Shub. The large prime number is 16873 and
+the itinital random number is 8.
+	There is a prngtest.c that has prints out the generated
+pseudo random numbers. We have an array of size 20 and run
+PRNG for 1000 times. The range of generated numbers are from
+0 to 19 (inclusive). Every time the index of the number is 
+generated, the value adds 1. In the end we print out the 
+array content. The values are between 30 and 60 and look about
+evenly distributed.
+	Run xv6 and type prngtest. 
+	If needed, you may go into prngtest.c to change the array
+size and rerun the test.

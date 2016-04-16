@@ -124,8 +124,8 @@ int computeFib(int i, int n){
 		}
 
 		if(n > 1){
-			return computeFib(i, n-2) + computeFib(i, n-1)
-		};
+			return computeFib(i, n-2) + computeFib(i, n-1);
+		}
 		else return 1;
 
 	}

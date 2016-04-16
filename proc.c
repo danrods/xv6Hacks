@@ -610,7 +610,7 @@ scheduler(void)
         scheduler_lottery();
       }
       else{
-        cprintf("Staring Round Robin!\n");
+        cprintf("Starting Round Robin!\n");
         scheduler_rr();
       }
   }

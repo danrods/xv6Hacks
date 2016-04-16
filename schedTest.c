@@ -174,6 +174,13 @@ schedSwitch(void){
 	printf(1, "\n--------Round Robin-------\n");
 	viewPrints();
 	printf(1, "\n\n-------------------------\n\n");
+
+	switchScheduler();
+
+	printf(1, "\n\n----------Lottery--------\n");
+	viewPrints();
+	printf(1, "\n\n-------------------------\n\n");
+
 }
 
 

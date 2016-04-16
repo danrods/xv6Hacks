@@ -165,15 +165,15 @@ void doCalculation(int index, int n){
 
 void 
 schedSwitch(void){
-	printf(1, "----------Lottery--------\n");
+	printf(1, "\n\n----------Lottery--------\n");
 	viewPrints();
-	printf(1, "-------------------------\n");
+	printf(1, "\n\n-------------------------\n\n");
 
 	switchScheduler();
 
-	printf(1, "--------Round Robin-------\n");
+	printf(1, "\n--------Round Robin-------\n");
 	viewPrints();
-	printf(1, "-------------------------\n");
+	printf(1, "\n\n-------------------------\n\n");
 }
 
 

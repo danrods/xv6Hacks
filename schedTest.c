@@ -105,7 +105,7 @@ CPUBoundProc(void){
 		}
 		else if(pid == 0){
 			nice(niceval[i]);
-			computePrime(i, n);
+			doCalculation(i, n);
 			exit();
 		}
 	}

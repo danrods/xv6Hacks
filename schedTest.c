@@ -73,9 +73,9 @@ viewProcessDump(void){
 		  	printProcess();
 
 	 		exit();
-		}
-
 	}
+
+}
 
 
 		while(wait() >= 0)

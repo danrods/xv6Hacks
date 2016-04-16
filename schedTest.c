@@ -96,7 +96,7 @@ CPUBoundProc(void){
 
 	int niceval[4] = {19, 10, 0, -12};
 
-	int i, pid, n = 1e9;
+	int i, pid, n = 1e3;
 	for(i=0; i < 4; i++){
 
 		if((pid = fork()) < 0){
@@ -152,7 +152,7 @@ void doCalculation(int index, int n){
 	int i;
 	int sum;
 	for(i=0; i < n; i= i + 2){
-		if(n%1000 == 0){
+		if(n%100 == 0){
 			printf(1, "Proc %d running!: , N=%d\n", index,i);
 			sum >>=20;
 		}

@@ -123,7 +123,9 @@ int computeFib(int i, int n){
 			printf(1, "Computing Fib Process : %d, N=%d\n", i,n);
 		}
 
-		if(n > 1) return computeFib(i, n-2) + computeFib(i, n-1);
+		if(n > 1){
+			return computeFib(i, n-2) + computeFib(i, n-1)
+		};
 		else return 1;
 
 	}

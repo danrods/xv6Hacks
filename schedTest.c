@@ -12,6 +12,7 @@ int
 main(void)
 {
 
+  CPUBoundProc();
   viewPrints();
   viewProcessDump();
 
@@ -110,6 +111,9 @@ CPUBoundProc(void){
 
 	while(wait() >= 0)
 			;
+
+
+		printf(2, "\n\n\n\n");
 
 }
 

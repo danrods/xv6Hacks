@@ -14,8 +14,8 @@ main(void)
 {
 
   CPUBoundProc();
-  //viewPrints();
-  //viewProcessDump();
+  viewPrints();
+  viewProcessDump();
 
   exit();
   return 0;

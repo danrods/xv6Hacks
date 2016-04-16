@@ -96,7 +96,7 @@ CPUBoundProc(void){
 
 	int niceval[4] = {19, 10, 0, -12};
 
-	int i, pid, n = 1e9;
+	int i, pid, n = 900007;
 	for(i=0; i < 4; i++){
 
 		if((pid = fork()) < 0){

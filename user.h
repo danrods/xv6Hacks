@@ -28,6 +28,7 @@ int nice(int);
 void printProcess(void);
 uint prng(uint);
 int switchScheduler(void);
+void yield(void);
 
 // ulib.c
 int stat(char*, struct stat*);

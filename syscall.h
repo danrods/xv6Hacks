@@ -25,3 +25,4 @@
 #define SYS_printProcess 24
 #define SYS_prng   25
 #define SYS_switchScheduler	26
+#define SYS_yield	27

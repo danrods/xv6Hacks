@@ -35,6 +35,7 @@ int write_pointer = 0;
 int seeds[10];
 int M = 16873;
 uint random_number = 8;
+int isLottery = 1;
 //static void getseeds(uint *val);
 
 
@@ -551,8 +552,8 @@ TicketHolder* binarySearch(uint random, int start, int end){
 }
 
 
-
 #ifdef lottery
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -590,11 +591,74 @@ scheduler(void)
       proc = 0;
     }
     release(&ptable.lock);
-
   }
 }
 
+
 #else
+
+void
+scheduler(void)
+{
+
+  for(;;){
+      if(isLottery){
+        cprintf("Starting Lottery Scheduler!\n");
+        scheduler_lottery();
+      }
+      else{
+        cprintf("Staring Round Robin!\n");
+        scheduler_rr();
+      }
+  }
+
+}
+
+
+//PAGEBREAK: 42
+// Per-CPU process scheduler.
+// Each CPU calls scheduler() after setting itself up.
+// Scheduler never returns.  It loops, doing:
+//  - choose a process to run
+//  - swtch to start running that process
+//  - eventually that process transfers control
+//      via swtch back to the scheduler.
+void
+scheduler_rr(void)
+{
+  struct proc *p;
+
+  for(;;){
+    // Enable interrupts on this processor.
+    sti();
+
+    // Loop over process table looking for process to run.
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+
+      // Switch to chosen process.  It is the process's job
+      // to release ptable.lock and then reacquire it
+      // before jumping back to us.
+      proc = p;
+      switchuvm(p);
+      p->state = RUNNING;
+      swtch(&cpu->scheduler, proc->context);
+      switchkvm();
+
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      proc = 0;
+    }
+    release(&ptable.lock);
+
+    if(isLottery){ //If we switched to lottery, break out of the loop.
+        break;
+    }
+  }
+}
+
 
 // NEW ONE
 // Per-CPU process scheduler.
@@ -605,7 +669,7 @@ scheduler(void)
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
 void
-scheduler(void)
+scheduler_lottery(void)
 {
   struct proc *p, *winner = NULL;
   //struct TicketHolder* t;
@@ -659,6 +723,12 @@ scheduler(void)
       }
 
     release(&ptable.lock);
+
+
+    if(isLottery == 0){ //If we switched to RR, break out of the loop.
+        break;
+    }
+
   }
 }
 

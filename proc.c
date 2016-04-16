@@ -191,13 +191,13 @@ int getTicketAmount(struct proc * proc){
         returnVal =  3;
     } 
     else if(proc->nice > 109){ // 110 - 119
-        returnVal =  5;
+        returnVal =  4;
     }
     else if(proc->nice > 100){ // 101 - 109
-        returnVal =  10;
+        returnVal =  5;
     }
     else if(proc->nice == 100){ 
-        returnVal =  15;
+        returnVal =  6;
     }
     else{ // Too Low
         cprintf("Nice value is too low!");

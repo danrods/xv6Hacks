@@ -597,6 +597,9 @@ scheduler(void)
 
 #else
 
+void scheduler_rr(void);
+void scheduler_lottery(void);
+
 void
 scheduler(void)
 {

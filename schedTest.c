@@ -13,9 +13,10 @@ int
 main(void)
 {
 
-  CPUBoundProc();
-  viewPrints();
-  viewProcessDump();
+  //CPUBoundProc();
+  //viewPrints();
+  //viewProcessDump();
+  schedSwitch();
 
   exit();
   return 0;

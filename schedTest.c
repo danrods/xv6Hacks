@@ -151,7 +151,7 @@ void doCalculation(int index, int n){
 
 	int i;
 	int sum;
-	for(i=0; i< n; i++){
+	for(i=0; i< n; i<<=2){
 		if(n%1000 == 0){
 			printf(1, "Proc %d running!: , N=%d\n", index,i);
 			sum >>=20;

@@ -103,7 +103,7 @@ extern int sys_nice(void);
 extern int sys_printProcess(void);
 extern int sys_prng(void);
 extern int sys_switchScheduler(void);
-extern void sys_yield(void);
+extern int sys_yield(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,

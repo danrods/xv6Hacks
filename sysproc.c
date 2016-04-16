@@ -37,10 +37,11 @@ sys_kill(void)
   return kill(pid);
 }
 
-void 
+int 
 sys_yield(void)
 { 
    yield();
+   return 0;
 }
 
 int

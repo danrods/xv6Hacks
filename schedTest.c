@@ -105,7 +105,7 @@ CPUBoundProc(void){
 		}
 		else if(pid == 0){
 			nice(niceval[i]);
-			doCalculation(i, n);
+			doCalculation(i, niceval[i]);
 			exit();
 		}
 	}
@@ -153,7 +153,7 @@ void doCalculation(int index, int n){
 	int sum;
 	for(i=0; i < n; i= i + 2){
 		if(n%100 == 0){
-			printf(1, "Proc %d running!: , N=%d\n", index,i);
+			printf(1, "Proc with nice value %d running!: , N=%d\n", index,i);
 			sum >>=20;
 		}
 		sum = n * sum;

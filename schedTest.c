@@ -199,7 +199,7 @@ yieldTest(void){
 
 	int niceval[4] = {19, 10, 0, -12};
 
-	int i, pid, n = 100;
+	int i, pid, n = 50;
 	for(i=0; i < 4; i++){
 
 		if((pid = fork()) < 0){
@@ -209,7 +209,7 @@ yieldTest(void){
 		else if(pid == 0){
 			int j;
 			nice(niceval[i]);
-			for(j=0; j < 50; j++){
+			for(j=0; j < n; j++){
 				yield();
 				printf(1, "Process with Nice Value %d--> Continuing\n");
 			}

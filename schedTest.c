@@ -120,7 +120,7 @@ CPUBoundProc(void){
 
 int computeFib(int i, int n){
 		if(n%100 == 0){
-			printf(1, "Computing Fib Process : %d, N=%d", i,n);
+			printf(1, "Computing Fib Process : %d, N=%d\n", i,n);
 		}
 
 		if(n > 1) return computeFib(i, n-2) + computeFib(i, n-1);

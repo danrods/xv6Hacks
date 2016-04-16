@@ -1,0 +1,52 @@
+EXERCISE 1
+	There is a file called nicetest.c which contains the 
+both the positive and negative tests for nice.
+	Run xv6 and type nicetest. You will see the result
+whether it works or not.
+	if needed, you may go into the nicetest.c file to change 
+the inputs(GOODNICE and BADNICE) and run the test again.
+
+
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+EXERCISE 2
+	The algorithm we used for pseudo random number generator
+(PRNG) is Blum Blum Shub. The large prime number is 16873 and
+the itinital random number is 8.
+	There is a prngtest.c that has prints out the generated
+pseudo random numbers. We have an array of size 20 and run
+PRNG for 1000 times. The range of generated numbers are from
+0 to 19 (inclusive). Every time the index of the number is 
+generated, the value adds 1. In the end we print out the 
+array content. The values are between 30 and 60 and look about
+evenly distributed.
+	Run xv6 and type prngtest. 
+	If needed, you may go into prngtest.c to change the array
+size and rerun the test.
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+EXERCISE 3
+	
+In order to keep scheduling quick and efficient we've decided to keep the number of tickets assigned to be low.
+As the number of tickets increased I began to see a drop in throughput so I settled on a ticket range from 1 - 6, 
+1 being the lowest priority, 6 being the highest. The tickets themselves are stored in the process for easy access and control since the
+process is always available in the kernel allowing the nice value to be updated dynamically. 
+
+We have implemented a way to dynamically switch schedulers by having a syscall to do so called called switchScheduler. This will break out of the infinite scheduling loop for that scheduler and return to an if block which checks the value that was set in the syscall and starts up
+the appropriate scheduler. The number of tickets is kept the same, and can even be changed during round robin scheduling without affecting
+the actual RR scheduler, but will have an impact if switched back to lottery scheduling.
+
+
+Exercise 4
+
+For the First test the forked children will run for 50 iterations and yield the CPU each iteration. It is visible from the test that the process with the lowest nice value gets scheduled most often.
+
+For the second test a CPU intensive function is being run by each forked child and it can be seen that the highest nice value finished last on the list of processes.
+
+For the 3rd test, it is a simple while loop that prints a statement on each iteration for each forked child. IT can be seen from the output that the higher priority  processes print more often than not.
+
+The last test is a simple Scheduler Switch test for the Challenge
+
+
+

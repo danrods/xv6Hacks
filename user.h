@@ -24,6 +24,11 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int wolfie(void* buf, uint);
+int nice(int);
+void printProcess(void);
+uint prng(uint);
+int switchScheduler(void);
+void yield(void);
 
 // ulib.c
 int stat(char*, struct stat*);

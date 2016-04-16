@@ -1,3 +1,5 @@
+#include "spinlock.h"
+
 // Segments in proc->gdt.
 #define NSEGS     7
 
@@ -15,6 +17,7 @@ struct cpu {
   struct cpu *cpu;
   struct proc *proc;           // The currently-running process.
 };
+
 
 extern struct cpu cpus[NCPU];
 extern int ncpu;
@@ -49,6 +52,21 @@ struct context {
   uint eip;
 };
 
+enum ticketstate {AVAILABLE, BOUGHT};
+
+typedef struct TicketHolder{
+  int totalTickets;
+  int runningTotal;
+  enum ticketstate status;
+  struct proc* proc;
+} TicketHolder;
+
+extern struct TicketHolder holders[NPROC];
+extern int seeds[10];
+extern int read_pointer;
+extern int write_pointer;
+extern int isLottery;
+
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
 // Per-process state
@@ -65,6 +83,9 @@ struct proc {
   int killed;                  // If non-zero, have been killed
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
+  int nice;                    // Nice value to specify the priority
+  int tickets;
+  struct spinlock lock;        // Lock the process to prevent contention
   char name[16];               // Process name (debugging)
 };
 
@@ -73,3 +94,4 @@ struct proc {
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+

@@ -64,7 +64,7 @@ runcmd(struct cmd *cmd)
   struct pipecmd *pcmd;
   struct redircmd *rcmd;
 
-  printf(1, "Running Command : %d\n", cmd->type);
+  //printf(1, "Running Command : %d\n", cmd->type);
 
   if(cmd == 0)
     exit();
@@ -170,10 +170,9 @@ main(void)
       continue;
     }
     if(fork1() == 0)
-      printf(1, "Child is running!\n");
       runcmd(parsecmd(buf));
-      printf(1, "Child ran command\n");
-    printf(1, "Parent is waiting!\n");
+      
+    //printf(1, "Parent is waiting!\n");
     wait();
   }
   exit();

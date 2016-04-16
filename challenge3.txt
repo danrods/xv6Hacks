@@ -1,3 +1,28 @@
 List challenge problems completed as part of the lab 3 handin, as well
 as the problem number.  If you worked any previous lab challenges and
 submitted them with this lab, list them here, along with the lab number.
+
+Chanllenge 1
+	There is a prngtest.c that prints out the generated
+pseudo random numbers. We have an array of size 20 and run
+PRNG for 1000 times. The range of generated numbers are from
+0 to 19 (inclusive). Every time the index of the number is 
+generated, the value adds 1. In the end we print out the 
+array content. The values are between 30 and 60 and look about
+evenly distributed.
+	Run xv6 and type prngtest. 
+	If needed, you may go into prngtest.c to change the array
+size and rerun the test.
+
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+
+
+Challenge 2
+	For the Dynamic switching between Round Robin & Lottery I created a syscall named switchScheduler
+	this will switch the scheduler by breaking out of the current scheduler and return to a method which checks 
+	the value that gets changed in the syscall and reloads the different scheduler. There is a method called schedSwitch
+	in the file schedTest.c  which runs a command in the lottery, switches schedulers and runs the same command.
+
+	

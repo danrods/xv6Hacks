@@ -30,10 +30,15 @@ main(int argc, char *argv[])
   printf(1, "write %d\n", i);
 
   path[8] += i;
+  printf(1, "Opening File %s\n", path); 
   fd = open(path, O_CREATE | O_RDWR);
-  for(i = 0; i < 20; i++)
+  printf(1, "Opened successful FD %d\n", fd); 
+  for(i = 0; i < 20; i++){
 //    printf(fd, "%d\n", i);
-    write(fd, data, sizeof(data));
+    write(fd, data, sizeof(data));   
+    printf(1, "Write successful\n"); 
+  }
+
   close(fd);
 
   printf(1, "read\n");

@@ -535,3 +535,49 @@ sys_wolfie(void){
   } 
   return strlen(strncpy(buf, wolfie_img, size));//Returns the size of the string in buf
 }
+
+int 
+sys_nice(void) {
+  int value;
+
+  if(argint(0, &value) < 0){
+    cprintf("Error getting arguments\n");
+    return -1;
+  }
+
+  if(value < -20 || value > 19) {
+    cprintf("Set nice input between -20 and 19!\n");
+    return -1;
+  }
+
+  #ifndef lottery
+
+  if(updateNice(value, proc)){
+      cprintf("Error updating the Nice Value!\n");
+      return -1;
+  }
+  
+  #endif
+
+  return proc->nice;
+} 
+
+int
+sys_printProcess(void){
+  ticketdump();
+  return 0;
+}
+
+uint
+sys_prng(void) {
+  return prng(20);
+}
+
+int
+sys_switchScheduler(void) {
+  isLottery = (isLottery)? 0 : 1;
+  return 0;
+}
+
+
+

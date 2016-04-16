@@ -21,3 +21,8 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_wolfie 22
+#define SYS_nice   23
+#define SYS_printProcess 24
+#define SYS_prng   25
+#define SYS_switchScheduler	26
+#define SYS_yield	27

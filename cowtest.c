@@ -1,8 +1,5 @@
 #include "types.h"
-#include "defs.h"
-#include "mmu.h"
-#include "param.h"
-#include "proc.h"
+#include "user.h"
 
 /*
 void cowpatest(void);

@@ -12,19 +12,51 @@ struct {
   struct proc proc[NPROC];
 } ptable;
 
+struct {
+  int totalTickets;
+  int totalTicketHolders;
+  struct spinlock lock;
+  struct TicketHolder holders[NPROC];
+} tickettable;
+
+int totalTickets = 0;
+
 static struct proc *initproc;
 
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
 
+
 static void wakeup1(void *chan);
+
+int read_pointer = 0;
+int write_pointer = 0;
+int seeds[10];
+int M = 16873;
+uint random_number = 8;
+int isLottery = 1;
+//static void getseeds(uint *val);
+
+
+TicketHolder* binarySearch(uint random, int start, int end);
+
+#ifndef lottery
+
+void updateTicketHolders(struct TicketHolder* holder); 
+static int getTicketAmount(struct proc * proc);
+
+#endif
 
 void
 pinit(void)
 {
   initlock(&ptable.lock, "ptable");
+
 }
+
+
+#ifdef lottery //TODO : Switch this over when want to use lottery officially
 
 //PAGEBREAK: 32
 // Look in the process table for an UNUSED proc.
@@ -73,6 +105,151 @@ found:
 //  cprintf("Created new Process with pid : %d\n", p->pid);
   return p;
 }
+
+#else
+
+//PAGEBREAK: 32
+// Look in the process table for an UNUSED proc.
+// If found, change state to EMBRYO and initialize
+// state required to run in the kernel.
+// Otherwise return 0.
+static struct proc*
+allocproc(void)
+{
+  struct proc *p;
+  char *sp;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if(p->state == UNUSED)
+      goto found;
+  release(&ptable.lock);
+  return 0;
+
+found:
+  p->state = EMBRYO;
+  p->pid = nextpid++;
+  release(&ptable.lock);
+
+  // Allocate kernel stack.
+  if((p->kstack = kalloc()) == 0){
+    p->state = UNUSED;
+    return 0;
+  }
+  sp = p->kstack + KSTACKSIZE;
+  
+  // Leave room for trap frame.
+  sp -= sizeof *p->tf;
+  p->tf = (struct trapframe*)sp;
+  
+  // Set up new context to start executing at forkret,
+  // which returns to trapret.
+  sp -= 4;
+  *(uint*)sp = (uint)trapret;
+
+  sp -= sizeof *p->context;
+  p->context = (struct context*)sp;
+  memset(p->context, 0, sizeof *p->context);
+  p->context->eip = (uint)forkret;
+
+  p->nice = 120; //Default nice
+  p->tickets = getTicketAmount(proc); //Give it the same amount of tickets as it's parent for now.
+  totalTickets += p->tickets;  //Lets incrememnt that count son.
+
+  //cprintf("Successfully Added a Holder to process %d with %d tickets\n", p->pid, t->totalTickets);
+  
+  return p;
+}
+
+
+
+#endif
+
+
+#ifndef lottery
+
+/**
+* Convenience method to return the amount of tickets based on the nice value of the process.
+*/
+static
+int getTicketAmount(struct proc * proc){
+
+  if(NULL == proc) return 3; //shouldn't be null
+
+  int returnVal = 3;//By Default Return the default value for 120
+
+    if(proc->nice > 139){//Too High
+        cprintf("Nice value is too high!");
+        proc->nice = 120;
+    }
+    else if(proc->nice == 139){
+        returnVal =  1;
+    }
+    else if(proc->nice > 129){ // 130 - 138
+        returnVal =  2;
+    }
+    else if(proc->nice > 119){ // 120 - 129
+        returnVal =  3;
+    } 
+    else if(proc->nice > 109){ // 110 - 119
+        returnVal =  4;
+    }
+    else if(proc->nice > 100){ // 101 - 109
+        returnVal =  5;
+    }
+    else if(proc->nice == 100){ 
+        returnVal =  6;
+    }
+    else{ // Too Low
+        cprintf("Nice value is too low!");
+        proc->nice = 120;
+    }
+
+    return returnVal; 
+}
+
+
+/**
+* Convenience method to update the runningTotal for the subsequent tickets after i.
+* NOTE : Tickettable Lock should be acquired before calling this method.
+*/
+ 
+void updateTicketHolders(struct TicketHolder* holder){
+
+    if(NULL == &tickettable.holders[NPROC] || 
+        holder < tickettable.holders       ||
+        holder > &tickettable.holders[NPROC]) return; // i must be bounded by the tickettable array. 
+
+    int ticketHolders = tickettable.totalTicketHolders;
+    int numTickets = tickettable.totalTickets;
+    
+
+    struct TicketHolder * last = &tickettable.holders[ticketHolders];
+    memmove(holder, last, sizeof(struct TicketHolder)); //Copy the last one to the newly created free spot
+    last->status = AVAILABLE;
+    last->proc = NULL;
+
+    //Update the runningTotal of the one we copied
+    holder->runningTotal = (holder > tickettable.holders) ? (((holder - 1)->runningTotal) + holder->totalTickets) : holder->totalTickets; 
+    //holder->proc->stub = holder; //Make sure the process is updated
+
+    struct TicketHolder *t1 = holder, *t2;
+    for(t2 = t1 + 1;  //First pointer is at the initialized ticket, Second pointer is at the one after
+        t2 < &tickettable.holders[ticketHolders]; //While the 1st & 2nd pointers are less than the second to last and last, continue
+        t1++, t2++){ 
+
+        if(t2->status == AVAILABLE){
+            panic("No holes in ticket holder array allowed\n");
+        }
+
+        t2->runningTotal = t1->runningTotal + t2->totalTickets;
+    }
+
+    tickettable.totalTickets -=  numTickets;
+    tickettable.totalTicketHolders--;
+}
+
+#endif
 
 //PAGEBREAK: 32
 // Set up first user process.
@@ -166,13 +343,17 @@ fork(void)
  
   pid = np->pid;
 
+
   // lock to force the compiler to emit the np->state write last.
   acquire(&ptable.lock);
   np->state = RUNNABLE;
   release(&ptable.lock);
+
+  cprintf("Successfully Forked Process with PID : %d\n", pid);
   
   return pid;
 }
+
 
 #else
 
@@ -238,8 +419,8 @@ fork(void)
 void
 exit(void)
 {
-  cprintf("Exiting the process : {PID:%d, Name:%s, INode:0x%p, Killed:%d, Parent:%d, Size:%d}\n",
-                                proc->pid, proc->name, proc->cwd, proc->killed, proc->parent->pid, proc->sz);
+  //cprintf("Exiting the process : {PID:%d, Name:%s, Killed:%d, Parent:%d, Size:%d}\n", proc->pid, proc->name, proc->killed, proc->parent->pid, proc->sz);
+  
   struct proc *p;
   int fd;
 
@@ -274,7 +455,14 @@ exit(void)
   }
 
   // Jump into the scheduler, never to return.
-  proc->state = ZOMBIE;
+ 
+  cprintf("Exiting Process --> [%d:%s].  Proc State : %d\n", proc->pid, proc->name, proc->state);
+   proc->state = ZOMBIE;
+ 
+  #ifndef lottery
+    totalTickets -= proc->tickets;
+  #endif
+  
   sched();
   panic("zombie exit");
 }
@@ -297,8 +485,7 @@ wait(void)
       havekids = 1;
       if(p->state == ZOMBIE){
         // Found one.
-        cprintf("Found Zombie : {PID:%d, Name:%s, INode:0x%p, Killed:%d, Parent:%d, Size:%d, Pgdir:0x%x}\n",
-                                proc->pid, proc->name, proc->cwd, proc->killed, proc->parent->pid, proc->sz, proc->pgdir);
+        //cprintf("Found Zombie : {PID:%d, Name:%s, Killed:%d, Parent:%d, Size:%d, Pgdir:0x%x}\n", proc->pid, proc->name, proc->killed, proc->parent->pid, proc->sz, proc->pgdir);
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
@@ -323,6 +510,49 @@ wait(void)
     sleep(proc, &ptable.lock);  //DOC: wait-sleep
   }
 }
+
+
+/**
+* Method that will perform binary search to find which process should be running.
+* Random is a randomly generated number between 0 and the number of tickets that exist 
+* in the system. Searches from start - end, will do work recursively
+*/ 
+TicketHolder* binarySearch(uint random, int start, int end){
+     
+     //cprintf("Binary Search --> {Random: %d, Start: %d, End: %d\n", random, start, end);
+     if(start > end) return NULL; // While start <= end continue
+     
+    int mid = (start + end) / 2;
+
+    
+    int ticketStart = (&tickettable.holders[mid])->runningTotal - (&tickettable.holders[mid])->totalTickets;
+    int ticketEnd = tickettable.holders[mid].runningTotal;
+
+    //cprintf("\tMiddle Ticket --> {TicketStart: %d, lastTicket: %d}\n", ticketStart, ticketEnd);
+
+    //Is the random number bound by the current TicketHolder 
+    if((ticketEnd >= random) && (ticketStart <= random) ){ 
+        //struct proc* winner = (&tickettable.holders[mid])->proc;
+        //cprintf("\tFound Process --> {Name : %s, Nice Val: %d, PID: %d, killed %d}\n", winner->name, winner->nice, winner->pid, winner->killed);
+        return &tickettable.holders[mid];
+    }
+    else if(ticketEnd < random ){ // It's bigger
+        //cprintf("\tRecursive Bigger\n");
+        return binarySearch(random, mid + 1, end);
+    }
+    else if(ticketStart > random ) { // It's smaller
+        //cprintf("\tRecursive Smaller\n");
+        return binarySearch(random, start, mid);
+    }
+    else{
+      //cprintf("It's not bigger than or less than and not bounded by. ERR!\n");
+    }
+
+    return NULL;
+}
+
+
+#ifdef lottery
 
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
@@ -361,9 +591,152 @@ scheduler(void)
       proc = 0;
     }
     release(&ptable.lock);
+  }
+}
+
+
+#else
+
+void scheduler_rr(void);
+void scheduler_lottery(void);
+
+void
+scheduler(void)
+{
+
+  for(;;){
+      if(isLottery){
+        cprintf("Starting Lottery Scheduler!\n");
+        scheduler_lottery();
+      }
+      else{
+        cprintf("Starting Round Robin!\n");
+        scheduler_rr();
+      }
+  }
+
+}
+
+
+//PAGEBREAK: 42
+// Per-CPU process scheduler.
+// Each CPU calls scheduler() after setting itself up.
+// Scheduler never returns.  It loops, doing:
+//  - choose a process to run
+//  - swtch to start running that process
+//  - eventually that process transfers control
+//      via swtch back to the scheduler.
+void
+scheduler_rr(void)
+{
+  struct proc *p;
+
+  for(;;){
+    // Enable interrupts on this processor.
+    sti();
+
+    // Loop over process table looking for process to run.
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+
+      // Switch to chosen process.  It is the process's job
+      // to release ptable.lock and then reacquire it
+      // before jumping back to us.
+      proc = p;
+      switchuvm(p);
+      p->state = RUNNING;
+      swtch(&cpu->scheduler, proc->context);
+      switchkvm();
+
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      proc = 0;
+    }
+    release(&ptable.lock);
+
+    if(isLottery){ //If we switched to lottery, break out of the loop.
+        break;
+    }
+  }
+}
+
+
+// NEW ONE
+// Per-CPU process scheduler.
+// Each CPU calls scheduler() after setting itself up.
+// Scheduler never returns.  It loops, doing:
+//  - choose a process to run
+//  - swtch to start running that process
+//  - eventually that process transfers control
+//      via swtch back to the scheduler.
+void
+scheduler_lottery(void)
+{
+  struct proc *p, *winner = NULL;
+  //struct TicketHolder* t;
+ // int isFound;
+  uint random;
+  int runningTotal;
+
+  for(;;){
+    // Enable interrupts on this processor.
+    sti();
+
+    acquire(&ptable.lock);
+
+      random = prng(totalTickets);                //Step 1. Get a Random number
+
+      winner = NULL;
+      runningTotal = 0;
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->state != RUNNABLE){
+          continue;
+        }
+
+        runningTotal += getTicketAmount(p);
+
+        if(runningTotal > random){
+            winner = p;
+            break;
+        }
+
+      }
+
+      if(winner){ // If we found a winner
+
+          if(winner->pid > 2){
+              //cprintf("Winner on CPU : %d! --> Found Ticket : { Name : %s\t Tickets : %d\t PID: %d\t Parent PID :%p \t Killed : %d \t Nice: %d\t PDIR: %p\t State: %d\n}\n", 
+              //cpu->id, winner->name, winner->tickets, winner->pid, winner->parent, winner->killed, winner->nice, winner->pgdir, winner->state);
+          }
+
+          // Switch to chosen process.  It is the process's job
+          // to release ptable.lock and then reacquire it
+          // before jumping back to us.
+          proc = winner;
+          switchuvm(winner);
+          winner->state = RUNNING;
+          swtch(&cpu->scheduler, proc->context);
+          switchkvm();
+
+          // Process is done running for now.
+          // It should have changed its p->state before coming back.
+          proc = 0;        
+      }
+
+    release(&ptable.lock);
+
+
+    if(isLottery == 0){ //If we switched to RR, break out of the loop.
+        break;
+    }
 
   }
 }
+
+#endif
+
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state.
@@ -534,3 +907,72 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+void
+ticketdump(void){
+
+  static char *states[] = {
+  [UNUSED]    "unused",
+  [EMBRYO]    "embryo",
+  [SLEEPING]  "sleep ",
+  [RUNNABLE]  "runble",
+  [RUNNING]   "run   ",
+  [ZOMBIE]    "zombie"
+  };
+
+  struct proc *p;
+  char *state;
+
+  cprintf("Total Tickets : ---> %d\n", totalTickets);
+  
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == UNUSED)
+      continue;
+
+    if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
+      state = states[p->state];
+    else
+      state = "???";
+
+    cprintf("Running Process on CPU : %d -> {PID: %d, Name: %s, State: %s, Killed: %d, Nice-Value: %d, Tickets: %d}\n", 
+                                        cpu->id, p->pid, p->name, state, p->killed, p->nice, p->tickets);
+  }
+}
+
+
+#ifndef lottery
+
+int updateNice(int nice, struct proc* p){
+
+    int amount;
+
+    p->nice = 120 + nice;
+
+    if((amount = getTicketAmount(proc)) < 0) return -1;
+
+    totalTickets -= p->tickets;
+    totalTickets += (p->tickets = amount);
+
+    return 0;
+}
+
+#endif
+
+
+
+// Title: Blum Blum Shub Generator
+// Availability: https://en.wikipedia.org/wiki/Blum_Blum_Shub
+uint 
+prng(uint upper) {
+  uint x = 0;
+
+  if(upper){
+    random_number = random_number * random_number;
+    random_number = random_number % M;
+    x = random_number % upper ;
+    //cprintf("random: %d; x: %d \n", random_number, x);
+  }
+  
+  return x;
+}
+

@@ -36,6 +36,13 @@ sys_kill(void)
   return kill(pid);
 }
 
+int 
+sys_yield(void)
+{ 
+   yield();
+   return 0;
+}
+
 int
 sys_getpid(void)
 {

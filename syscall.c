@@ -99,6 +99,11 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_wolfie(void);
+extern int sys_nice(void);
+extern int sys_printProcess(void);
+extern int sys_prng(void);
+extern int sys_switchScheduler(void);
+extern int sys_yield(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -123,6 +128,11 @@ static int (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_wolfie]  sys_wolfie,
+[SYS_nice]    sys_nice,
+[SYS_printProcess] sys_printProcess,
+[SYS_prng]    sys_prng,
+[SYS_switchScheduler] sys_switchScheduler,
+[SYS_yield]   sys_yield,
 };
 
 void

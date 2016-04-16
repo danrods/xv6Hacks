@@ -65,6 +65,7 @@ extern struct TicketHolder holders[NPROC];
 extern int seeds[10];
 extern int read_pointer;
 extern int write_pointer;
+extern int isLottery;
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 

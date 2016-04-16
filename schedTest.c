@@ -161,4 +161,17 @@ void doCalculation(int index, int n){
 	}
 }
 
+void 
+schedSwitch(void){
+	cprintf("----------Lottery--------\n");
+	viewPrints();
+	cprintf("-------------------------\n");
+
+	switchScheduler();
+
+	cprintf("--------Round Robin-------\n");
+	viewPrints();
+	cprintf("-------------------------\n");
+}
+
 

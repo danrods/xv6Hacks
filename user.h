@@ -27,6 +27,7 @@ int wolfie(void* buf, uint);
 int nice(int);
 void printProcess(void);
 uint prng(uint);
+int switchScheduler(void);
 
 // ulib.c
 int stat(char*, struct stat*);

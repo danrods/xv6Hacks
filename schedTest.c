@@ -211,7 +211,7 @@ yieldTest(void){
 			nice(niceval[i]);
 			for(j=0; j < n; j++){
 				yield();
-				printf(1, "Process with Nice Value %d--> Continuing\n");
+				printf(1, "Process with Nice Value %d--> Continuing\n", niceval[i]);
 			}
 			exit();
 		}

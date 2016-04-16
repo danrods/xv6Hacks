@@ -6,6 +6,7 @@ void viewPrints(void);
 void viewProcessDump(void);
 void CPUBoundProc(void);
 int computeFib(int i, int n);
+int computePrime(int index, int n);
 
 
 int
@@ -104,7 +105,7 @@ CPUBoundProc(void){
 		}
 		else if(pid == 0){
 			nice(niceval[i]);
-			computeFib(i, n);
+			computePrime(i, n);
 			exit();
 		}
 	}

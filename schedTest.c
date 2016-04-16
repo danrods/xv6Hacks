@@ -9,14 +9,24 @@ int computeFib(int i, int n);
 int computePrime(int index, int n);
 void doCalculation(int index, int n);
 void schedSwitch(void);
+void yieldTest(void);
 
 int
 main(void)
 {
 
-  //CPUBoundProc();
-  //viewPrints();
-  //viewProcessDump();
+  printf(1, "\n************** TEST 1 ****************\n");
+  CPUBoundProc();
+  printf(1, "\n**************************************\n");
+
+  printf(1, "\n************** TEST 2 ****************\n");
+  viewPrints();
+  printf(1, "\n**************************************\n");
+
+  printf(1, "\n************** TEST 3 ****************\n");
+  yieldTest();
+  printf(1, "\n**************************************\n");
+
   schedSwitch();
 
   exit();
@@ -51,7 +61,7 @@ viewPrints(void){
 		while(wait() >= 0)
 			;
 
-		printf(2, "\n\n\n\n");
+		printf(2, "\n\n");
 
 }
 
@@ -89,7 +99,7 @@ viewProcessDump(void){
 			;
 
 
-		printf(2, "\n\n\n\n");
+		printf(2, "\n\n");
 
 }
 
@@ -165,9 +175,9 @@ void doCalculation(int index, int n){
 
 void 
 schedSwitch(void){
-	printf(1, "\n\n----------Lottery--------\n");
+	printf(1, "\n----------Lottery--------\n");
 	viewPrints();
-	printf(1, "\n\n-------------------------\n\n");
+	printf(1, "\n-------------------------\n\n");
 
 	switchScheduler();
 
@@ -177,10 +187,47 @@ schedSwitch(void){
 
 	switchScheduler();
 
-	printf(1, "\n\n----------Lottery--------\n");
+	printf(1, "\n----------Lottery--------\n");
 	viewPrints();
 	printf(1, "\n\n-------------------------\n\n");
 
 }
+
+
+void
+yieldTest(void){
+
+	int niceval[4] = {19, 10, 0, -12};
+
+	int i, pid, n = 100;
+	for(i=0; i < 4; i++){
+
+		if((pid = fork()) < 0){
+			printf(2, "Error forking!\n");
+			exit();
+		}
+		else if(pid == 0){
+			int j;
+			nice(niceval[i]);
+			for(j=0; j < 50; j++){
+				yield();
+				printf(1, "Process with Nice Value %d--> Continuing\n");
+			}
+			exit();
+		}
+	}
+
+	while(wait() >= 0)
+			;
+
+
+	printf(2, "\n\n");
+
+}
+
+
+
+
+
 
 

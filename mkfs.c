@@ -146,8 +146,8 @@ main(int argc, char *argv[])
   sb.ipbg  = xint(IPBG);
   sb.bpbg = xint(BPBG);
 
-  printf("nmeta %d (boot, super, log blocks %u inode blocks %u, ipbg %u, bpbg %u) blockgroups %d, blocks %d total %d\n",
-         nmeta, nlog, ninodeblocks, IPBG, BPBG, BLOCKGROUPS, nblocks, FSSIZE);
+  printf("nmeta %d ([boot | super | log blocks %u | inode blocks %u | data blocks %u ] ipbg %u, bpbg %u) blockgroups %d, blocks %d total %d\n",
+         nmeta, nlog, ninodeblocks, NDATABLOCKS, IPBG, BPBG, BLOCKGROUPS, nblocks, FSSIZE);
 
   #endif
 

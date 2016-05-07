@@ -179,8 +179,6 @@ iinit(int dev)
 
 static struct inode* iget(uint dev, uint inum);
 
-  #define IBLOCK(i, sb)     ((i) / IPB + sb.inodestart)
-  #define IBLOCK(i, sb)    ( sb.bgstart + (((i) / sb.ipbg) * sb.bpbg) + 1 + (((i) % sb.ipbg) / IPB) )
 //PAGEBREAK!
 
 #ifdef xv6ffs
@@ -217,15 +215,16 @@ ialloc(uint dev, short type)
 struct inode*
 ialloc(uint dev, short type)
 {
-  uint least = 100, //Percent utilization
-          bg,   
-          lub; //Least used block group
+  uint inum,
+       least = 100, //Percent utilization
+       bg,   
+       lub;         //Least used block group
   struct buf *bp;
   struct ff_stats *stats;
 
   //To save time, if the block group is empty, lets just put it there
   for(lub = bg = 0; least > 0 && bg < sb.nblockgroups; bg++){
-      bp = bread(dev, STATBLOCK(i, sb));
+      bp = bread(dev, STATBLOCK(bg, sb));
 
       //To get the stats struct which is stored at the end of the block we need to add
       // the difference between the entire block and the sizeof the struct

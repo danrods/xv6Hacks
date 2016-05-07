@@ -62,7 +62,8 @@ struct dinode {
   // Bitmap bits per block
   #define BPB           (BSIZE*8)
 
-  #define FSSIZE       1000  // size of file system in blocks
+  // size of file system in blocks
+  #define FSSIZE       1000  
   
   // Block containing inode i
   #define IBLOCK(i, sb)     ((i) / IPB + sb.inodestart)
@@ -82,7 +83,8 @@ struct dinode {
 
    // NOTE : 36 Bits padding  = 4.5 Bytes padding = 1 uint
   // Unaligned : (4096 [Data Blocks] % 140 [Blocks / iNode] = 36 Bits padding)
-  #define NDATABLOCKS (BITSPERBLOCK - (BITSPERBLOCK % MAXFILE)) // Total Data Blocks = 4096 - 36 = 4060 Blocks: 
+  // Total Data Blocks = 4096 - 36 = 4060 Blocks: 
+  #define NDATABLOCKS (BITSPERBLOCK - (BITSPERBLOCK % MAXFILE)) 
 
 
   // The number of Data bits per Block Group Bitmap is defined to be the same as NDATABLOCKS
@@ -131,7 +133,7 @@ struct dinode {
   // Step 1 : Figure out which Block group we are in, based on the block no.
   // Step 2 : Add the Number of iNode Blocks and the 1 block for the data bitmap to arrive at data section
   // Step 3 : Add the remainder of the block no, which is the offset to the data blocks in the corresponding block group
-  #define DBLOCK(b, sb)    ( (((b)/BPB) * sb.bpbg) + ((b) % BPB) + NINODEBLOCKS + 1 + sb.bgstart) 
+  #define DBLOCK(b, sb)    ( ( ((b)/BPB) * sb.bpbg) + ((b) % BPB) + NINODEBLOCKS + 1 + sb.bgstart) 
 
   //////////////////////////////////////////////////////////////
 

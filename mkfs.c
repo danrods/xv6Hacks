@@ -143,7 +143,7 @@ main(int argc, char *argv[])
   sb.logstart = xint(2);
   sb.bgstart = xint(nmeta);
   sb.nblockgroups = xint(BLOCKGROUPS);
-  sb.ipbg;  = xint(IPBG);
+  sb.ipbg  = xint(IPBG);
   sb.bpbg = xint(BPBG);
 
   printf("nmeta %d (boot, super, log blocks %u inode blocks %u, ipbg %u, bpbg %u) blockgroups %d, blocks %d total %d\n",
@@ -387,16 +387,19 @@ iappend(uint inum, void *xp, int n)
     assert(fbn < MAXFILE);
     if(fbn < NDIRECT){
       if(xint(din.addrs[fbn]) == 0){
-        din.addrs[fbn] = xint(DBLOCK(freeblock++, sb)); 
+        din.addrs[fbn] = xint(DBLOCK(freeblock, sb)); 
+        ++freeblock;
       }
       x = xint(din.addrs[fbn]);
     } else {
       if(xint(din.addrs[NDIRECT]) == 0){
-        din.addrs[NDIRECT] = xint(DBLOCK(freeblock++, sb));
+        din.addrs[NDIRECT] = xint(DBLOCK(freeblock, sb));
+        ++freeblock;
       }
       rsect(xint(din.addrs[NDIRECT]), (char*)indirect);
       if(indirect[fbn - NDIRECT] == 0){
-        indirect[fbn - NDIRECT] = xint(DBLOCK(freeblock++, sb));
+        indirect[fbn - NDIRECT] = xint(DBLOCK(freeblock, sb));
+        ++freeblock;
         wsect(xint(din.addrs[NDIRECT]), (char*)indirect);
       }
       x = xint(indirect[fbn-NDIRECT]);

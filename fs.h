@@ -75,7 +75,7 @@ struct dinode {
   ///////////////////// Constants //////////////////////
 
   //Arbitarily chosen
-  #define BLOCKGROUPS (25)
+  #define BLOCKGROUPS 25
 
   // Bitmap bits per block
   #define BITSPERBLOCK           (BSIZE*8)

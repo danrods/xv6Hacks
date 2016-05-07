@@ -239,7 +239,7 @@ ialloc(uint dev, short type)
 
   //  Start at the first iNode with respect to the block group
   //  End when we've gone through the number of iNodes per B.G
-  for(inum = (bg * sb.ipbg); inum < (bg * sb.ipbg) + sb.ipbg; inum++){
+  for(inum = (lub * sb.ipbg); inum < (lub * sb.ipbg) + sb.ipbg; inum++){
     bp = bread(dev, IBLOCK(inum, sb)); // Get's the Entire block only
 
     // iNode % [iNodes/Block Group] ==> gives offset within iNodes in BG

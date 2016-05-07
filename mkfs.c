@@ -15,13 +15,33 @@
 #define static_assert(a, b) do { switch (0) case 0: case (a): ; } while (0)
 #endif
 
-#define NINODES 200
+
+#ifdef ffs
+
+
+  #define NINODES 200
+
+  // Disk layout:
+  // [ boot block | sb block | log | inode blocks | free bit map | data blocks ]
+
+  int nbitmap = FSSIZE/(BSIZE*8) + 1;
+  int ninodeblocks = NINODES / IPB + 1;
+
+
+#else
+ 
+  //Naturally total Inodes = Inodes/BG * number of BG's
+  #define NINODES     (IPBG * BLOCKGROUPS)  
+
+  int ninodeblocks = (NINODEBLOCKS * BLOCKGROUPS);  
+
 
 // Disk layout:
-// [ boot block | sb block | log | inode blocks | free bit map | data blocks ]
+// [ boot block | sb block | log ] [Free Data Bitmap | inode blocks | data blocks ]+
 
-int nbitmap = FSSIZE/(BSIZE*8) + 1;
-int ninodeblocks = NINODES / IPB + 1;
+
+#endif
+
 int nlog = LOGSIZE;  
 int nmeta;    // Number of meta blocks (boot, sb, nlog, inode, bitmap)
 int nblocks;  // Number of data blocks
@@ -90,11 +110,14 @@ main(int argc, char *argv[])
     exit(1);
   }
 
+  #ifdef ffs
+
   // 1 fs block = 1 disk sector
   nmeta = 2 + nlog + ninodeblocks + nbitmap;
   nblocks = FSSIZE - nmeta;
 
-  sb.size = xint(FSSIZE);
+
+  sb.size = xint(FSSIZE); //TODO : Set the size to be ONLY num data blocks, not including all of FSSIZE
   sb.nblocks = xint(nblocks);
   sb.ninodes = xint(NINODES);
   sb.nlog = xint(nlog);
@@ -102,33 +125,57 @@ main(int argc, char *argv[])
   sb.inodestart = xint(2+nlog);
   sb.bmapstart = xint(2+nlog+ninodeblocks);
 
+
   printf("nmeta %d (boot, super, log blocks %u inode blocks %u, bitmap blocks %u) blocks %d total %d\n",
          nmeta, nlog, ninodeblocks, nbitmap, nblocks, FSSIZE);
 
-  freeblock = nmeta;     // the first free block that we can allocate
 
-  for(i = 0; i < FSSIZE; i++)
+  #else
+
+  // 1 fs block = 1 disk sector
+  nmeta = 2 + nlog;
+  nblocks = FSSIZE - nmeta;
+
+  sb.size = xint(NDATABLOCKS * BLOCKGROUPS); //TODO : Set the size to be ONLY num data blocks, not including all of FSSIZE
+  sb.nblocks = xint(nblocks);
+  sb.ninodes = xint(NINODES);
+  sb.nlog = xint(nlog);
+  sb.logstart = xint(2);
+  sb.nblockgroups = xint(BLOCKGROUPS)
+  sb.ipbg;  = xint(IPBG);
+  sb.bpbg = xint(BPBG);
+
+  printf("nmeta %d (boot, super, log blocks %u inode blocks %u, ipbg %u, bpbg %u) blockgroups %d, blocks %d total %d\n",
+         nmeta, nlog, ninodeblocks, IPBG, BPBG, BLOCKGROUPS, nblocks, FSSIZE);
+
+  #endif
+
+
+  freeblock = nmeta;     // the first free block that we can allocate
+  
+
+  for(i = 0; i < FSSIZE; i++) //Clear out everything
     wsect(i, zeroes);
 
-  memset(buf, 0, sizeof(buf));
-  memmove(buf, &sb, sizeof(sb));
-  wsect(1, buf);
+  memset(buf, 0, sizeof(buf));  //
+  memmove(buf, &sb, sizeof(sb));// Move the SB block in place
+  wsect(1, buf);                //
 
-  rootino = ialloc(T_DIR);
-  assert(rootino == ROOTINO);
+  rootino = ialloc(T_DIR);    // Wrte the Root "/" to disk
+  assert(rootino == ROOTINO); //
 
-  bzero(&de, sizeof(de));
-  de.inum = xshort(rootino);
-  strcpy(de.name, ".");
-  iappend(rootino, &de, sizeof(de));
+  bzero(&de, sizeof(de));           //
+  de.inum = xshort(rootino);        //  Insert the files
+  strcpy(de.name, ".");             //  '.' 
+  iappend(rootino, &de, sizeof(de));//  
+                                    //  and
+  bzero(&de, sizeof(de));           //  
+  de.inum = xshort(rootino);        //  '..'
+  strcpy(de.name, "..");            //  into the root
+  iappend(rootino, &de, sizeof(de));//  folder
 
-  bzero(&de, sizeof(de));
-  de.inum = xshort(rootino);
-  strcpy(de.name, "..");
-  iappend(rootino, &de, sizeof(de));
-
-  for(i = 2; i < argc; i++){
-    assert(index(argv[i], '/') == 0);
+  for(i = 2; i < argc; i++){ //Copy all the user level programs : ls, forktest, wolfietest, etc.
+    assert(index(argv[i], '/') == 0); //The files we're adding should not be further than current dir (i.e contain no "/")
 
     if((fd = open(argv[i], 0)) < 0){
       perror(argv[i]);
@@ -149,8 +196,8 @@ main(int argc, char *argv[])
     strncpy(de.name, argv[i], DIRSIZ);
     iappend(rootino, &de, sizeof(de));
 
-    while((cc = read(fd, buf, sizeof(buf))) > 0)
-      iappend(inum, buf, cc);
+    while((cc = read(fd, buf, sizeof(buf))) > 0) // Copy the contents of the file into  
+      iappend(inum, buf, cc);                    //   the corresponding iNode Data block
 
     close(fd);
   }
@@ -158,7 +205,7 @@ main(int argc, char *argv[])
   // fix size of root inode dir
   rinode(rootino, &din);
   off = xint(din.size);
-  off = ((off/BSIZE) + 1) * BSIZE;
+  off = ((off/BSIZE) + 1) * BSIZE; //off += BSIZE
   din.size = xint(off);
   winode(rootino, &din);
 

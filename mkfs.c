@@ -142,7 +142,7 @@ main(int argc, char *argv[])
   sb.nlog = xint(nlog);
   sb.logstart = xint(2);
   sb.bgstart = xint(nmeta);
-  sb.nblockgroups = xint(BLOCKGROUPS)
+  sb.nblockgroups = xint(BLOCKGROUPS);
   sb.ipbg;  = xint(IPBG);
   sb.bpbg = xint(BPBG);
 

@@ -120,18 +120,18 @@ struct dinode {
   // Step 4 : Combine all to get the Actual block number
   // Step 5 : Add 1 Because the First block is the Free Block Data Map
   // Step 6 : Add the start of the block groups
-  #define IBLOCK(i, sb)    (  ((i / sb.ipbg) * sb.bpbg) + ((i % sb.ipbg) / IPB) + 1 + sb.bgstart)
+  #define IBLOCK(i, sb)    (  (((i) / sb.ipbg) * sb.bpbg) + (((i) % sb.ipbg) / IPB) + 1 + sb.bgstart)
 
   // Step 1 : Figure out which Block Group we are based on the block no.
   // Step 2 : Block Group no. * Number of Blocks per Block group yields block no. for start of bg
   // Step 3 : Free Data Bitmap is first block in Block group so no need to offset
-  #define BBLOCK(b, sb)    ( ((b/BPB) * sb.bpbg) + sb.bgstart ) 
+  #define BBLOCK(b, sb)    ( (((b)/BPB) * sb.bpbg) + sb.bgstart ) 
 
 
   // Step 1 : Figure out which Block group we are in, based on the block no.
   // Step 2 : Add the Number of iNode Blocks and the 1 block for the data bitmap to arrive at data section
   // Step 3 : Add the remainder of the block no, which is the offset to the data blocks in the corresponding block group
-  #define DBLOCK(b, sb)    ( ((b/BPB) * sb.bpbg) + (b % BPB) + NINODEBLOCKS + 1 + sb.bgstart) 
+  #define DBLOCK(b, sb)    ( (((b)/BPB) * sb.bpbg) + ((b) % BPB) + NINODEBLOCKS + 1 + sb.bgstart) 
 
   //////////////////////////////////////////////////////////////
 

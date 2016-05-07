@@ -164,8 +164,17 @@ iinit(int dev)
 {
   initlock(&icache.lock, "icache");
   readsb(dev, &sb);
+
+  #ifdef xv6ffs
   cprintf("sb: size %d nblocks %d ninodes %d nlog %d logstart %d inodestart %d bmap start %d\n", sb.size,
           sb.nblocks, sb.ninodes, sb.nlog, sb.logstart, sb.inodestart, sb.bmapstart);
+
+  #else
+
+  cprintf("sb: size %d nblocks %d ninodes %d nlog %d logstart %d bgstart %d nblockgroups %d ipbg %d bpbg %d\n", sb.size,
+          sb.nblocks, sb.ninodes, sb.nlog, sb.logstart, sb.bgstart, sb.nblockgroups, sb.ipbg, sb.bpbg);
+
+  #endif
 }
 
 static struct inode* iget(uint dev, uint inum);

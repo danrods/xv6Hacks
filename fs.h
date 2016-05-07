@@ -31,7 +31,7 @@ struct superblock {
   uint nlog;         // Number of log blocks
   uint logstart;     // Block number of first log block
   uint bgstart;      // The start of the block groups
-  uint nblockgroups  // Total number of block groups in the fs
+  uint nblockgroups;  // Total number of block groups in the fs
   uint bpbg;         // Number of blocks per Block Group
   uint ipbg;         // Number of iNodes per Block Group
 };
@@ -75,18 +75,18 @@ struct dinode {
   ///////////////////// Constants //////////////////////
 
   //Arbitarily chosen
-  #define BLOCKGROUPS 25
+  #define BLOCKGROUPS (25)
 
   // Bitmap bits per block
   #define BITSPERBLOCK           (BSIZE*8)
 
    // NOTE : 36 Bits padding  = 4.5 Bytes padding = 1 uint
   // Unaligned : (4096 [Data Blocks] % 140 [Blocks / iNode] = 36 Bits padding)
-  #define NDATABLOCKS BITSPERBLOCK - (BITSPERBLOCK % MAXFILE) // Total Data Blocks = 4096 - 36 = 4060 Blocks: 
+  #define NDATABLOCKS (BITSPERBLOCK - (BITSPERBLOCK % MAXFILE)) // Total Data Blocks = 4096 - 36 = 4060 Blocks: 
 
 
   // The number of Data bits per Block Group Bitmap is defined to be the same as NDATABLOCKS
-  #define BPB        NDATABLOCKS
+  #define BPB        (NDATABLOCKS)
 
   // Num iNodes per Block Group :
   //    4060 [Data Blocks / Block Group] / 140 [Data Blocks / iNode]
@@ -95,11 +95,11 @@ struct dinode {
   #define IPBG        (NDATABLOCKS / MAXFILE)
 
   // Total iNode Blocks : 29 [iNodes / Block Group]  /  8 [iNodes / Block] = 3 [blocks / Block group] + 1 [Round Up]   
-  #define NINODEBLOCKS = IPBG / IPB + 1;
+  #define NINODEBLOCKS  (IPBG / IPB + 1)
 
   // Total Blocks per Block group ==> # of iNode Blocks + # of Data Blocks + 1 Free Data Block
   //  ==> 4 iNode Blocks + 4060 Data Blocks + 1 Data BitMap Block  ==> 4065 Blocks
-  #define BPBG        NINODEBLOCKS + NDATABLOCKS + 1;
+  #define BPBG        (NINODEBLOCKS + NDATABLOCKS + 1)
 
   // Total FS Size :
   //  ==> X [Block Groups] * 4065 [Blocks / Block Group] = 4065X [Blocks] + 30 [Log Blocks] + 1 [Super Block] + 1 [Boot Block]
@@ -113,7 +113,6 @@ struct dinode {
   //////////////////// Relative Macros /////////////////////////
 
 
-  #define BOFFSET(b) 
 
   // Step 1 : Get the Block No. for the start of the block group based on the iNode Number 
   // Step 2 : Calculate the offset into number of iNodes for block group (i % sb.ibpg)

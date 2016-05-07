@@ -11,7 +11,7 @@
 // mkfs computes the super block and builds an initial file system. The super describes
 // the disk layout:
 
-#ifdef ffs
+#ifdef xv6ffs
 
 struct superblock {
   uint size;         // Size of file system image (blocks)
@@ -57,7 +57,7 @@ struct dinode {
 #define IPB           (BSIZE / sizeof(struct dinode))
 
 
-#ifdef ffs
+#ifdef xv6ffs
 
   // Bitmap bits per block
   #define BPB           (BSIZE*8)
@@ -69,7 +69,7 @@ struct dinode {
   #define IBLOCK(i, sb)     ((i) / IPB + sb.inodestart)
 
   // Block of free map containing bit for block b
-  #define BBLOCK(b, sb) (b/BPB + sb.bmapstart)
+  #define BBLOCK(b, sb)     (b/BPB + sb.bmapstart)
   
 #else
 
@@ -88,7 +88,7 @@ struct dinode {
 
 
   // The number of Data bits per Block Group Bitmap is defined to be the same as NDATABLOCKS
-  #define BPB        (NDATABLOCKS)
+  #define BPB        NDATABLOCKS
 
   // Num iNodes per Block Group :
   //    4060 [Data Blocks / Block Group] / 140 [Data Blocks / iNode]

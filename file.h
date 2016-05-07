@@ -8,7 +8,7 @@ struct file {
   uint off;
 };
 
-#ifdef ffs
+#ifdef xv6ffs
 // in-memory copy of an inode
 struct inode {
   uint dev;           // Device number
@@ -23,7 +23,9 @@ struct inode {
   uint size;
   uint addrs[NDIRECT+1];
 };
+
 #else
+
 // new in-memory copy of an inode
 struct inode {
   uint dev;           // Device number

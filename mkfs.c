@@ -16,7 +16,7 @@
 #endif
 
 
-#ifdef ffs
+#ifdef xv6ffs
 
 
   #define NINODES 200
@@ -110,7 +110,7 @@ main(int argc, char *argv[])
     exit(1);
   }
 
-  #ifdef ffs
+  #ifdef xv6ffs
 
   // 1 fs block = 1 disk sector
   nmeta = 2 + nlog + ninodeblocks + nbitmap;
@@ -285,7 +285,7 @@ ialloc(ushort type)
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
-#ifdef ffs
+#ifdef xv6ffs
 
 void
 balloc(int used)

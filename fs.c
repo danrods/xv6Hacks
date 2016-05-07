@@ -220,6 +220,7 @@ ialloc(uint dev, short type)
        bg,   
        lub;         //Least used block group
   struct buf *bp;
+  struct dinode *dip;
   struct ff_stats *stats;
 
   //To save time, if the block group is empty, lets just put it there

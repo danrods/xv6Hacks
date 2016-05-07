@@ -70,6 +70,9 @@ struct dinode {
 
   // Block of free map containing bit for block b
   #define BBLOCK(b, sb)     (b/BPB + sb.bmapstart)
+
+
+  #define DINODEOFFSET(inum, sb) (inum % IPB)
   
 #else
 
@@ -104,7 +107,7 @@ struct dinode {
   #define BPBG        (NINODEBLOCKS + NDATABLOCKS + 1)
 
   // Total FS Size :
-  //  ==> X [Block Groups] * 4065 [Blocks / Block Group] = 4065X [Blocks] + 30 [Log Blocks] + 1 [Super Block] + 1 [Boot Block]
+  //  ==> X [Block Groups] * 4065 [Blocks / Block Group] = 4065X [Blocks] + 30 [Log Blocks] + 1 [Super Block] + 1 [Boot Blocipbgk]
   //    ===> 4065X + 32 [Total Blocks] --> Ex :  (4065 * 25) + 32 = 101,657 Data Blocks
   #define FSSIZE      ((BLOCKGROUPS * BPBG) + 32)
 
@@ -114,7 +117,8 @@ struct dinode {
 
   //////////////////// Relative Macros /////////////////////////
 
-
+  //Offset in a block of dInodes
+  #define DINODEOFFSET(inum, sb) ((inum % sb.ipbg) % IPB)
 
   // Step 1 : Get the Block No. for the start of the block group based on the iNode Number 
   // Step 2 : Calculate the offset into number of iNodes for block group (i % sb.ibpg)
@@ -135,7 +139,18 @@ struct dinode {
   // Step 3 : Add the remainder of the block no, which is the offset to the data blocks in the corresponding block group
   #define DBLOCK(b, sb)    ( ( ((b)/BPB) * sb.bpbg) + ((b) % BPB) + NINODEBLOCKS + 1 + sb.bgstart) 
 
-  //////////////////////////////////////////////////////////////
+
+  // Since we only use 29 iNodes per block to divide evenly with the num data blocks
+  // We have 3 * sizeof(dinode) [64 Bytes]  ==> 192 Bytes of padding. Lets use bottom one for stats
+  //  [Data Bit Map | iBlock 1 | iBlock 2 | iBlock 3 | {diNode1, diNode2...,diNode 5} {~192 Free Bytes | Stats block }  | Data Blocks] 
+  #define STATBLOCK(bg, sb)   (sb.bgstart +  (bg * sb.bpbg) + NINODEBLOCKS )
+  /////////////////////////////////////////////////////////////
+
+
+  struct ff_stats{
+      uint usedBlocks;
+      uint percentFull;
+  };
 
 #endif
 

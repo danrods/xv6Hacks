@@ -223,30 +223,45 @@ ialloc(uint dev, short type)
   struct dinode *dip;
   struct ff_stats *stats;
 
-  //To save time, if the block group is empty, lets just put it there
-  for(lub = bg = 0; least > 0 && bg < sb.nblockgroups; bg++){
-      bp = bread(dev, STATBLOCK(bg, sb));
+  if(type == T_DIR){
+      //To save time, if the block group is empty, lets just put it there
+      for(lub = bg = 0; least > 0 && bg < sb.nblockgroups; bg++){
+          bp = bread(dev, STATBLOCK(bg, sb));
 
-      //To get the stats struct which is stored at the end of the block we need to add
-      // the difference between the entire block and the sizeof the struct
-      stats = (struct ff_stats *) bp->data + BSIZE - sizeof(struct ff_stats);
+          //To get the stats struct which is stored at the end of the block we need to add
+          // the difference between the entire block and the sizeof the struct
+          stats = (struct ff_stats *) bp->data + BSIZE - sizeof(struct ff_stats);
 
-      if(stats->percentFull < least){
-        lub = bg;
-        least = stats->percentFull;
-      } 
+          if(stats->percentFull < least){
+            lub = bg;
+            least = stats->percentFull;
+          } 
+      }
+
+      //  Start at the first iNode with respect to the block group
+      //  End when we've gone through the number of iNodes per B.G
+      for(inum = (lub * sb.ipbg); inum < (lub * sb.ipbg) + sb.ipbg; inum++){
+        bp = bread(dev, IBLOCK(inum, sb)); // Get's the Entire block only
+
+        // iNode % [iNodes/Block Group] ==> gives offset within iNodes in BG
+        // [Offset Within B.G] % [iNodes per Block] yields offset within block
+        dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb); // Gets the Offset within the block
+
+        if(dip->type == 0){  // A free inode
+          memset(dip, 0, sizeof(*dip));
+          dip->type = type;
+          log_write(bp);   // mark it allocated on the disk
+          brelse(bp);
+          return iget(dev, inum);
+        }
+        brelse(bp);
+      }
   }
 
-  //  Start at the first iNode with respect to the block group
-  //  End when we've gone through the number of iNodes per B.G
-  for(inum = (lub * sb.ipbg); inum < (lub * sb.ipbg) + sb.ipbg; inum++){
-    bp = bread(dev, IBLOCK(inum, sb)); // Get's the Entire block only
-
-    // iNode % [iNodes/Block Group] ==> gives offset within iNodes in BG
-    // [Offset Within B.G] % [iNodes per Block] yields offset within block
-    dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb); // Gets the Offset within the block
-
-    if(dip->type == 0){  // A free inode
+  for(inum = 1; inum < sb.ninodes; inum++){
+    bp = bread(dev, IBLOCK(inum, sb));
+    dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
+    if(dip->type == 0){  // a free inode
       memset(dip, 0, sizeof(*dip));
       dip->type = type;
       log_write(bp);   // mark it allocated on the disk
@@ -255,6 +270,9 @@ ialloc(uint dev, short type)
     }
     brelse(bp);
   }
+
+
+  
   panic("ialloc: no inodes");
 }
 

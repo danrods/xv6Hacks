@@ -141,6 +141,7 @@ main(int argc, char *argv[])
   sb.ninodes = xint(NINODES);
   sb.nlog = xint(nlog);
   sb.logstart = xint(2);
+  sb.bgstart = xint(nmeta);
   sb.nblockgroups = xint(BLOCKGROUPS)
   sb.ipbg;  = xint(IPBG);
   sb.bpbg = xint(BPBG);
@@ -152,7 +153,7 @@ main(int argc, char *argv[])
 
 
   freeblock = nmeta;     // the first free block that we can allocate
-  
+
 
   for(i = 0; i < FSSIZE; i++) //Clear out everything
     wsect(i, zeroes);
@@ -205,7 +206,7 @@ main(int argc, char *argv[])
   // fix size of root inode dir
   rinode(rootino, &din);
   off = xint(din.size);
-  off = ((off/BSIZE) + 1) * BSIZE; //off += BSIZE
+  off = ((off/BSIZE) + 1) * BSIZE; //off += BSIZE (Round up to nearest block size)
   din.size = xint(off);
   winode(rootino, &din);
 
@@ -240,6 +241,7 @@ winode(uint inum, struct dinode *ip)
   *dip = *ip;
   wsect(bn, buf);
 }
+
 
 void
 rinode(uint inum, struct dinode *ip)
@@ -281,6 +283,10 @@ ialloc(ushort type)
   return inum;
 }
 
+#define min(a, b) ((a) < (b) ? (a) : (b))
+
+#ifdef ffs
+
 void
 balloc(int used)
 {
@@ -297,7 +303,7 @@ balloc(int used)
   wsect(sb.bmapstart, buf);
 }
 
-#define min(a, b) ((a) < (b) ? (a) : (b))
+
 
 void
 iappend(uint inum, void *xp, int n)
@@ -342,3 +348,72 @@ iappend(uint inum, void *xp, int n)
   din.size = xint(off);
   winode(inum, &din);
 }
+
+
+#else //Use FFS
+
+void
+balloc(int used)
+{
+  uchar buf[BSIZE];
+  int i;
+
+  printf("balloc: first %d blocks have been allocated\n", used);
+  assert(used < BPB);
+  bzero(buf, BSIZE);
+  for(i = 0; i < used; i++){
+    buf[i/8] = buf[i/8] | (0x1 << (i%8));
+  }
+  printf("balloc: write bitmap block at sector %d\n", sb.bmapstart);
+  wsect(sb.bgstart, buf); //The iNodes and data are in the first block group; BMap is at head of B.G
+}
+
+
+void
+iappend(uint inum, void *xp, int n)
+{
+  char *p = (char*)xp;
+  uint fbn, off, n1;
+  struct dinode din;
+  char buf[BSIZE];
+  uint indirect[NINDIRECT];
+  uint x;
+
+  rinode(inum, &din);
+  off = xint(din.size);
+  // printf("append inum %d at off %d sz %d\n", inum, off, n);
+  while(n > 0){
+    fbn = off / BSIZE;
+    assert(fbn < MAXFILE);
+    if(fbn < NDIRECT){
+      if(xint(din.addrs[fbn]) == 0){
+        din.addrs[fbn] = xint(DBLOCK(freeblock++, sb)); 
+      }
+      x = xint(din.addrs[fbn]);
+    } else {
+      if(xint(din.addrs[NDIRECT]) == 0){
+        din.addrs[NDIRECT] = xint(DBLOCK(freeblock++, sb));
+      }
+      rsect(xint(din.addrs[NDIRECT]), (char*)indirect);
+      if(indirect[fbn - NDIRECT] == 0){
+        indirect[fbn - NDIRECT] = xint(DBLOCK(freeblock++, sb));
+        wsect(xint(din.addrs[NDIRECT]), (char*)indirect);
+      }
+      x = xint(indirect[fbn-NDIRECT]);
+    }
+    n1 = min(n, (fbn + 1) * BSIZE - off);
+    rsect(x, buf);
+    bcopy(p, buf + off - (fbn * BSIZE), n1);
+    wsect(x, buf);
+    n -= n1;
+    off += n1;
+    p += n1;
+  }
+  din.size = xint(off);
+  winode(inum, &din);
+}
+
+
+
+#endif
+

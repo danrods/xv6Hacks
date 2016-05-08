@@ -102,6 +102,8 @@ extern int sys_wolfie(void);
 extern int sys_nice(void);
 extern int sys_printProcess(void);
 extern int sys_prng(void);
+extern int sys_switchScheduler(void);
+extern int sys_yield(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -129,6 +131,8 @@ static int (*syscalls[])(void) = {
 [SYS_nice]    sys_nice,
 [SYS_printProcess] sys_printProcess,
 [SYS_prng]    sys_prng,
+[SYS_switchScheduler] sys_switchScheduler,
+[SYS_yield]   sys_yield,
 };
 
 void

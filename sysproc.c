@@ -7,7 +7,6 @@
 #include "mmu.h"
 #include "proc.h"
 
-
 int
 sys_fork(void)
 {
@@ -35,6 +34,13 @@ sys_kill(void)
   if(argint(0, &pid) < 0)
     return -1;
   return kill(pid);
+}
+
+int 
+sys_yield(void)
+{ 
+   yield();
+   return 0;
 }
 
 int

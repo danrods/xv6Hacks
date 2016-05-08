@@ -6,7 +6,6 @@ Ascii art generated from site http://picascii.com/
 
 Pic : http://2.bp.blogspot.com/_NxDpePvRIus/S_6pEo6bpwI/AAAAAAAAAi8/HJj8rQPDpEA/s1600/StonyBrookUniv.jpg
 
-
 ________________________________________________
 
 Lab 2: Copy-on-Write Fork
@@ -26,5 +25,4 @@ Compare the physical addresses before and after copy-on-writel
 
 When copy-on-write to a child process, a new page is allocted to the
 child. The reference count of the parent page is expected to decrement.
-Check the reference count before and after copy-on-write.
 

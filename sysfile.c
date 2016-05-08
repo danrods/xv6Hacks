@@ -572,3 +572,12 @@ uint
 sys_prng(void) {
   return prng(20);
 }
+
+int
+sys_switchScheduler(void) {
+  isLottery = (isLottery)? 0 : 1;
+  return 0;
+}
+
+
+

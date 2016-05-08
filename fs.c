@@ -60,8 +60,8 @@ balloc(uint dev)
   for(b = 0; b < sb.size; b += BPB){
     bp = bread(dev, BBLOCK(b, sb));
     for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
-      m = 1 << (bi % 8);
-      if((bp->data[bi/8] & m) == 0){  // Is block free?
+      m = 1 << (bi % 8);  //m = 1,2,4,8,16,32,64,128,1,2,4... 
+      if((bp->data[bi/8] & m) == 0){  // Is block free? // bi/8 = 0,0,0,0,0,0,0,0,1,1,1...
         bp->data[bi/8] |= m;  // Mark block in use.
         log_write(bp);
         brelse(bp);
@@ -164,13 +164,25 @@ iinit(int dev)
 {
   initlock(&icache.lock, "icache");
   readsb(dev, &sb);
+
+  #ifdef xv6ffs
   cprintf("sb: size %d nblocks %d ninodes %d nlog %d logstart %d inodestart %d bmap start %d\n", sb.size,
           sb.nblocks, sb.ninodes, sb.nlog, sb.logstart, sb.inodestart, sb.bmapstart);
+
+  #else
+
+  cprintf("sb: size %d nblocks %d ninodes %d nlog %d logstart %d bgstart %d nblockgroups %d ipbg %d bpbg %d\n", sb.size,
+          sb.nblocks, sb.ninodes, sb.nlog, sb.logstart, sb.bgstart, sb.nblockgroups, sb.ipbg, sb.bpbg);
+
+  #endif
 }
 
 static struct inode* iget(uint dev, uint inum);
 
 //PAGEBREAK!
+
+#ifdef xv6ffs
+
 // Allocate a new inode with the given type on device dev.
 // A free inode has a type of zero.
 struct inode*
@@ -182,7 +194,7 @@ ialloc(uint dev, short type)
 
   for(inum = 1; inum < sb.ninodes; inum++){
     bp = bread(dev, IBLOCK(inum, sb));
-    dip = (struct dinode*)bp->data + inum%IPB;
+    dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
     if(dip->type == 0){  // a free inode
       memset(dip, 0, sizeof(*dip));
       dip->type = type;
@@ -195,6 +207,79 @@ ialloc(uint dev, short type)
   panic("ialloc: no inodes");
 }
 
+
+#else
+
+// Allocate a new inode with the given type on device dev.
+// A free inode has a type of zero.
+struct inode*
+ialloc(uint dev, short type)
+{
+  uint inum,
+       least = 100, //Percent utilization
+       bg,   
+       lub;         //Least used block group
+  struct buf *bp;
+  struct dinode *dip;
+  struct ff_stats *stats;
+
+  if(type == T_DIR){
+      //To save time, if the block group is empty, lets just put it there
+      for(lub = bg = 0; least > 0 && bg < sb.nblockgroups; bg++){
+          bp = bread(dev, STATBLOCK(bg, sb));
+
+          //To get the stats struct which is stored at the end of the block we need to add
+          // the difference between the entire block and the sizeof the struct
+          stats = (struct ff_stats *) bp->data + BSIZE - sizeof(struct ff_stats);
+
+          if(stats->percentFull < least){
+            lub = bg;
+            least = stats->percentFull;
+          } 
+      }
+
+      //  Start at the first iNode with respect to the block group
+      //  End when we've gone through the number of iNodes per B.G
+      for(inum = (lub * sb.ipbg); inum < (lub * sb.ipbg) + sb.ipbg; inum++){
+        bp = bread(dev, IBLOCK(inum, sb)); // Get's the Entire block only
+
+        // iNode % [iNodes/Block Group] ==> gives offset within iNodes in BG
+        // [Offset Within B.G] % [iNodes per Block] yields offset within block
+        dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb); // Gets the Offset within the block
+
+        if(dip->type == 0){  // A free inode
+          memset(dip, 0, sizeof(*dip));
+          dip->type = type;
+          log_write(bp);   // mark it allocated on the disk
+          brelse(bp);
+          return iget(dev, inum);
+        }
+        brelse(bp);
+      }
+  }
+
+  for(inum = 1; inum < sb.ninodes; inum++){
+    bp = bread(dev, IBLOCK(inum, sb));
+    dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
+    if(dip->type == 0){  // a free inode
+      memset(dip, 0, sizeof(*dip));
+      dip->type = type;
+      log_write(bp);   // mark it allocated on the disk
+      brelse(bp);
+      return iget(dev, inum);
+    }
+    brelse(bp);
+  }
+
+
+  
+  panic("ialloc: no inodes");
+}
+
+
+#endif
+
+
 // Copy a modified in-memory inode to disk.
 void
 iupdate(struct inode *ip)
@@ -203,7 +288,7 @@ iupdate(struct inode *ip)
   struct dinode *dip;
 
   bp = bread(ip->dev, IBLOCK(ip->inum, sb));
-  dip = (struct dinode*)bp->data + ip->inum%IPB;
+  dip = (struct dinode*)bp->data + DINODEOFFSET(ip->inum, sb);
   dip->type = ip->type;
   dip->major = ip->major;
   dip->minor = ip->minor;
@@ -280,7 +365,7 @@ ilock(struct inode *ip)
 
   if(!(ip->flags & I_VALID)){
     bp = bread(ip->dev, IBLOCK(ip->inum, sb));
-    dip = (struct dinode*)bp->data + ip->inum%IPB;
+    dip = (struct dinode*)bp->data + DINODEOFFSET(ip->inum, sb);
     ip->type = dip->type;
     ip->major = dip->major;
     ip->minor = dip->minor;

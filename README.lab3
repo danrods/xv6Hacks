@@ -22,4 +22,35 @@ array content. The values are between 30 and 60 and look about
 evenly distributed.
 	Run xv6 and type prngtest. 
 	If needed, you may go into prngtest.c to change the array
+<<<<<<< HEAD
 size and rerun the test.
+=======
+size and rerun the test.
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+EXERCISE 3
+	
+In order to keep scheduling quick and efficient we've decided to keep the number of tickets assigned to be low.
+As the number of tickets increased I began to see a drop in throughput so I settled on a ticket range from 1 - 6, 
+1 being the lowest priority, 6 being the highest. The tickets themselves are stored in the process for easy access and control since the
+process is always available in the kernel allowing the nice value to be updated dynamically. 
+
+We have implemented a way to dynamically switch schedulers by having a syscall to do so called called switchScheduler. This will break out of the infinite scheduling loop for that scheduler and return to an if block which checks the value that was set in the syscall and starts up
+the appropriate scheduler. The number of tickets is kept the same, and can even be changed during round robin scheduling without affecting
+the actual RR scheduler, but will have an impact if switched back to lottery scheduling.
+
+
+Exercise 4
+
+For the First test the forked children will run for 50 iterations and yield the CPU each iteration. It is visible from the test that the process with the lowest nice value gets scheduled most often.
+
+For the second test a CPU intensive function is being run by each forked child and it can be seen that the highest nice value finished last on the list of processes.
+
+For the 3rd test, it is a simple while loop that prints a statement on each iteration for each forked child. IT can be seen from the output that the higher priority  processes print more often than not.
+
+The last test is a simple Scheduler Switch test for the Challenge
+
+
+
+>>>>>>> cb1f97f3126b8f7cee74fb89c11dbc667aec3c0c

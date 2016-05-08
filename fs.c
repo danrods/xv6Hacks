@@ -861,15 +861,11 @@ clearFSStats(void){
   for(i=0; i < sb.nblockgroups; i++){
       bp = bread(ROOTDEV, STATBLOCK(i, sb));
 
-      if(bp == 0) 
-        fs_error("Error fetching Stat Block!\n");
 
       stats = (struct ff_stats *) STATOFF(bp);
       stats->percentFull = 0;
       stats->usedBlocks = 0;
-      fs_debug("Block Group %d ==>", i + 1);
-      ffStats_info(stats);
-      log_write(bp);   // mark it allocated on the disk
+      bwrite(bp);   // mark it allocated on the disk
       brelse(bp);
   }
 

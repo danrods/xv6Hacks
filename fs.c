@@ -267,7 +267,7 @@ ialloc(uint dev, short type)
   struct buf *bp;
   //, *tmp;
   struct dinode *dip;
-  struct ff_stats *stats;
+  //struct ff_stats *stats;
 
   if(type == T_DIR){
     fs_debug("Let's find a DIR shall we?\n");

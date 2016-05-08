@@ -219,7 +219,7 @@ ialloc(uint dev, short type)
        least = 100, //Percent utilization
        bg,   
        lub;         //Least used block group
-  struct buf *bp;
+  struct buf *bp, *tmp;
   struct dinode *dip;
   struct ff_stats *stats;
 
@@ -230,7 +230,7 @@ ialloc(uint dev, short type)
 
           //To get the stats struct which is stored at the end of the block we need to add
           // the difference between the entire block and the sizeof the struct
-          stats = (struct ff_stats *) bp->data + BSIZE - sizeof(struct ff_stats);
+          stats = STATOFF(bp);
 
           if(stats->percentFull < least){
             lub = bg;
@@ -266,6 +266,9 @@ ialloc(uint dev, short type)
       dip->type = type;
       log_write(bp);   // mark it allocated on the disk
       brelse(bp);
+      
+      tmp = bread(dev, STATBLOCK( BGROUP(inum, sb), sb));
+      stats = STATOFF(tmp);
       return iget(dev, inum);
     }
     brelse(bp);

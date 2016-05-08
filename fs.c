@@ -415,8 +415,8 @@ ilock(struct inode *ip)
   struct buf *bp;
   struct dinode *dip;
 
-  func_enter();
-  iNode_info(ip);
+ // func_enter();
+  //iNode_info(ip);
 
   if(ip == 0 || ip->ref < 1)
     panic("ilock");
@@ -445,7 +445,7 @@ ilock(struct inode *ip)
       panic("ilock: no type");
   }
 
-  func_exit("\n");
+//  func_exit("\n");
 }
 
 // Unlock the given inode.
@@ -632,14 +632,14 @@ writei(struct inode *ip, char *src, uint off, uint n)
   uint tot, m;
   struct buf *bp;
 
-  func_enter();
+  //func_enter();
 
   if(ip->type == T_DEV){
     if(ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].write){
-      func_exit("Error: -1\n");
+      //func_exit("Error: -1\n");
         return -1;
     }
-    func_exit("Device Write function\n");
+    //func_exit("Device Write function\n");
     return devsw[ip->major].write(ip, src, n);
   }
 
@@ -661,7 +661,7 @@ writei(struct inode *ip, char *src, uint off, uint n)
     iupdate(ip);
   }
 
-  func_exit("Count: %d\n", n);
+ // func_exit("Count: %d\n", n);
   return n;
 }
 

@@ -29,6 +29,7 @@ void printProcess(void);
 uint prng(uint);
 int switchScheduler(void);
 void yield(void);
+void printBStats(void);
 
 // ulib.c
 int stat(char*, struct stat*);

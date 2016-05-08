@@ -133,6 +133,7 @@ static int (*syscalls[])(void) = {
 [SYS_prng]    sys_prng,
 [SYS_switchScheduler] sys_switchScheduler,
 [SYS_yield]   sys_yield,
+[SYS_printBStats] SYS_printBStats,
 };
 
 void

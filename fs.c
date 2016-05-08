@@ -254,7 +254,8 @@ ialloc(uint dev, short type)
        least = 100, //Percent utilization
        bg,   
        lub;         //Least used block group
-  struct buf *bp, *tmp;
+  struct buf *bp;
+  //, *tmp;
   struct dinode *dip;
   struct ff_stats *stats;
 

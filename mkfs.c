@@ -191,8 +191,9 @@ main(int argc, char *argv[])
     if(argv[i][0] == '_')
       ++argv[i];
 
+    printf("============= Program %s ==============\n", argv[i]);
     inum = ialloc(T_FILE);
-    printf("Allocated iNode: %d to program %s", inum, argv[i]);
+    printf("Allocated iNode: %d\n", inum);
 
     bzero(&de, sizeof(de));
     de.inum = xshort(inum);
@@ -205,7 +206,8 @@ main(int argc, char *argv[])
         totalBlocks++;
     } 
                         
-    printf("Program %s - Using %d Blocks of Data", argv[i], totalBlocks);
+    printf("Program %s - Using %d Blocks of Data\n", argv[i], totalBlocks);
+    printf("=======================================\n\n");
     close(fd);
   }
 

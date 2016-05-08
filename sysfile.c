@@ -318,16 +318,31 @@ create(char *path, short type, short major, short minor)
   struct inode *ip, *dp;
   char name[DIRSIZ];
 
-  if((dp = nameiparent(path, name)) == 0)
-    return 0;
+
+  func_enter();
+
+
+  if((dp = nameiparent(path, name)) == 0){
+     iNode_info(ip);
+     func_exit("Error finding Dir %s\n", path);
+     return 0;
+  }
   ilock(dp);
+  
+  fs_debug("Found parent : \n");
+  iNode_info(dp);
 
   if((ip = dirlookup(dp, name, &off)) != 0){
     iunlockput(dp);
     ilock(ip);
-    if(type == T_FILE && ip->type == T_FILE)
+    if(type == T_FILE && ip->type == T_FILE){
+      iNode_info(ip);
+      func_exit("\n");
       return ip;
+    }
     iunlockput(ip);
+    iNode_info(ip);
+    func_exit("Error\n");
     return 0;
   }
 
@@ -353,6 +368,8 @@ create(char *path, short type, short major, short minor)
 
   iunlockput(dp);
 
+  iNode_info(ip);
+  func_exit("\n");
   return ip;
 }
 

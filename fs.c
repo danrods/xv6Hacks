@@ -313,7 +313,7 @@ ialloc(uint dev, short type)
       dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
 
       if(dip->type == 0){  // a free inode  
-        fs_debug("I got a live one!\n");
+        fs_debug("I got a live one! --> iNode %d\n", inum);
         buf_info(bp);
         diNode_info(dip);
         memset(dip, 0, sizeof(*dip));

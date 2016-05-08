@@ -416,6 +416,7 @@ ilock(struct inode *ip)
   struct dinode *dip;
 
   func_enter();
+  fs_debug("Locking iNode: %d", ip->inum);
 
   if(ip == 0 || ip->ref < 1)
     panic("ilock");

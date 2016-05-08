@@ -192,15 +192,20 @@ main(int argc, char *argv[])
       ++argv[i];
 
     inum = ialloc(T_FILE);
+    printf("Allocated iNode: %d to program %s", inum, argv[i]);
 
     bzero(&de, sizeof(de));
     de.inum = xshort(inum);
     strncpy(de.name, argv[i], DIRSIZ);
     iappend(rootino, &de, sizeof(de));
 
-    while((cc = read(fd, buf, sizeof(buf))) > 0) // Copy the contents of the file into  
-      iappend(inum, buf, cc);                    //   the corresponding iNode Data block
-
+    int totalBlocks = 0;
+    while((cc = read(fd, buf, sizeof(buf))) > 0){// Copy the contents of the file into  
+        iappend(inum, buf, cc);                  //   the corresponding iNode Data block
+        totalBlocks++;
+    } 
+                        
+    printf("Program %s - Using %d Blocks of Data", argv[i], totalBlocks);
     close(fd);
   }
 

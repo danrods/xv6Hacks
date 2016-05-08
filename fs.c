@@ -58,6 +58,8 @@ balloc(uint dev)
   int b, bi, m;
   struct buf *bp;
 
+  func_enter();
+
   bp = 0;
   for(b = 0; b < sb.size; b += BPB){
     bp = bread(dev, BBLOCK(b, sb));
@@ -68,7 +70,7 @@ balloc(uint dev)
         log_write(bp);
         brelse(bp);
         bzero(dev, b + bi);
-        fs_debug("Allocating Disk Block %d", b + bi);
+        func_exit("Allocated Disk Block %d", b + bi);
         return b + bi;
       }
     }
@@ -90,6 +92,8 @@ balloc(uint dev)
       m;
   struct buf *bp;
 
+  func_enter();
+
   bp = 0;
   bp = bread(dev, bblock);
   for(bi = 0; bi < BPB; bi++){
@@ -99,7 +103,7 @@ balloc(uint dev)
       log_write(bp);
       brelse(bp);
       bzero(dev, b + bi);
-      fs_debug("Allocating Disk Block %d", b + bi);
+      func_exit("Allocating Disk Block %d", b + bi);
       return bi + b;
     }
     brelse(bp);
@@ -227,6 +231,8 @@ ialloc(uint dev, short type)
   struct buf *bp;
   struct dinode *dip;
 
+  func_enter();
+
   for(inum = 1; inum < sb.ninodes; inum++){
     bp = bread(dev, IBLOCK(inum, sb));
     dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
@@ -235,6 +241,7 @@ ialloc(uint dev, short type)
       dip->type = type;
       log_write(bp);   // mark it allocated on the disk
       brelse(bp);
+      func_exit("\n");
       return iget(dev, inum);
     }
     brelse(bp);
@@ -250,6 +257,9 @@ ialloc(uint dev, short type)
 struct inode*
 ialloc(uint dev, short type)
 {
+
+  func_enter();
+
   uint inum,
        least = 100, //Percent utilization
        bg,   
@@ -291,6 +301,7 @@ ialloc(uint dev, short type)
           dip->type = type;
           log_write(bp);   // mark it allocated on the disk
           brelse(bp);
+          func_exit("\n");
           return iget(dev, inum);
         }
         brelse(bp);
@@ -310,6 +321,7 @@ ialloc(uint dev, short type)
 
       //tmp = bread(dev, STATBLOCK( BGROUP(inum, sb), sb));
       //stats = STATOFF(tmp);
+      func_exit("\n");
       return iget(dev, inum);
     }
   }
@@ -351,6 +363,8 @@ iget(uint dev, uint inum)
 {
   struct inode *ip, *empty;
 
+  func_enter();
+
   acquire(&icache.lock);
 
   // Is the inode already cached?
@@ -359,6 +373,8 @@ iget(uint dev, uint inum)
     if(ip->ref > 0 && ip->dev == dev && ip->inum == inum){
       ip->ref++;
       release(&icache.lock);
+      iNode_info(ip);
+      func_exit("\n");
       return ip;
     }
     if(empty == 0 && ip->ref == 0)    // Remember empty slot.
@@ -375,7 +391,8 @@ iget(uint dev, uint inum)
   ip->ref = 1;
   ip->flags = 0;
   release(&icache.lock);
-
+  iNode_info(ip);
+  func_exit("\n");
   return ip;
 }
 
@@ -397,6 +414,8 @@ ilock(struct inode *ip)
 {
   struct buf *bp;
   struct dinode *dip;
+
+  func_enter();
 
   if(ip == 0 || ip->ref < 1)
     panic("ilock");
@@ -421,6 +440,8 @@ ilock(struct inode *ip)
     if(ip->type == 0)
       panic("ilock: no type");
   }
+
+  func_exit("\n");
 }
 
 // Unlock the given inode.
@@ -488,9 +509,14 @@ bmap(struct inode *ip, uint bn)
   uint addr, *a;
   struct buf *bp;
 
+  func_enter();
+  fs_debug("Allocating BN : %d", bn);
+  iNode_info(ip);
+
   if(bn < NDIRECT){
     if((addr = ip->addrs[bn]) == 0)
       ip->addrs[bn] = addr = balloc(ip->dev);
+    func_exit("%d\n", addr);
     return addr;
   }
   bn -= NDIRECT;
@@ -506,6 +532,7 @@ bmap(struct inode *ip, uint bn)
       log_write(bp);
     }
     brelse(bp);
+    func_exit("%d\n", addr);
     return addr;
   }
 
@@ -566,14 +593,20 @@ readi(struct inode *ip, char *dst, uint off, uint n)
   uint tot, m;
   struct buf *bp;
 
+  func_enter();
+
   if(ip->type == T_DEV){
-    if(ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].read)
+    if(ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].read){
+      func_exit("-1");
       return -1;
+    }
     return devsw[ip->major].read(ip, dst, n);
   }
 
-  if(off > ip->size || off + n < off)
-    return -1;
+  if(off > ip->size || off + n < off){
+    func_exit("-1");
+    return -1
+  }
   if(off + n > ip->size)
     n = ip->size - off;
 
@@ -583,6 +616,7 @@ readi(struct inode *ip, char *dst, uint off, uint n)
     memmove(dst, bp->data + off%BSIZE, m);
     brelse(bp);
   }
+  func_exit("%d", n);
   return n;
 }
 
@@ -593,6 +627,8 @@ writei(struct inode *ip, char *src, uint off, uint n)
 {
   uint tot, m;
   struct buf *bp;
+
+  func_enter();
 
   if(ip->type == T_DEV){
     if(ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].write)

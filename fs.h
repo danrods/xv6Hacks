@@ -174,9 +174,9 @@ struct dirent {
   char name[DIRSIZ];
 };
 
-#define func_enter() cprintf("----------- File: %s | Function: %s | Line number: %d-----------\n", __FILE__, __func__, __LINE__)
+#define func_enter() cprintf("=========== File: %s | Function: %s | Line number: %d===========\n", __FILE__, __func__, __LINE__)
 
-#define func_exit(fmt, ...) cprintf("Returning Args: \n");cprintf(fmt, ##__VA_ARGS__); cprintf("====================== END Function: %s =========================\n", __func__)
+#define func_exit(fmt, ...) cprintf("Returning Args: \n");cprintf(fmt, ##__VA_ARGS__); cprintf("{{{{{{{{{{{{{{{{{{{{{{ END Function: %s }}}}}}}}}}}}}}}}}}}}}}}}\n", __func__)
 
 #define fs_debug(fmt, ...) cprintf("[Debug] --->"); cprintf(fmt, ##__VA_ARGS__)
 #define fs_error(fmt, ...) cprintf("~~~~~~~[Error] --->"); cprintf(fmt, ##__VA_ARGS__)

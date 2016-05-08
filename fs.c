@@ -835,7 +835,7 @@ printFSStats(void){
   for(i=0; i < sb.nblockgroups; i++){
       struct buf* bp;
       uint statBlock = STATBLOCK(i, sb);
-      fs_debug("Stat Block : %d\n");
+      fs_debug("Stat Block : %d, B.G Start: %d\n", statBlock, sb.bgstart);
       bp = bread(0, statBlock);
       if(! bp) fs_error("Error fetching Stat Block!\n");
       stats = STATOFF(bp);

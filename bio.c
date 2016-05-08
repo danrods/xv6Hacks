@@ -105,7 +105,6 @@ bread(uint dev, uint blockno)
   // func_enter();
 
   b = bget(dev, blockno);
-  buf_info(b);
   if(!(b->flags & B_VALID)) {
     iderw(b);
   }

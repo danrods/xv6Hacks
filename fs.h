@@ -172,9 +172,9 @@ struct dirent {
 
 
 
-#define fs_debug(fmt, ...) cprintf("[Debug] ---> " fmt, ##_VA_ARGS)
-#define fs_error(fmt, ...) cprintf("~~~~~~~[Error] ---> " fmt, ##_VA_ARGS)
-#define iNode_info(i) fs_debug("{Dev: %d, iNum: %d, Ref Count: %d, Flags: %d, Size: %d}\n", i.dev, i.inum, i.ref, i.flags, i.size)
+#define fs_debug(msg) cprintf("[Debug] ---> %s\n",msg )
+#define fs_error(msg) cprintf("~~~~~~~[Error] ---> %s\n", msg)
+#define iNode_info(i) cprintf("{Dev: %d, iNum: %d, Ref Count: %d, Flags: %d, Size: %d}\n", i.dev, i.inum, i.ref, i.flags, i.size)
 #define diNode_info(d) do{                                                                                                                /
                           fs_debug("{Type: %d, Major: %d, Minor: %d, Link: %d, Size: %d \t[", d.type, d.major, d.minor, d.link, d.size);  /
                           for(int i=0; i < NDIRECT; i++){                                                                                 /

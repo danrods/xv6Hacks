@@ -224,6 +224,7 @@ ialloc(uint dev, short type)
   struct ff_stats *stats;
 
   if(type == T_DIR){
+    fs_debug("Let's find a DIR shall we?");
       //To save time, if the block group is empty, lets just put it there
       for(lub = bg = 0; least > 0 && bg < sb.nblockgroups; bg++){
           bp = bread(dev, STATBLOCK(bg, sb));
@@ -237,7 +238,7 @@ ialloc(uint dev, short type)
             least = stats->percentFull;
           } 
       }
-
+      fs_debug("Found Least Free Block Group : %d --> %d percent utilization", lub, least);
       //  Start at the first iNode with respect to the block group
       //  End when we've gone through the number of iNodes per B.G
       for(inum = (lub * sb.ipbg); inum < (lub * sb.ipbg) + sb.ipbg; inum++){
@@ -248,6 +249,8 @@ ialloc(uint dev, short type)
         dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb); // Gets the Offset within the block
 
         if(dip->type == 0){  // A free inode
+          fs_debug("Found a free directory!");
+          diNode_info(dip);
           memset(dip, 0, sizeof(*dip));
           dip->type = type;
           log_write(bp);   // mark it allocated on the disk
@@ -262,6 +265,8 @@ ialloc(uint dev, short type)
     bp = bread(dev, IBLOCK(inum, sb));
     dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
     if(dip->type == 0){  // a free inode
+      fs_debug("I got a live one!");
+      diNode_info(dip);
       memset(dip, 0, sizeof(*dip));
       dip->type = type;
       log_write(bp);   // mark it allocated on the disk

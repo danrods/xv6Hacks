@@ -830,7 +830,7 @@ void
 printFSStats(void){
 
   struct ff_stats* stats;
-  func_start();
+  func_enter();
   int i;
   for(i=0; i < sb.nblockgroups; i++){
       struct buf* bp;

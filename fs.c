@@ -837,7 +837,7 @@ printFSStats(void){
       bp = bread(0, STATBLOCK(i, sb));
       if(! bp) fs_error("Error fetching Stat Block!\n");
 
-      stats = STATOFF(bp->data);
+      stats = STATOFF(bp);
       fs_debug("Block Group %d ==>", i + 1);
       ffStats_info(stats);
   }

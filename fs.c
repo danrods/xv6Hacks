@@ -47,8 +47,10 @@ bzero(int dev, int bno)
   brelse(bp);
 }
 
-// Blocks. 
 
+#ifdef xv6ffs
+
+// Blocks. 
 // Allocate a zeroed disk block.
 static uint
 balloc(uint dev)
@@ -74,6 +76,36 @@ balloc(uint dev)
   panic("balloc: out of blocks");
 }
 
+#else
+
+// Look through all free block groups?
+// Allocate a zeroed disk block.
+static uint
+balloc(uint dev, uint bblock)
+{
+  int b = DATABLOCK_OFF + bblock, 
+      bi, 
+      m;
+  struct buf *bp;
+
+  bp = 0;
+  bp = bread(dev, bblock);
+  for(bi = 0; bi < BPB; bi++){
+    m = 1 << (bi % 8);  //m = 1,2,4,8,16,32,64,128,1,2,4... 
+    if((bp->data[bi/8] & m) == 0){  // Is block free? // bi/8 = 0,0,0,0,0,0,0,0,1,1,1...
+      bp->data[bi/8] |= m;  // Mark block in use.
+      log_write(bp);
+      brelse(bp);
+      bzero(dev, b + bi);
+      return bi + b;
+    }
+    brelse(bp);
+  }
+  panic("balloc: out of blocks");
+}
+
+
+#endif
 // Free a disk block.
 static void
 bfree(int dev, uint b)

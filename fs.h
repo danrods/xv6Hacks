@@ -100,7 +100,7 @@ struct dinode {
   #define IPBG        (NDATABLOCKS / MAXFILE)
 
   // Total iNode Blocks : 29 [iNodes / Block Group]  /  8 [iNodes / Block] = 3 [blocks / Block group] + 1 [Round Up]   
-  #define NINODEBLOCKS  (IPBG / IPB + 1)
+  #define NINODEBLOCKS  ( (IPBG / IPB) + 1)
 
   // Total Blocks per Block group ==> # of iNode Blocks + # of Data Blocks + 1 Free Data Block
   //  ==> 4 iNode Blocks + 4060 Data Blocks + 1 Data BitMap Block  ==> 4065 Blocks
@@ -109,7 +109,11 @@ struct dinode {
   // Total FS Size :
   //  ==> X [Block Groups] * 4065 [Blocks / Block Group] = 4065X [Blocks] + 30 [Log Blocks] + 1 [Super Block] + 1 [Boot Block]
   //    ===> 4065X + 32 [Total Blocks] --> Ex :  (4065 * 25) + 32 = 101,657 Data Blocks
-  #define FSSIZE      ((BLOCKGROUPS * BPBG) + 32)
+  #define FSSIZE      ((BLOCKGROUPS * BPBG) + LOGSIZE + 2)
+
+
+  // Total Number of Blocks between the start of a BG and The number of Datablocks is the Number of iNode blocks
+  #define DATABLOCK_OFF NINODEBLOCKS
 
   /////////////////////////////////////////////////////////////////////////////////
 
@@ -172,15 +176,16 @@ struct dirent {
 
 
 
-#define fs_debug(msg) cprintf("[Debug] ---> %s\n",msg )
-#define fs_error(msg) cprintf("~~~~~~~[Error] ---> %s\n", msg)
-#define iNode_info(i) cprintf("{Dev: %d, iNum: %d, Ref Count: %d, Flags: %d, Size: %d}\n", i.dev, i.inum, i.ref, i.flags, i.size)
+#define fs_debug(msg, ...) cprintf("[Debug] --->"fmt"\n", ...)
+#define fs_error(msg) cprintf("~~~~~~~[Error] ---> %s"fmt"\n", ...)
+#define iNode_info(i) fs_debug("{Dev: %d, iNum: %d, Ref Count: %d, Flags: %d, Size: %d}\n", i.dev, i.inum, i.ref, i.flags, i.size)
 #define diNode_info(d) do{                                                                                                                /
-                          fs_debug("{Type: %d, Major: %d, Minor: %d, Link: %d, Size: %d \t[", d.type, d.major, d.minor, d.link, d.size);  /
+                          cprintf("{Type: %d, Major: %d, Minor: %d, Link: %d, Size: %d \t[", d.type, d.major, d.minor, d.link, d.size);   /
                           for(int i=0; i < NDIRECT; i++){                                                                                 /
                                 cprintf("Direct Address %d => %d", d.addrs[i]);                                                           /
                           }                                                                                                               /
                           if(d.addrs[NDIRECT]) cprintf("Indirect Address => %d", d.addrs[NDIRECT]);                                       /
+                          cprintf("]\n");                                                                                                 /
                                                                                                                                           /
                         }while(0)                                                                                                       
 

@@ -34,6 +34,7 @@
   #define NINODES     (IPBG * BLOCKGROUPS)  
 
   int ninodeblocks = (NINODEBLOCKS * BLOCKGROUPS);  
+  int nbitmap = BLOCKGROUPS;
 
 
 // Disk layout:
@@ -133,10 +134,10 @@ main(int argc, char *argv[])
   #else
 
   // 1 fs block = 1 disk sector
-  nmeta = 2 + nlog;
+  nmeta = 2 + nlog + ninodeblocks + nbitmap;
   nblocks = FSSIZE - nmeta;
 
-  sb.size = xint(NDATABLOCKS * BLOCKGROUPS); //TODO : Set the size to be ONLY num data blocks, not including all of FSSIZE
+  sb.size = xint(NDATABLOCKS * BLOCKGROUPS); 
   sb.nblocks = xint(nblocks);
   sb.ninodes = xint(NINODES);
   sb.nlog = xint(nlog);

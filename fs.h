@@ -176,8 +176,8 @@ struct dirent {
 
 
 
-#define fs_debug(msg, ...) cprintf("[Debug] --->"fmt"\n", ...)
-#define fs_error(msg) cprintf("~~~~~~~[Error] ---> %s"fmt"\n", ...)
+#define fs_debug(fmt, ...) cprintf("[Debug] --->"); cprintf(fmt, ...)
+#define fs_error(fmt, ...) cprintf("~~~~~~~[Error] --->"); cprintf(fmt, ...)
 #define iNode_info(i) fs_debug("{Dev: %d, iNum: %d, Ref Count: %d, Flags: %d, Size: %d}\n", i.dev, i.inum, i.ref, i.flags, i.size)
 #define diNode_info(d) do{                                                                                                                \
                           cprintf("{Type: %d, Major: %d, Minor: %d, Link: %d, Size: %d \t[", d.type, d.major, d.minor, d.link, d.size);   \

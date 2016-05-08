@@ -320,7 +320,7 @@ create(char *path, short type, short major, short minor)
 
 
   func_enter();
-
+  fs_debug("Creating Directory : %s", path );
 
   if((dp = nameiparent(path, name)) == 0){
      func_exit("Error finding Dir %s\n", path);

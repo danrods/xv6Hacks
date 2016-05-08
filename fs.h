@@ -113,6 +113,10 @@ struct dinode {
 
   /////////////////////////////////////////////////////////////////////////////////
 
+  struct ff_stats{
+      uint usedBlocks;
+      uint percentFull;
+  };
 
 
   //////////////////// Relative Macros /////////////////////////
@@ -151,10 +155,7 @@ struct dinode {
   /////////////////////////////////////////////////////////////
 
 
-  struct ff_stats{
-      uint usedBlocks;
-      uint percentFull;
-  };
+  
 
 #endif
 
@@ -171,6 +172,9 @@ struct dirent {
 
 
 
+#define fs_debug(fmt, ...) cprintf("[Debug] ---> " fmt, ##_VA_ARGS)
+#define fs_error(fmt, ...) cprintf("~~~~~~~[Error] ---> " fmt, ##_VA_ARGS)
+#define iNode_info(i) fs_debug("{Dev: %d, iNum: %d, Ref Count: %d, Flags: %d, Size: %d}\n", i.dev, i.inum, i.ref, i.flags, i.size)
 
 
 

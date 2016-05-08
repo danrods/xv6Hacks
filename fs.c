@@ -257,8 +257,8 @@ ialloc(uint dev, short type)
         brelse(bp);
       }
   }
-
-  for(inum = 1; inum < sb.ninodes; inum++){
+  else{
+    for(inum = 1; inum < sb.ninodes; inum++){
     bp = bread(dev, IBLOCK(inum, sb));
     dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
     if(dip->type == 0){  // a free inode
@@ -266,19 +266,19 @@ ialloc(uint dev, short type)
       dip->type = type;
       log_write(bp);   // mark it allocated on the disk
       brelse(bp);
-      
+
       tmp = bread(dev, STATBLOCK( BGROUP(inum, sb), sb));
       stats = STATOFF(tmp);
       return iget(dev, inum);
     }
-    brelse(bp);
   }
 
-
+  
+    brelse(bp);
+  }
   
   panic("ialloc: no inodes");
 }
-
 
 #endif
 
@@ -737,3 +737,4 @@ nameiparent(char *path, char *name)
 {
   return namex(path, 1, name);
 }
+

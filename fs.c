@@ -509,14 +509,14 @@ bmap(struct inode *ip, uint bn)
   uint addr, *a;
   struct buf *bp;
 
-  func_enter();
-  fs_debug("Allocating BN : %d\n", bn);
-  iNode_info(ip);
+  //func_enter();
+  //fs_debug("Allocating BN : %d\n", bn);
+  //iNode_info(ip);
 
   if(bn < NDIRECT){
     if((addr = ip->addrs[bn]) == 0)
       ip->addrs[bn] = addr = balloc(ip->dev);
-    func_exit("Addr: %d\n", addr);
+    //func_exit("Addr: %d\n", addr);
     return addr;
   }
   bn -= NDIRECT;
@@ -532,7 +532,7 @@ bmap(struct inode *ip, uint bn)
       log_write(bp);
     }
     brelse(bp);
-    func_exit("Addr: %d\n", addr);
+    //func_exit("Addr: %d\n", addr);
     return addr;
   }
 
@@ -593,18 +593,18 @@ readi(struct inode *ip, char *dst, uint off, uint n)
   uint tot, m;
   struct buf *bp;
 
-  func_enter();
+  //func_enter();
 
   if(ip->type == T_DEV){
     if(ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].read){
-      func_exit("-1\n");
+    //  func_exit("-1\n");
       return -1;
     }
     return devsw[ip->major].read(ip, dst, n);
   }
 
   if(off > ip->size || off + n < off){
-    func_exit("-1\n");
+   // func_exit("-1\n");
     return -1;
   }
   if(off + n > ip->size)
@@ -616,7 +616,7 @@ readi(struct inode *ip, char *dst, uint off, uint n)
     memmove(dst, bp->data + off%BSIZE, m);
     brelse(bp);
   }
-  func_exit("Count: %d\n", n);
+  //func_exit("Count: %d\n", n);
   return n;
 }
 

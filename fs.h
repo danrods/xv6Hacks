@@ -179,14 +179,15 @@ struct dirent {
 #define fs_debug(fmt, ...) cprintf("[Debug] --->"); cprintf(fmt, ##__VA_ARGS__)
 #define fs_error(fmt, ...) cprintf("~~~~~~~[Error] --->"); cprintf(fmt, ##__VA_ARGS__)
 #define iNode_info(i) fs_debug("{Dev: %d, iNum: %d, Ref Count: %d, Flags: %d, Size: %d}\n", i.dev, i.inum, i.ref, i.flags, i.size)
-#define diNode_info(d) do{                                                                                                                \
-                          cprintf("{Type: %d, Major: %d, Minor: %d, Link: %d, Size: %d \t[", d->type, d->major, d->minor, d->link, d->size);   \
-                          for(int i=0; i < NDIRECT; i++){                                                                                 \
-                                cprintf("Direct Address %d => %d", d->addrs[i]);                                                           \
-                          }                                                                                                               \
-                          if(d->addrs[NDIRECT]) cprintf("Indirect Address => %d", d->addrs[NDIRECT]);                                       \
-                          cprintf("]\n");                                                                                                 \
-                                                                                                                                          \
+#define diNode_info(d) do{                                                                                                                      \
+                          cprintf("{Type: %d, Major: %d, Minor: %d, Link: %d, Size: %d \t[", d->type, d->major, d->minor, d->nlink, d->size);   \
+                          int i;
+                          for(i=0; i < NDIRECT; i++){                                                                                       \
+                                cprintf("Direct Address %d => %d", d->addrs[i]);                                                                \
+                          }                                                                                                                     \
+                          if(d->addrs[NDIRECT]) cprintf("Indirect Address => %d", d->addrs[NDIRECT]);                                           \
+                          cprintf("]\n");                                                                                                       \
+                                                                                                                                                \
                         }while(0)                                                                                                       
 
 

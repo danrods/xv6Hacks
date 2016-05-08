@@ -48,7 +48,7 @@ bzero(int dev, int bno)
 }
 
 
-#ifdef xv6ffs
+#ifndef xv6ffs
 
 // Blocks. 
 // Allocate a zeroed disk block.
@@ -81,8 +81,9 @@ balloc(uint dev)
 // Look through all free block groups?
 // Allocate a zeroed disk block.
 static uint
-balloc(uint dev, uint bblock)
+balloc(uint dev)
 {
+  bblock = 0;
   int b = DATABLOCK_OFF + bblock, 
       bi, 
       m;

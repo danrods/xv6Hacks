@@ -605,7 +605,7 @@ readi(struct inode *ip, char *dst, uint off, uint n)
 
   if(off > ip->size || off + n < off){
     func_exit("-1");
-    return -1
+    return -1;
   }
   if(off + n > ip->size)
     n = ip->size - off;

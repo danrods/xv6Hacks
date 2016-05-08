@@ -831,14 +831,14 @@ printFSStats(void){
 
   struct ff_stats* stats;
   func_enter();
-  int i;
+  int i, statint;
   for(i=0; i < sb.nblockgroups; i++){
       struct buf* bp;
-      uint statBlock = STATBLOCK(i, sb);
-      fs_debug("Stat Block : %d, B.G Start: %d\n", statBlock, sb.bgstart);
-      bp = bread(0, statBlock);
-      if(! bp) fs_error("Error fetching Stat Block!\n");
-      stats = STATOFF(bp);
+      bp = bread(0, STATBLOCK(i, sb));
+      if(bp == 0) 
+        fs_error("Error fetching Stat Block!\n");
+      statint = STATOFF(bp);
+      stats = (struct ff_stats *) statint;
       fs_debug("Block Group %d ==>", i + 1);
       ffStats_info(stats);
   }

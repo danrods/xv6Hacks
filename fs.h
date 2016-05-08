@@ -156,7 +156,7 @@ struct dinode {
   //  [Data Bit Map | iBlock 1 | iBlock 2 | iBlock 3 | {diNode1, diNode2...,diNode 5} {~192 Free Bytes | Stats block }  | Data Blocks] 
   #define STATBLOCK(bg, sb)   (sb.bgstart +  (bg * sb.bpbg) + NINODEBLOCKS )
 
-  #define STATOFF(buf) ((struct ff_stats *) buf->data + BSIZE - sizeof(struct ff_stats))
+  #define STATOFF(buf) (buf->data + (BSIZE - sizeof(struct ff_stats)))
   /////////////////////////////////////////////////////////////
 
 

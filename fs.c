@@ -279,10 +279,10 @@ ialloc(uint dev, short type)
           // the difference between the entire block and the sizeof the struct
    //       stats = STATOFF(bp);
 
-          if(stats->percentFull < least){
-            lub = bg;
-            least = stats->percentFull;
-          } 
+          // if(stats->percentFull < least){
+          //   lub = bg;
+          //   least = stats->percentFull;
+          // } 
       }
       fs_debug("Found Least Free Block Group : %d --> %d percent utilization\n", lub, least);
       //  Start at the first iNode with respect to the block group

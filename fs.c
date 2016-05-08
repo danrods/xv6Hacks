@@ -416,14 +416,17 @@ ilock(struct inode *ip)
   struct dinode *dip;
 
   func_enter();
-  fs_debug("Locking iNode: %d", ip->inum);
+  iNode_info(ip);
 
   if(ip == 0 || ip->ref < 1)
     panic("ilock");
 
   acquire(&icache.lock);
-  while(ip->flags & I_BUSY)
+  while(ip->flags & I_BUSY){
+    fs_debug("Goodnight, wake me when iNode: %d is ready\n");
     sleep(ip, &icache.lock);
+  }
+    
   ip->flags |= I_BUSY;
   release(&icache.lock);
 

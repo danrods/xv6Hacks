@@ -323,12 +323,11 @@ create(char *path, short type, short major, short minor)
 
 
   if((dp = nameiparent(path, name)) == 0){
-     iNode_info(ip);
      func_exit("Error finding Dir %s\n", path);
      return 0;
   }
   ilock(dp);
-  
+
   fs_debug("Found parent : \n");
   iNode_info(dp);
 

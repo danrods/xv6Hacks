@@ -825,3 +825,23 @@ nameiparent(char *path, char *name)
   return namex(path, 1, name);
 }
 
+void
+printFSStats(){
+
+  struct ff_stats* stats;
+  func_start();
+  int i;
+  for(i=0; i < sb.nblockgroups; i++){
+      struct buf* bp;
+      bp = bread(0, STATBLOCK(i, sb));
+      if(! bp) fs_error("Error fetching Stat Block!\n");
+
+      stats = STATOFF(bp->data);
+      fs_debug("Block Group %d ==>", i + 1);
+      ffStats_info(stats);
+  }
+
+  func_exit("\n");
+
+}
+

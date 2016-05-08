@@ -180,15 +180,18 @@ struct dirent {
 
 #define fs_debug(fmt, ...) cprintf("[Debug] --->"); cprintf(fmt, ##__VA_ARGS__)
 #define fs_error(fmt, ...) cprintf("~~~~~~~[Error] --->"); cprintf(fmt, ##__VA_ARGS__)
-#define iNode_info(i) fs_debug("iNode : {Dev: %d, iNum: %d, Ref Count: %d, Flags: %d, Size: %d}\n", i->dev, i->inum, i->ref, i->flags, i->size)
+#define iNode_info(i) fs_debug("iNode : {Dev: %d, Type: %d, iNum: %d, Ref Count: %d, Flags: %d, Size: %d}\n", i->dev, i->type, i->inum, i->ref, i->flags, i->size)
 #define buf_info(b) fs_debug("Buf : {Dev: %d, BlockNo: %d, Flags: %d, Prev: %d, Next: %d}\n", b->dev, b->blockno, b->flags, b->prev->blockno, b->next->blockno)
-#define diNode_info(d) do{                                                                                                                      \
-                          cprintf("{Type: %d, Major: %d, Minor: %d, Link: %d, Size: %d, Addrs[", d->type, d->major, d->minor, d->nlink, d->size); int i;\
-                          for(i=0; i < NDIRECT; i++){                                                                                           \
-                               if(d->addrs[i]) cprintf("Direct Address %d => %d,", d->addrs[i]);                                                                \
-                          }                                                                                                                     \
-                          if(d->addrs[NDIRECT]) cprintf("Indirect Address => %d\n", d->addrs[NDIRECT]);                                           \
-                          cprintf("] }\n");                                                                                                       \
+#define ffStats_info(stat) fs_debug("FF_STAT : {Used Blocks: %d, Percent Full: %d}\n", stat->usedBlocks, stat->percentFull)
+
+#define diNode_info(d) do{                                                                                                                                \
+                          cprintf("{Type: %d, Major: %d, Minor: %d, Link: %d, Size: %d, Addrs[", d->type, d->major, d->minor, d->nlink, d->size);         \
+                          int i;                                                                                                                          \
+                          for(i=0; i < NDIRECT; i++){                                                                                                     \
+                               if(d->addrs[i]) cprintf("Direct Address %d => %d,", d->addrs[i]);                                                          \
+                          }                                                                                                                               \
+                          if(d->addrs[NDIRECT]) cprintf("Indirect Address => %d\n", d->addrs[NDIRECT]);                                                   \
+                          cprintf("] }\n");                                                                                                               \
                           }while(0)                                                                                                       
 
 

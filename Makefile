@@ -183,6 +183,7 @@ UPROGS=\
 	_printTickets\
 	_schedTest\
 	_prngtest\
+	_printStats\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)

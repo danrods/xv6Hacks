@@ -107,15 +107,21 @@ struct dinode {
   #define BPBG        (NINODEBLOCKS + NDATABLOCKS + 1)
 
   // Total FS Size :
-  //  ==> X [Block Groups] * 4065 [Blocks / Block Group] = 4065X [Blocks] + 30 [Log Blocks] + 1 [Super Block] + 1 [Boot Blocipbgk]
+  //  ==> X [Block Groups] * 4065 [Blocks / Block Group] = 4065X [Blocks] + 30 [Log Blocks] + 1 [Super Block] + 1 [Boot Block]
   //    ===> 4065X + 32 [Total Blocks] --> Ex :  (4065 * 25) + 32 = 101,657 Data Blocks
   #define FSSIZE      ((BLOCKGROUPS * BPBG) + 32)
 
   /////////////////////////////////////////////////////////////////////////////////
 
+  struct ff_stats{
+      uint usedBlocks;
+      uint percentFull;
+  };
 
 
   //////////////////// Relative Macros /////////////////////////
+
+  #define BGROUP(i, sb) ((i) / sb.ipbg)
 
   //Offset in a block of dInodes
   #define DINODEOFFSET(inum, sb) ((inum % sb.ipbg) % IPB)
@@ -144,13 +150,12 @@ struct dinode {
   // We have 3 * sizeof(dinode) [64 Bytes]  ==> 192 Bytes of padding. Lets use bottom one for stats
   //  [Data Bit Map | iBlock 1 | iBlock 2 | iBlock 3 | {diNode1, diNode2...,diNode 5} {~192 Free Bytes | Stats block }  | Data Blocks] 
   #define STATBLOCK(bg, sb)   (sb.bgstart +  (bg * sb.bpbg) + NINODEBLOCKS )
+
+  #define STATOFF(buf) ((struct ff_stats *) buf->data + BSIZE - sizeof(struct ff_stats))
   /////////////////////////////////////////////////////////////
 
 
-  struct ff_stats{
-      uint usedBlocks;
-      uint percentFull;
-  };
+  
 
 #endif
 
@@ -167,6 +172,9 @@ struct dirent {
 
 
 
+#define fs_debug(fmt, ...) cprintf("[Debug] ---> " fmt, ##_VA_ARGS)
+#define fs_error(fmt, ...) cprintf("~~~~~~~[Error] ---> " fmt, ##_VA_ARGS)
+#define iNode_info(i) fs_debug("{Dev: %d, iNum: %d, Ref Count: %d, Flags: %d, Size: %d}\n", i.dev, i.inum, i.ref, i.flags, i.size)
 
 
 

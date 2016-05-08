@@ -273,11 +273,11 @@ ialloc(uint dev, short type)
     fs_debug("Let's find a DIR shall we?\n");
       //To save time, if the block group is empty, lets just put it there
       for(lub = bg = 0; least > 0 && bg < sb.nblockgroups; bg++){
-          bp = bread(dev, STATBLOCK(bg, sb));
+     //     bp = bread(dev, STATBLOCK(bg, sb));
 
           //To get the stats struct which is stored at the end of the block we need to add
           // the difference between the entire block and the sizeof the struct
-          stats = STATOFF(bp);
+   //       stats = STATOFF(bp);
 
           if(stats->percentFull < least){
             lub = bg;

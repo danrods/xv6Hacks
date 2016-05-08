@@ -825,8 +825,9 @@ nameiparent(char *path, char *name)
   return namex(path, 1, name);
 }
 
+#ifndef xv6ffs
 void
-printFSStats(){
+printFSStats(void){
 
   struct ff_stats* stats;
   func_start();
@@ -844,4 +845,6 @@ printFSStats(){
   func_exit("\n");
 
 }
+
+#endif
 

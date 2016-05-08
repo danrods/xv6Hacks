@@ -76,6 +76,7 @@ struct dinode {
   
 #else
 
+  void printFSStats(void);
   ///////////////////// Constants //////////////////////
 
   //Arbitarily chosen

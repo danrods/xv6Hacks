@@ -104,6 +104,7 @@ extern int sys_printProcess(void);
 extern int sys_prng(void);
 extern int sys_switchScheduler(void);
 extern int sys_yield(void);
+extern int sys_printStats(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -133,6 +134,7 @@ static int (*syscalls[])(void) = {
 [SYS_prng]    sys_prng,
 [SYS_switchScheduler] sys_switchScheduler,
 [SYS_yield]   sys_yield,
+[SYS_printStats]  sys_printStats,
 };
 
 void

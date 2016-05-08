@@ -595,5 +595,19 @@ sys_switchScheduler(void) {
   return 0;
 }
 
+int 
+sys_printStats(void){
+
+  #ifndef xv6ffs
+
+  printFSStats();
+  return 0;
+  #else
+    return -1;
+  #endif 
+}
+
+
+
 
 

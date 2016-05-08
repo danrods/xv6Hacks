@@ -68,6 +68,7 @@ balloc(uint dev)
         log_write(bp);
         brelse(bp);
         bzero(dev, b + bi);
+        fs_debug("Allocating Disk Block %d", b + bi);
         return b + bi;
       }
     }
@@ -98,6 +99,7 @@ balloc(uint dev)
       log_write(bp);
       brelse(bp);
       bzero(dev, b + bi);
+      fs_debug("Allocating Disk Block %d", b + bi);
       return bi + b;
     }
     brelse(bp);
@@ -305,8 +307,8 @@ ialloc(uint dev, short type)
       log_write(bp);   // mark it allocated on the disk
       brelse(bp);
 
-      tmp = bread(dev, STATBLOCK( BGROUP(inum, sb), sb));
-      stats = STATOFF(tmp);
+      //tmp = bread(dev, STATBLOCK( BGROUP(inum, sb), sb));
+      //stats = STATOFF(tmp);
       return iget(dev, inum);
     }
   }

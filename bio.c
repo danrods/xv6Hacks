@@ -75,6 +75,7 @@ bget(uint dev, uint blockno)
         release(&bcache.lock);
         return b;
       }
+      fs_debug("Going to sleep... Wake me when %d is ready", blockno);
       sleep(b, &bcache.lock);
       goto loop;
     }
@@ -102,6 +103,7 @@ bread(uint dev, uint blockno)
   struct buf *b;
 
   b = bget(dev, blockno);
+  buf_info(b);
   if(!(b->flags & B_VALID)) {
     iderw(b);
   }

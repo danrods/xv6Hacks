@@ -309,25 +309,25 @@ ialloc(uint dev, short type)
   }
   else{
     for(inum = 1; inum < sb.ninodes; inum++){
-    bp = bread(dev, IBLOCK(inum, sb));
-    dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
-    if(dip->type == 0){  // a free inode
-      fs_debug("I got a live one!\n");
-      diNode_info(dip);
-      memset(dip, 0, sizeof(*dip));
-      dip->type = type;
-      log_write(bp);   // mark it allocated on the disk
+      bp = bread(dev, IBLOCK(inum, sb));
+      dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
+
+      if(dip->type == 0){  // a free inode
+        fs_debug("I got a live one!\n");
+        diNode_info(dip);
+        memset(dip, 0, sizeof(*dip));
+        dip->type = type;
+        log_write(bp);   // mark it allocated on the disk
+        brelse(bp);
+
+        //tmp = bread(dev, STATBLOCK( BGROUP(inum, sb), sb));
+        //stats = STATOFF(tmp);
+        func_exit("\n");
+        return iget(dev, inum);
+      }
+
       brelse(bp);
-
-      //tmp = bread(dev, STATBLOCK( BGROUP(inum, sb), sb));
-      //stats = STATOFF(tmp);
-      func_exit("\n");
-      return iget(dev, inum);
     }
-  }
-
-  
-    brelse(bp);
   }
   
   panic("ialloc: no inodes");

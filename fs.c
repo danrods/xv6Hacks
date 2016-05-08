@@ -70,7 +70,7 @@ balloc(uint dev)
         log_write(bp);
         brelse(bp);
         bzero(dev, b + bi);
-        func_exit("Allocated Disk Block %d", b + bi);
+        func_exit("Allocated Disk Block %d\n", b + bi);
         return b + bi;
       }
     }
@@ -103,7 +103,7 @@ balloc(uint dev)
       log_write(bp);
       brelse(bp);
       bzero(dev, b + bi);
-      func_exit("Allocating Disk Block %d", b + bi);
+      func_exit("Allocating Disk Block %d\n", b + bi);
       return bi + b;
     }
     brelse(bp);
@@ -270,7 +270,7 @@ ialloc(uint dev, short type)
   struct ff_stats *stats;
 
   if(type == T_DIR){
-    fs_debug("Let's find a DIR shall we?");
+    fs_debug("Let's find a DIR shall we?\n");
       //To save time, if the block group is empty, lets just put it there
       for(lub = bg = 0; least > 0 && bg < sb.nblockgroups; bg++){
           bp = bread(dev, STATBLOCK(bg, sb));
@@ -284,7 +284,7 @@ ialloc(uint dev, short type)
             least = stats->percentFull;
           } 
       }
-      fs_debug("Found Least Free Block Group : %d --> %d percent utilization", lub, least);
+      fs_debug("Found Least Free Block Group : %d --> %d percent utilization\n", lub, least);
       //  Start at the first iNode with respect to the block group
       //  End when we've gone through the number of iNodes per B.G
       for(inum = (lub * sb.ipbg); inum < (lub * sb.ipbg) + sb.ipbg; inum++){
@@ -295,7 +295,7 @@ ialloc(uint dev, short type)
         dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb); // Gets the Offset within the block
 
         if(dip->type == 0){  // A free inode
-          fs_debug("Found a free directory!");
+          fs_debug("Found a free directory!\n");
           diNode_info(dip);
           memset(dip, 0, sizeof(*dip));
           dip->type = type;
@@ -312,7 +312,7 @@ ialloc(uint dev, short type)
     bp = bread(dev, IBLOCK(inum, sb));
     dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
     if(dip->type == 0){  // a free inode
-      fs_debug("I got a live one!");
+      fs_debug("I got a live one!\n");
       diNode_info(dip);
       memset(dip, 0, sizeof(*dip));
       dip->type = type;
@@ -510,13 +510,13 @@ bmap(struct inode *ip, uint bn)
   struct buf *bp;
 
   func_enter();
-  fs_debug("Allocating BN : %d", bn);
+  fs_debug("Allocating BN : %d\n", bn);
   iNode_info(ip);
 
   if(bn < NDIRECT){
     if((addr = ip->addrs[bn]) == 0)
       ip->addrs[bn] = addr = balloc(ip->dev);
-    func_exit("%d\n", addr);
+    func_exit("Addr: %d\n", addr);
     return addr;
   }
   bn -= NDIRECT;
@@ -532,7 +532,7 @@ bmap(struct inode *ip, uint bn)
       log_write(bp);
     }
     brelse(bp);
-    func_exit("%d\n", addr);
+    func_exit("Addr: %d\n", addr);
     return addr;
   }
 
@@ -597,14 +597,14 @@ readi(struct inode *ip, char *dst, uint off, uint n)
 
   if(ip->type == T_DEV){
     if(ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].read){
-      func_exit("-1");
+      func_exit("-1\n");
       return -1;
     }
     return devsw[ip->major].read(ip, dst, n);
   }
 
   if(off > ip->size || off + n < off){
-    func_exit("-1");
+    func_exit("-1\n");
     return -1;
   }
   if(off + n > ip->size)
@@ -616,7 +616,7 @@ readi(struct inode *ip, char *dst, uint off, uint n)
     memmove(dst, bp->data + off%BSIZE, m);
     brelse(bp);
   }
-  func_exit("%d", n);
+  func_exit("Count: %d\n", n);
   return n;
 }
 
@@ -631,8 +631,11 @@ writei(struct inode *ip, char *src, uint off, uint n)
   func_enter();
 
   if(ip->type == T_DEV){
-    if(ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].write)
-      return -1;
+    if(ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].write){
+      func_exit("Error: -1\n");
+        return -1;
+    }
+    func_exit("Device Write function\n");
     return devsw[ip->major].write(ip, src, n);
   }
 
@@ -653,6 +656,8 @@ writei(struct inode *ip, char *src, uint off, uint n)
     ip->size = off;
     iupdate(ip);
   }
+
+  func_exit("Count: %d\n", n);
   return n;
 }
 

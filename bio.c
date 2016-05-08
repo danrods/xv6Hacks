@@ -102,14 +102,14 @@ bread(uint dev, uint blockno)
 {
   struct buf *b;
 
-  func_enter();
+  // func_enter();
 
   b = bget(dev, blockno);
   buf_info(b);
   if(!(b->flags & B_VALID)) {
     iderw(b);
   }
-  func_exit("Blockno: %d", blockno);
+  // func_exit("Blockno: %d\n", blockno);
   return b;
 }
 

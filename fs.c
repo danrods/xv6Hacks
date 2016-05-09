@@ -904,7 +904,7 @@ fillFSStats(void){
   for(i=0; i < sb.nblockgroups; i++){
 
       totalBlocks = 0;
-      for(j=0; j < sb.ipbg; j++,iNode++){
+      for(j=0; j < sb.ipbg && iNode < sb.ninodes; j++,iNode++){
 
           bp = bread(ROOTDEV, IBLOCK(iNode, sb));
           node = (struct dinode*)bp->data + DINODEOFFSET(iNode, sb);

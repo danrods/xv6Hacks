@@ -130,6 +130,9 @@ struct dinode {
 
   #define BGROUP(i, sb) ((i) / sb.ipbg)
 
+
+  #define iNODE_HEAD(i, sb) ( ((i) / sb.ipbg) * sb.ipbg)
+
   //Offset in a block of dInodes
   // iNode % [iNodes/Block Group] ==> gives offset within iNodes in BG
   // [Offset Within B.G] % [iNodes per Block] yields offset within block

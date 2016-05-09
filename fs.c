@@ -262,6 +262,7 @@ ialloc(uint dev, short type)
 
   func_enter();
 
+  int try = 0;
   uint inum,
        least = 100, //Percent utilization
        bg = 0,   
@@ -325,21 +326,28 @@ ialloc(uint dev, short type)
   else
   { // It's a file or a Device.
 
-    for(inum = 1; inum < sb.ninodes; inum++){
+    inum = iNODE_HEAD(proc->cwd->inum, sb); //Get the start iNode for whatever BG the parent is in
+    
+    //Stupid, idk why the root inode is 1
+    if(inum == 0)
+        inum = 1;
+
+tryAgain:
+    int i;
+    for(i=0;i < sb.ninodes;i++,inum++){
       bp = bread(dev, IBLOCK(inum, sb));
       dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
 
       if(dip->type == 0){  // a free inode  
         fs_debug("I got a live one! --> iNode %d\n", inum);
-        buf_info(bp);
-        diNode_info(dip);
+       // buf_info(bp);
         memset(dip, 0, sizeof(*dip));
         dip->type = type;
         log_write(bp);   // mark it allocated on the disk
         brelse(bp);
 
-        bp = bread(dev, STATBLOCK(bg, sb));                 //
-        stats = (struct ff_stats *) STATOFF(bp);            //Increase the total block utilization
+        bp = bread(dev, STATBLOCK(bg, sb));                       //
+        stats = (struct ff_stats *) STATOFF(bp);                  //Increase the total block utilization
         stats-> percentFull = STAT_PERCENTAGE_ABS(stats, ++(stats->usedBlocks), sb);  //
         log_write(bp);
         brelse(bp);
@@ -348,8 +356,15 @@ ialloc(uint dev, short type)
       }
 
       brelse(bp);
+
     }
-  }
+
+    if(try++)
+        panic("No More free iNodes");
+    inum = 1;//One more opportunity, start from the beginning, looking for a free node
+    goto tryAgain
+
+  } /* End Else */
   
   panic("ialloc: no inodes");
 }

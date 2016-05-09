@@ -162,7 +162,7 @@ struct dinode {
 
   #define STATOFF(buf) (buf->data + (BSIZE - sizeof(struct ff_stats)))
 
-  #define STAT_PERCENTAGE_ABS(stat, totalBlocks, sb) ((totalBlocks * 100) / sb.ipbg); stat->usedBlocks = totalBlocks
+  #define STAT_PERCENTAGE_ABS(stat, totalBlocks, sb) (( (totalBlocks) * 100) / sb.ipbg); stat->usedBlocks = (totalBlocks)
   #define STAT_PERCENT_INC(stat, sb)  STAT_PERCENTAGE_ABS(stat, ++(stat->usedBlocks), sb)
   /////////////////////////////////////////////////////////////
 

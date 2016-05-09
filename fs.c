@@ -903,7 +903,7 @@ fillFSStats(void){
       bp = bread(ROOTDEV, STATBLOCK(i, sb));
       stats = (struct ff_stats *) STATOFF(bp);
 
-      stats->percentFull = ( ((stats->usedBlocks = totalBlocks)/sb.ipbg) * 100);
+      stats->percentFull = ( ( ((stats->usedBlocks = totalBlocks) * 100)/sb.ipbg) );
       bwrite(bp);   // mark it allocated on the disk
       brelse(bp);
   }

@@ -184,6 +184,7 @@ UPROGS=\
 	_schedTest\
 	_prngtest\
 	_printStats\
+	_filemanager\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)

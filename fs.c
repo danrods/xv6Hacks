@@ -89,21 +89,21 @@ balloc(uint dev)
 
   func_enter();
 
-  int b, counter, bi, m, 
+  int b, head, bi, m, 
       tryAgain = 1, 
       headiNode = 1;
   struct buf *bp;
 
   //Let's get the block group based on parent iNode
-  b = BMAP_HEAD(proc->cwd->inum, sb); 
-      
+  head = BMAP_HEAD(proc->cwd->inum, sb); 
+  b = BGROUP(proc->cwd->inum, sb) * BPB;
 
 oneMoreTime:
 
   bp = 0;
 
   //Look through all potential BMAPS if not found in parent
-  for(counter = 0; counter < sb.size; i++, b += BPB){
+  for(; head < sb.size && b < sb.nblocks; b+=BPB, head += BPBG){
     bp = bread(dev, BBLOCK(b, sb));
 
     for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
@@ -117,12 +117,12 @@ oneMoreTime:
         return bi + b;
       }
     }
-    
+
     brelse(bp);
   }
 
     if(tryAgain --){
-      b = 0;//One more opportunity, start from the beginning, looking for a free block node
+      b = head = 0;//One more opportunity, start from the beginning, looking for a free block node
       goto oneMoreTime;
     }
 
@@ -131,6 +131,7 @@ oneMoreTime:
 
 
 #endif
+
 // Free a disk block.
 static void
 bfree(int dev, uint b)

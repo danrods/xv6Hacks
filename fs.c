@@ -904,6 +904,9 @@ fillFSStats(void){
           iunlockput(node); //We're done with it, thanks
           node = 0;
       }
+      
+      bp = bread(ROOTDEV, STATBLOCK(i, sb));
+      stats = (struct ff_stats *) STATOFF(bp);
 
       stats->percentFull = ( (stats->usedBlocks = totalBlocks)/sb.ipbg);
       bwrite(bp);   // mark it allocated on the disk

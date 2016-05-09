@@ -214,7 +214,7 @@ iinit(int dev)
           sb.nblocks, sb.ninodes, sb.nlog, sb.logstart, sb.bgstart, sb.nblockgroups, sb.ipbg, sb.bpbg);
   clearFSStats();
   fillFSStats();
-  printFSStats();
+  //printFSStats();
   #endif
 }
 
@@ -894,7 +894,7 @@ clearFSStats(void){
 void
 fillFSStats(void){
 
-  func_enter();
+  //func_enter();
 
   struct buf* bp;
   struct ff_stats* stats;
@@ -923,12 +923,12 @@ fillFSStats(void){
 
       stats->usedBlocks = totalBlocks;
       stats->percentFull = STAT_PERCENTAGE_ABS(stats, totalBlocks, sb);
-      ffStats_info(stats);
+      //ffStats_info(stats);
       bwrite(bp);   // mark it allocated on the disk
       brelse(bp);
   }
 
-  func_exit("\n");
+  //func_exit("\n");
 }
 
 #endif

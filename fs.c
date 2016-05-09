@@ -880,31 +880,26 @@ fillFSStats(void){
 
   struct buf* bp;
   struct ff_stats* stats;
-  struct inode * node = 0;
-  int i, j, totalBlocks, continueRunning = 1;
+  struct dinode * node = 0;
+  int i, j, iNode = 1, continueRunning = 1;
 
-  for(i=0; i < sb.nblockgroups && continueRunning; i++){
+  for(i=0; i < sb.nblockgroups; i++){
 
       totalBlocks = 0;
-      j = (i == 0)? 1 : 0;
-      for(; j < sb.ipbg && continueRunning ; j++){
+      for(iNode; iNode < sb.ipbg; iNode++){
 
-          // In order to fetch the appropriate iNode we'll
-          // take the amount of iNodes in all of the b.g we've seen so far
-          // (i.e sp.ipbg * i) and add the amount we've seen in this b.g (i.e j)
-          node = iget(ROOTDEV, j + (sb.ipbg * i)); 
-          ilock(node); //Fetch the actual contents from disk
+          bp = bread(ROOTDEV, IBLOCK(iNode, sb));
+          node = (struct dinode*)bp->data + DINODEOFFSET(iNode, sb);
 
           if(node->type > 0){
-              iNode_info(node);
+              diNode_info(node);
               totalBlocks++;
           }
-          else if(j == 0) continueRunning = 0;
 
-          iunlockput(node); //We're done with it, thanks
           node = 0;
+          brelse(bp);
       }
-      
+
       bp = bread(ROOTDEV, STATBLOCK(i, sb));
       stats = (struct ff_stats *) STATOFF(bp);
 

@@ -90,8 +90,7 @@ balloc(uint dev)
   func_enter();
 
   int b, head, bi, m, 
-      tryAgain = 1, 
-      headiNode = 1;
+      tryAgain = 1;
   struct buf *bp;
 
   //Let's get the block group based on parent iNode

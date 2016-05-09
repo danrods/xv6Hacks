@@ -71,7 +71,7 @@ main(int argc, char *argv[])
 	else if(0 == strcmp(cmd, "create_dir")){
 		createDir(argv[2]);
 	}
-	else(0 == strcmp(cmd, "tests")){
+	else if (0 == strcmp(cmd, "tests")){
 		char *file = "H2F1", 
 			 *folder="secondHeuristicTest"; 
 

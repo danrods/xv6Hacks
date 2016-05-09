@@ -899,12 +899,12 @@ fillFSStats(void){
   struct buf* bp;
   struct ff_stats* stats;
   struct dinode * node = 0;
-  int i, totalBlocks, iNode = 1;
+  int i, j, totalBlocks, iNode = 1;
 
   for(i=0; i < sb.nblockgroups; i++){
 
       totalBlocks = 0;
-      for(; iNode < sb.ninodes; iNode++){
+      for(j=0; j < sb.ipbg; j++,iNode++){
 
           bp = bread(ROOTDEV, IBLOCK(iNode, sb));
           node = (struct dinode*)bp->data + DINODEOFFSET(iNode, sb);

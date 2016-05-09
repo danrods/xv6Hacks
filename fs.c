@@ -214,7 +214,7 @@ iinit(int dev)
           sb.nblocks, sb.ninodes, sb.nlog, sb.logstart, sb.bgstart, sb.nblockgroups, sb.ipbg, sb.bpbg);
   clearFSStats();
   fillFSStats();
-  printFSStats();
+ // printFSStats();
   #endif
 }
 
@@ -840,7 +840,7 @@ printFSStats(void){
   for(i=0; i < sb.nblockgroups; i++){
       bp = bread(ROOTDEV, STATBLOCK(i, sb));
       if(bp == 0) 
-        fs_error("Error fetching Stat Block!\n");
+        fs_error("Error fetching Stat Block! %d\n", bp);
       stats = (struct ff_stats *) STATOFF(bp);
       fs_debug("Block Group %d ==>", i + 1);
       ffStats_info(stats);
@@ -892,7 +892,7 @@ fillFSStats(void){
           node = (struct dinode*)bp->data + DINODEOFFSET(iNode, sb);
 
           if(node->type > 0){
-              diNode_info(node);
+             // diNode_info(node);
               totalBlocks++;
           }
 

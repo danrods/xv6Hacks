@@ -188,12 +188,12 @@ struct dirent {
 #define ffStats_info(stat) fs_debug("FF_STAT : {Used Blocks: %d, Percent Full: %d}\n", stat->usedBlocks, stat->percentFull)
 
 #define diNode_info(d) do{                                                                                                                                \
-                          cprintf("{Type: %d, Major: %d, Minor: %d, Link: %d, Size: %d, Addrs[", d->type, d->major, d->minor, d->nlink, d->size);         \
+                          cprintf("{Type: %d, Major: %d, Minor: %d, Link: %d, Size: %d, Addrs:[", d->type, d->major, d->minor, d->nlink, d->size);         \
                           int i;                                                                                                                          \
                           for(i=0; i < NDIRECT; i++){                                                                                                     \
-                               if(d->addrs[i]) cprintf("Direct Address %d => %d,", d->addrs[i]);                                                          \
+                               if(d->addrs[i]) cprintf("%d,",i, d->addrs[i]);                                                          \
                           }                                                                                                                               \
-                          if(d->addrs[NDIRECT]) cprintf("Indirect Address => %d\n", d->addrs[NDIRECT]);                                                   \
+                          if(d->addrs[NDIRECT]) cprintf("Indirect Address => %d", d->addrs[NDIRECT]);                                                   \
                           cprintf("] }\n");                                                                                                               \
                           }while(0)                                                                                                       
 

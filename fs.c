@@ -347,7 +347,7 @@ tryAgain:
         log_write(bp);   // mark it allocated on the disk
         brelse(bp);
 
-        bp = bread(dev, STATBLOCK(bg, sb));                       //
+        bp = bread(dev, STATBLOCK(BGROUP(inum, sb), sb));                       //
         stats = (struct ff_stats *) STATOFF(bp);                  //Increase the total block utilization
         stats-> percentFull = STAT_PERCENTAGE_ABS(stats, ++(stats->usedBlocks), sb);  //
         log_write(bp);

@@ -881,15 +881,13 @@ fillFSStats(void){
   struct buf* bp;
   struct ff_stats* stats;
   struct inode * node = 0;
-  int i, j, continueRunning = 1;
+  int i, j, totalBlocks, continueRunning = 1;
 
   for(i=0; i < sb.nblockgroups && continueRunning; i++){
 
-      bp = bread(ROOTDEV, STATBLOCK(i, sb));
-      stats = (struct ff_stats *) STATOFF(bp);
-
+      totalBlocks = 0;
       j = (i == 0)? 1 : 0;
-      for(; j < sb.ipbg; j++){
+      for(; j < sb.ipbg && continueRunning ; j++){
 
           // In order to fetch the appropriate iNode we'll
           // take the amount of iNodes in all of the b.g we've seen so far
@@ -899,18 +897,15 @@ fillFSStats(void){
 
           if(node->type > 0){
               iNode_info(node);
-              stats->usedBlocks++;
+              totalBlocks++;
           }
-          else if(j == 0){
-            continueRunning = 0;
-            break;
-          }
+          else if(j == 0) continueRunning = 0;
 
           iunlockput(node); //We're done with it, thanks
           node = 0;
       }
 
-      stats->percentFull = (stats->usedBlocks/sb.ipbg);
+      stats->percentFull = ( (stats->usedBlocks = totalBlocks)/sb.ipbg);
       bwrite(bp);   // mark it allocated on the disk
       brelse(bp);
   }

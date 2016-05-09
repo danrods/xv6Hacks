@@ -213,6 +213,7 @@ iinit(int dev)
   cprintf("sb: size %d nblocks %d ninodes %d nlog %d logstart %d bgstart %d nblockgroups %d ipbg %d bpbg %d\n", sb.size,
           sb.nblocks, sb.ninodes, sb.nlog, sb.logstart, sb.bgstart, sb.nblockgroups, sb.ipbg, sb.bpbg);
   clearFSStats();
+  fillFSStats();
   printFSStats();
   #endif
 }
@@ -861,7 +862,6 @@ clearFSStats(void){
   for(i=0; i < sb.nblockgroups; i++){
       bp = bread(ROOTDEV, STATBLOCK(i, sb));
 
-
       stats = (struct ff_stats *) STATOFF(bp);
       stats->percentFull = 0;
       stats->usedBlocks = 0;
@@ -871,6 +871,50 @@ clearFSStats(void){
 
   func_exit("\n");
 
+}
+
+void
+fillFSStats(void){
+
+  func_enter();
+
+  struct buf* bp;
+  struct ff_stats* stats;
+  struct inode * node = 0;
+  int i, j, continueRunning = 1;
+
+  for(i=0; i < sb.nblockgroups && continueRunning; i++){
+
+      bp = bread(ROOTDEV, STATBLOCK(i, sb));
+      stats = (struct ff_stats *) STATOFF(bp);
+
+      for(j=0; j < sb.ipbg; j++){
+
+          // In order to fetch the appropriate iNode we'll
+          // take the amount of iNodes in all of the b.g we've seen so far
+          // (i.e sp.ipbg * i) and add the amount we've seen in this b.g (i.e j)
+          node = iget(ROOTDEV, j + (sb.ipbg * i)); 
+          ilock(node); //Fetch the actual contents from disk
+
+          if(node->type > 0){
+              iNode_info(node);
+              stats->usedBlocks++;
+          }
+          else if(j == 0){
+            continueRunning = 0;
+            break;
+          }
+
+          iunlockput(node); //We're done with it, thanks
+          node = 0;
+      }
+
+      stats->percentFull = (stats->usedBlocks/sb.ipbg);
+      bwrite(bp);   // mark it allocated on the disk
+      brelse(bp);
+  }
+
+  func_exit("\n");
 }
 
 #endif

@@ -78,6 +78,7 @@ struct dinode {
 
   void printFSStats(void);
   void clearFSStats(void);
+  void fillFSStats(void);
   ///////////////////// Constants //////////////////////
 
   //Arbitarily chosen

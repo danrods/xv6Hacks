@@ -133,6 +133,11 @@ struct dinode {
 
   #define iNODE_HEAD(i, sb) ( ((i) / sb.ipbg) * sb.ipbg)
 
+
+  //Convenience Macro to find the HEAD of a B.G (Where the BMAP is located)
+  //  Based on the iNode of a Parent ( Convenient when you know your parents iNode)
+  #define BMAP_HEAD(piNode, sb)  ( (((piNode) / sb.ipbg) * sb.bpbg) +  sb.bgstart )
+
   //Offset in a block of dInodes
   // iNode % [iNodes/Block Group] ==> gives offset within iNodes in BG
   // [Offset Within B.G] % [iNodes per Block] yields offset within block

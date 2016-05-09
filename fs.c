@@ -86,28 +86,46 @@ balloc(uint dev)
 static uint
 balloc(uint dev)
 {
-  bblock = 0;
-  int b = DATABLOCK_OFF + bblock, 
-      bi, 
-      m;
-  struct buf *bp;
 
   func_enter();
 
+  int b, counter, bi, m, 
+      tryAgain = 1, 
+      headiNode = 1;
+  struct buf *bp;
+
+  //Let's get the block group based on parent iNode
+  b = BMAP_HEAD(proc->cwd->inum, sb); 
+      
+
+oneMoreTime:
+
   bp = 0;
-  bp = bread(dev, bblock);
-  for(bi = 0; bi < BPB; bi++){
-    m = 1 << (bi % 8);  //m = 1,2,4,8,16,32,64,128,1,2,4... 
-    if((bp->data[bi/8] & m) == 0){  // Is block free? // bi/8 = 0,0,0,0,0,0,0,0,1,1,1...
-      bp->data[bi/8] |= m;  // Mark block in use.
-      log_write(bp);
-      brelse(bp);
-      bzero(dev, b + bi);
-      func_exit("Allocating Disk Block %d\n", b + bi);
-      return bi + b;
+
+  //Look through all potential BMAPS if not found in parent
+  for(counter = 0; counter < sb.size; i++, b += BPB){
+    bp = bread(dev, BBLOCK(b, sb));
+
+    for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
+      m = 1 << (bi % 8);  //m = 1,2,4,8,16,32,64,128,1,2,4... 
+      if((bp->data[bi/8] & m) == 0){  // Is block free? // bi/8 = 0,0,0,0,0,0,0,0,1,1,1...
+        bp->data[bi/8] |= m;  // Mark block in use.
+        log_write(bp);
+        brelse(bp);
+        bzero(dev, b + bi);
+        func_exit("Allocating Disk Block %d\n", b + bi);
+        return bi + b;
+      }
     }
+    
     brelse(bp);
   }
+
+    if(tryAgain --){
+      b = 0;//One more opportunity, start from the beginning, looking for a free block node
+      goto oneMoreTime;
+    }
+
   panic("balloc: out of blocks");
 }
 

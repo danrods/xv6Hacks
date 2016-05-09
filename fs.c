@@ -839,8 +839,8 @@ printFSStats(void){
 
   for(i=0; i < sb.nblockgroups; i++){
       bp = bread(ROOTDEV, STATBLOCK(i, sb));
-      if(bp == 0) 
-        fs_error("Error fetching Stat Block! %d\n", bp);
+      if(bp == 0){fs_error("Error fetching Stat Block! %d\n", bp);} 
+        
       stats = (struct ff_stats *) STATOFF(bp);
       fs_debug("Block Group %d ==>", i + 1);
       ffStats_info(stats);
@@ -853,7 +853,7 @@ printFSStats(void){
 void
 clearFSStats(void){
 
-  func_enter();
+  //func_enter();
 
   struct buf* bp;
   struct ff_stats* stats;
@@ -869,14 +869,14 @@ clearFSStats(void){
       brelse(bp);
   }
 
-  func_exit("\n");
+  //func_exit("\n");
 
 }
 
 void
 fillFSStats(void){
 
-  func_enter();
+  //func_enter();
 
   struct buf* bp;
   struct ff_stats* stats;
@@ -908,7 +908,7 @@ fillFSStats(void){
       brelse(bp);
   }
 
-  func_exit("\n");
+  //func_exit("\n");
 }
 
 #endif

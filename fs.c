@@ -309,9 +309,9 @@ ialloc(uint dev, short type)
           log_write(bp);   // mark it allocated on the disk
           brelse(bp);
 
-          bp = bread(dev, STATBLOCK(bg, sb));       //
-          stats = (struct ff_stats *) STATOFF(bp);  //Increase the total block utilization
-          STAT_PERCENT_INC(stats, sb);              //
+          bp = bread(dev, STATBLOCK(bg, sb));                 //
+          stats = (struct ff_stats *) STATOFF(bp);            //Increase the total block utilization
+          stats-> percentFull = STAT_PERCENT_INC(stats, sb);  //
 
           func_exit("\n");
           return iget(dev, inum);
@@ -337,9 +337,9 @@ ialloc(uint dev, short type)
         log_write(bp);   // mark it allocated on the disk
         brelse(bp);
 
-        bp = bread(dev, STATBLOCK(bg, sb));       //
-        stats = (struct ff_stats *) STATOFF(bp);  //Increase the total block utilization
-        STAT_PERCENT_INC(stats, sb);              //
+        bp = bread(dev, STATBLOCK(bg, sb));                 //
+        stats = (struct ff_stats *) STATOFF(bp);            //Increase the total block utilization
+        stats-> percentFull = STAT_PERCENT_INC(stats, sb);  //
 
         func_exit("\n");
         return iget(dev, inum);

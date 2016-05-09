@@ -2,7 +2,7 @@
 #include "fcntl.h"
 #include "user.h"
 
-const char* usage = "Usage : filemanager <command> [command opts]\n";
+char* usage = "Usage : filemanager <command> [command opts]\n";
 
 int
 main(int argc, char *argv[])

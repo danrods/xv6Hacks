@@ -79,7 +79,7 @@ main(int argc, char *argv[])
 	}
 	else if (0 == strcmp(cmd, "tests")){
 		char *file = "H2F1", 
-			 *folder="secondHeuristicTest"; 
+			 *folder="test2"; 
 
 		if(argc > 2){
 			file = argv[2];

@@ -131,6 +131,8 @@ struct dinode {
   #define BGROUP(i, sb) ((i) / sb.ipbg)
 
   //Offset in a block of dInodes
+  // iNode % [iNodes/Block Group] ==> gives offset within iNodes in BG
+  // [Offset Within B.G] % [iNodes per Block] yields offset within block
   #define DINODEOFFSET(inum, sb) ((inum % sb.ipbg) % IPB)
 
   // Step 1 : Get the Block No. for the start of the block group based on the iNode Number 
@@ -159,6 +161,9 @@ struct dinode {
   #define STATBLOCK(bg, sb)   (sb.bgstart +  (bg * sb.bpbg) + NINODEBLOCKS )
 
   #define STATOFF(buf) (buf->data + (BSIZE - sizeof(struct ff_stats)))
+
+  #define STAT_PERCENTAGE_ABS(stat, totalBlocks, sb) ( ((stat->usedBlocks = totalBlocks) * 100) / sb.ipbg)
+  #define STAT_PERCENT_INC(stat, sb)  ( STAT_PERCENTAGE_ABS(stat, ++(stat->usedBlocks), sb) )
   /////////////////////////////////////////////////////////////
 
 

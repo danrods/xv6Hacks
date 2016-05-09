@@ -266,50 +266,64 @@ ialloc(uint dev, short type)
        least = 100, //Percent utilization
        bg,   
        lub;         //Least used block group
-  struct buf *bp;
-  //, *tmp;
+  struct buf *bp, *tmp;
   struct dinode *dip;
-  //struct ff_stats *stats;
+  struct ff_stats *stats;
 
   if(type == T_DIR){
-    fs_debug("Let's find a DIR shall we?\n");
+
+      fs_debug("Let's find a DIR shall we?\n");
+
       //To save time, if the block group is empty, lets just put it there
       for(lub = bg = 0; least > 0 && bg < sb.nblockgroups; bg++){
-     //     bp = bread(dev, STATBLOCK(bg, sb));
+          bp = bread(dev, STATBLOCK(bg, sb));
 
           //To get the stats struct which is stored at the end of the block we need to add
           // the difference between the entire block and the sizeof the struct
-   //       stats = STATOFF(bp);
+          stats = (struct ff_stats *) STATOFF(bp);
 
-          // if(stats->percentFull < least){
-          //   lub = bg;
-          //   least = stats->percentFull;
-          // } 
+          if(stats->percentFull < least){
+            lub = bg;
+            least = stats->percentFull;
+          } 
+
+          brelse(bp); //Let's free it up
       }
-      fs_debug("Found Least Free Block Group : %d --> %d percent utilization\n", lub, least);
-      //  Start at the first iNode with respect to the block group
-      //  End when we've gone through the number of iNodes per B.G
-      for(inum = (lub * sb.ipbg); inum < (lub * sb.ipbg) + sb.ipbg; inum++){
-        bp = bread(dev, IBLOCK(inum, sb)); // Get's the Entire block only
 
-        // iNode % [iNodes/Block Group] ==> gives offset within iNodes in BG
-        // [Offset Within B.G] % [iNodes per Block] yields offset within block
+
+      fs_debug("Found Least Free Block Group : %d --> %d percent utilization\n", lub, least);
+
+      //This is a little hack to make sure that
+      // We start counting iNodes from 1 and not from 0
+      // because idk why the root Inode is 1, but whatever
+      inum = (lub) ? (lub * sb.ipbg) : 1;
+      
+      for(; inum < (lub * sb.ipbg) + sb.ipbg; inum++){
+        bp = bread(dev, IBLOCK(inum, sb)); // Get's the Entire block only
         dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb); // Gets the Offset within the block
 
         if(dip->type == 0){  // A free inode
           fs_debug("Found a free directory!\n");
-          diNode_info(dip);
           memset(dip, 0, sizeof(*dip));
-          dip->type = type;
+          dip->type = type; //Should be T_DIR or w2h how did we get here????
           log_write(bp);   // mark it allocated on the disk
           brelse(bp);
+
+          bp = bread(dev, STATBLOCK(bg, sb));       //
+          stats = (struct ff_stats *) STATOFF(bp);  //Increase the total block utilization
+          STAT_PERCENT_INC(stats, sb);              //
+
           func_exit("\n");
           return iget(dev, inum);
         }
         brelse(bp);
       }
+
+      fs_error("Couldn't create the folder successfully!\n");
   }
-  else{
+  else
+  { // It's a file or a Device.
+
     for(inum = 1; inum < sb.ninodes; inum++){
       bp = bread(dev, IBLOCK(inum, sb));
       dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
@@ -323,8 +337,10 @@ ialloc(uint dev, short type)
         log_write(bp);   // mark it allocated on the disk
         brelse(bp);
 
-        //tmp = bread(dev, STATBLOCK( BGROUP(inum, sb), sb));
-        //stats = STATOFF(tmp);
+        bp = bread(dev, STATBLOCK(bg, sb));       //
+        stats = (struct ff_stats *) STATOFF(bp);  //Increase the total block utilization
+        STAT_PERCENT_INC(stats, sb);              //
+
         func_exit("\n");
         return iget(dev, inum);
       }
@@ -366,7 +382,7 @@ iget(uint dev, uint inum)
 {
   struct inode *ip, *empty;
 
-  func_enter();
+  //func_enter();
 
   acquire(&icache.lock);
 
@@ -376,8 +392,8 @@ iget(uint dev, uint inum)
     if(ip->ref > 0 && ip->dev == dev && ip->inum == inum){
       ip->ref++;
       release(&icache.lock);
-      iNode_info(ip);
-      func_exit("\n");
+      //iNode_info(ip);
+      //func_exit("\n");
       return ip;
     }
     if(empty == 0 && ip->ref == 0)    // Remember empty slot.
@@ -394,8 +410,8 @@ iget(uint dev, uint inum)
   ip->ref = 1;
   ip->flags = 0;
   release(&icache.lock);
-  iNode_info(ip);
-  func_exit("\n");
+  //iNode_info(ip);
+  //func_exit("\n");
   return ip;
 }
 
@@ -903,7 +919,7 @@ fillFSStats(void){
       bp = bread(ROOTDEV, STATBLOCK(i, sb));
       stats = (struct ff_stats *) STATOFF(bp);
 
-      stats->percentFull = ( ( ((stats->usedBlocks = totalBlocks) * 100)/sb.ipbg) );
+      stats->percentFull = STAT_PERCENTAGE_ABS(stats, totalBlocks, sb);
       bwrite(bp);   // mark it allocated on the disk
       brelse(bp);
   }

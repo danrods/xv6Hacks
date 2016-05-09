@@ -311,7 +311,7 @@ ialloc(uint dev, short type)
 
           bp = bread(dev, STATBLOCK(bg, sb));                 //
           stats = (struct ff_stats *) STATOFF(bp);            //Increase the total block utilization
-          stats-> percentFull = STAT_PERCENT_INC(stats, sb);  //
+          stats-> percentFull = STAT_PERCENTAGE_ABS(stats, ++(stats->usedBlocks), sb);  //
 
           func_exit("\n");
           return iget(dev, inum);
@@ -339,7 +339,7 @@ ialloc(uint dev, short type)
 
         bp = bread(dev, STATBLOCK(bg, sb));                 //
         stats = (struct ff_stats *) STATOFF(bp);            //Increase the total block utilization
-        stats-> percentFull = STAT_PERCENT_INC(stats, sb);  //
+        stats-> percentFull = STAT_PERCENTAGE_ABS(stats, ++(stats->usedBlocks), sb);  //
 
         func_exit("\n");
         return iget(dev, inum);

@@ -158,7 +158,7 @@ struct dinode {
   // Since we only use 29 iNodes per block to divide evenly with the num data blocks
   // We have 3 * sizeof(dinode) [64 Bytes]  ==> 192 Bytes of padding. Lets use bottom one for stats
   //  [Data Bit Map | iBlock 1 | iBlock 2 | iBlock 3 | {diNode1, diNode2...,diNode 5} {~192 Free Bytes | Stats block }  | Data Blocks] 
-  #define STATBLOCK(bg, sb)   (sb.bgstart +  (bg * sb.bpbg) + NINODEBLOCKS )
+  #define STATBLOCK(m, sb)   (sb.bgstart +  (m * sb.bpbg) + NINODEBLOCKS )
 
   #define STATOFF(buf) (buf->data + (BSIZE - sizeof(struct ff_stats)))
 

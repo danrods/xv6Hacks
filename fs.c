@@ -888,7 +888,8 @@ fillFSStats(void){
       bp = bread(ROOTDEV, STATBLOCK(i, sb));
       stats = (struct ff_stats *) STATOFF(bp);
 
-      for(j=0; j < sb.ipbg; j++){
+      j = (j == 0)? 1 : 0;
+      for(; j < sb.ipbg; j++){
 
           // In order to fetch the appropriate iNode we'll
           // take the amount of iNodes in all of the b.g we've seen so far

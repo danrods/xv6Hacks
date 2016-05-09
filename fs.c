@@ -332,8 +332,9 @@ ialloc(uint dev, short type)
     if(inum == 0)
         inum = 1;
 
+      int i;
+
 tryAgain:
-    int i;
     for(i=0;i < sb.ninodes;i++,inum++){
       bp = bread(dev, IBLOCK(inum, sb));
       dip = (struct dinode*)bp->data + DINODEOFFSET(inum, sb);
@@ -362,7 +363,7 @@ tryAgain:
     if(try++)
         panic("No More free iNodes");
     inum = 1;//One more opportunity, start from the beginning, looking for a free node
-    goto tryAgain
+    goto tryAgain;
 
   } /* End Else */
   

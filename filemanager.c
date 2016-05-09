@@ -21,16 +21,22 @@ createFile(char* filename){
 		printf(2, "There was an error creating the file!\n");
 		exit();
 	}
+
+	return fd;
 }
 
 int 
 createDir(char* path){
+	int val;
+
 	printf(1, "Creating Folder %s\n", path);
-	if(mkdir(path)){
+	if( (val = mkdir(path))){
 		printf(2, "There was an error creating the directory\n");
 		exit();
 	}
 	else printf(1, "Dir created successfully!\n");
+
+	return val;
 }
 
 

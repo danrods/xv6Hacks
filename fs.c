@@ -48,7 +48,7 @@ bzero(int dev, int bno)
 }
 
 
-#ifndef xv6ffs
+#ifdef xv6ffs
 
 // Blocks. 
 // Allocate a zeroed disk block.
@@ -114,7 +114,7 @@ oneMoreTime:
         brelse(bp);
         bzero(dev, b + bi);
         func_exit("Allocating Disk Block %d\n", b + bi);
-        return bi + b;
+        return DBLOCK(bi + b, sb);
       }
     }
 

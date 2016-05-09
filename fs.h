@@ -156,11 +156,14 @@ struct dinode {
   // Step 3 : Free Data Bitmap is first block in Block group so no need to offset
   #define BBLOCK(b, sb)    ( (((b)/BPB) * sb.bpbg) + sb.bgstart ) 
 
-
-  // Step 1 : Figure out which Block group we are in, based on the block no.
-  // Step 2 : Add the Number of iNode Blocks and the 1 block for the data bitmap to arrive at data section
-  // Step 3 : Add the remainder of the block no, which is the offset to the data blocks in the corresponding block group
-  #define DBLOCK(b, sb)    ( ( ((b)/BPB) * sb.bpbg) + ((b) % BPB) + NINODEBLOCKS + 1 + sb.bgstart) 
+  /* 
+  *  Converts "Virtual" Data Block Block numbers (Block numbers only counting data blocks) to
+  *     "Physical" Data Block Block numbers
+  * Step 1 : Figure out which Block group we are in, based on the block no.
+  * Step 2 : Add the Number of iNode Blocks and the 1 block for the data bitmap to arrive at data section
+  * Step 3 : Add the remainder of the block no, which is the offset to the data blocks in the corresponding block group
+  */
+  #define DBLOCK(b, sb)    ( ( ((b)/BPB) * sb.bpbg) + ((b) % BPB) + NINODEBLOCKS + sb.bgstart) 
 
 
   // Since we only use 29 iNodes per block to divide evenly with the num data blocks

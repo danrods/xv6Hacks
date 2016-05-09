@@ -894,7 +894,7 @@ clearFSStats(void){
 void
 fillFSStats(void){
 
-  //func_enter();
+  func_enter();
 
   struct buf* bp;
   struct ff_stats* stats;
@@ -910,7 +910,7 @@ fillFSStats(void){
           node = (struct dinode*)bp->data + DINODEOFFSET(iNode, sb);
 
           if(node->type > 0){
-             // diNode_info(node);
+              diNode_info(node);
               totalBlocks++;
           }
 
@@ -923,11 +923,12 @@ fillFSStats(void){
 
       stats->usedBlocks = totalBlocks;
       stats->percentFull = STAT_PERCENTAGE_ABS(stats, totalBlocks, sb);
+      ffStats_info(stats);
       bwrite(bp);   // mark it allocated on the disk
       brelse(bp);
   }
 
-  //func_exit("\n");
+  func_exit("\n");
 }
 
 #endif

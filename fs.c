@@ -214,7 +214,7 @@ iinit(int dev)
           sb.nblocks, sb.ninodes, sb.nlog, sb.logstart, sb.bgstart, sb.nblockgroups, sb.ipbg, sb.bpbg);
   clearFSStats();
   fillFSStats();
- // printFSStats();
+  printFSStats();
   #endif
 }
 

@@ -39,13 +39,18 @@ createDir(char* path){
 	return val;
 }
 
+void
+firstHeuristicTest(char* folder){
+
+	//Step 1  : Create a dir
+	createDir(folder);
+	printStats();
+	// Not created
+}
 
 
 void 
 secondHeuristicTest(char* file, char* folder){
-
-	//Step 1  : Create a dir
-	createDir(folder);
 
 	//Step 2  : Cd into new dir
 	if(chdir(folder)){
@@ -88,6 +93,7 @@ main(int argc, char *argv[])
 			folder = argv[3];
 		}
 
+		firstHeuristicTest(folder,)
 		secondHeuristicTest(file, folder);
 	}
 

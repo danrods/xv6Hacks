@@ -97,6 +97,8 @@ balloc(uint dev)
   head = BMAP_HEAD(proc->cwd->inum, sb); 
   b = BGROUP(proc->cwd->inum, sb) * BPB;
 
+  fs_debug("Starting From Data Block: %d, in Block DataMap with BlockNo: %d", b, head);
+
 oneMoreTime:
 
   bp = 0;

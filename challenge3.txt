@@ -15,7 +15,6 @@ evenly distributed.
 size and rerun the test.
 
 
-
 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 
@@ -25,5 +24,4 @@ Challenge 2
 	this will switch the scheduler by breaking out of the current scheduler and return to a method which checks 
 	the value that gets changed in the syscall and reloads the different scheduler. There is a method called schedSwitch
 	in the file schedTest.c  which runs a command in the lottery, switches schedulers and runs the same command.
-
 

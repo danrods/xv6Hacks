@@ -38,6 +38,7 @@ the appropriate scheduler. The number of tickets is kept the same, and can even 
 the actual RR scheduler, but will have an impact if switched back to lottery scheduling.
 
 
+
 Exercise 4
 
 For the First test the forked children will run for 50 iterations and yield the CPU each iteration. It is visible from the test that the process with the lowest nice value gets scheduled most often.

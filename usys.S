@@ -36,3 +36,4 @@ SYSCALL(prng)
 SYSCALL(switchScheduler)
 SYSCALL(yield)
 SYSCALL(printStats)
+

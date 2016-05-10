@@ -6,6 +6,7 @@ char* usage = "Usage : filemanager <command> [command opts]\n";
 
 int createDir(char* path);
 int createFile(char* filename);
+void firstHeuristicTest(char* folder);
 void secondHeuristicTest(char* file, char* folder);
 
 
@@ -93,7 +94,7 @@ main(int argc, char *argv[])
 			folder = argv[3];
 		}
 
-		firstHeuristicTest(folder,)
+		firstHeuristicTest(folder);
 		secondHeuristicTest(file, folder);
 	}
 

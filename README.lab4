@@ -1,3 +1,25 @@
 
 
 Part 1 : 
+	mkfs was new and improved to be setup using Blockgroups
+	The number of Data blocks depends on how many dataBlocks an iNode can reference. For our purposes
+	it is 4060 Data blocks, which takes 29 iNodes to reference all of those blocks (3.8 blocks of iNodes)
+	The last iNode block I reserved a portion to store stats about the current block group which can be fetched 
+	using the STATBLOCK macro.
+
+	The number of blockgroups is static at 25, but note that changing the blockgroups will update everything else, including the Max FSS Size
+
+	To Get a better sense, please read the extensive comments I've added to all macros and such
+
+
+
+	Commands you will need
+
+
+	/printStats  --> Print Statistics about all of the blockgroups
+
+	/filemanager tests --> Will run the First & Second Heuristic tests
+
+	NOTE : xv6 will take a bit to load because I am parsing all of the blockgroups to fill in
+	the stats upon system startup, so it is traversing the whole dis. Slow on startup, fast on retrieval later on.
+

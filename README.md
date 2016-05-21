@@ -21,7 +21,7 @@ The following people have made contributions:
 * Xiao Yu (MP)
 * Nickolai Zeldovich
 * Austin Clements
-* **Danny Rodrigues (See below) ** 
++ **Danny Rodrigues (See below)** 
 
 In addition, we are grateful for the bug reports and patches contributed by
 Silas Boyd-Wickizer, Peter Froehlich, Shivam Handa, Anders Kaseorg, Eddie

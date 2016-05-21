@@ -16,12 +16,12 @@ xv6 borrows code from the following sources:
     NetBSD (console.c)
 
 The following people have made contributions:
-    Russ Cox (context switching, locking)
-    Cliff Frey (MP)
-    Xiao Yu (MP)
-    Nickolai Zeldovich
-    Austin Clements
-    Danny Rodrigues
+    + Russ Cox (context switching, locking)
+    + Cliff Frey (MP)
+    + Xiao Yu (MP)
+    + Nickolai Zeldovich
+    + Austin Clements
+    + **Danny Rodrigues**
 
 In addition, we are grateful for the bug reports and patches contributed by
 Silas Boyd-Wickizer, Peter Froehlich, Shivam Handa, Anders Kaseorg, Eddie
@@ -64,7 +64,7 @@ the original Copy on fork implementation
 ### Part 3 :
 Implement Lottery Scheduler to replace xv6's default Round Robin Scheduler. In addition, a syscall was created to dynamically
 switch between the two schedulers called **switchScheduler** which takes no parameters. This effect can be seen by running the program
-schedTest directly from the shell after OS startup.
+`schedTest` directly from the shell after OS startup.
 
 ### Part 4 : 
 Implement BSD's Fast File System to replace the default static location of data blocks and iNodes by doing the following :
@@ -76,7 +76,7 @@ Implement BSD's Fast File System to replace the default static location of data 
 3. New folders are put into their own block groups if possible.
 4. Large File exception are implemented to split chunks of a larger file into different block groups to save space in block groups.
     **NOTE : This is still a work in progress**
-    
+
 ================
 
 

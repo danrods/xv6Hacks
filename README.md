@@ -66,7 +66,7 @@ Implement Lottery Scheduler to replace xv6's default Round Robin Scheduler. In a
 switch between the two schedulers called **switchScheduler** which takes no parameters. This effect can be seen by running the program
 schedTest directly from the shell after OS startup.
 
-## Part 4 : 
+### Part 4 : 
 Implement BSD's Fast File System to replace the default static location of data blocks and iNodes by doing the following :
 
 1. Seperate the Disk Image into cylinder or block groups by moving the static iNodes, free block bitmap and data block sections into
@@ -76,6 +76,7 @@ Implement BSD's Fast File System to replace the default static location of data 
 3. New folders are put into their own block groups if possible.
 4. Large File exception are implemented to split chunks of a larger file into different block groups to save space in block groups.
     **NOTE : This is still a work in progress**
+    
 ================
 
 

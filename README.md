@@ -16,12 +16,12 @@ xv6 borrows code from the following sources:
     NetBSD (console.c)
 
 The following people have made contributions:
-    + Russ Cox (context switching, locking)
-    + Cliff Frey (MP)
-    + Xiao Yu (MP)
-    + Nickolai Zeldovich
-    + Austin Clements
-    + **Danny Rodrigues**
+    * Russ Cox (context switching, locking)
+    * Cliff Frey (MP)
+    * Xiao Yu (MP)
+    * Nickolai Zeldovich
+    * Austin Clements
+    * **Danny Rodrigues**
 
 In addition, we are grateful for the bug reports and patches contributed by
 Silas Boyd-Wickizer, Peter Froehlich, Shivam Handa, Anders Kaseorg, Eddie
